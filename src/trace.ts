@@ -1,6 +1,7 @@
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import type { MeterlessReceipt } from "./adapters/llm.js";
 
 export type TraceStatus = "ok" | "error";
 
@@ -11,6 +12,7 @@ export type TraceEvent = {
   output_summary: string;
   model?: string;
   provider?: string;
+  receipt?: MeterlessReceipt;
   status: TraceStatus;
 };
 
@@ -39,6 +41,7 @@ export function trace(event: TraceEvent): void {
     output_summary: event.output_summary,
     model: event.model ?? null,
     provider: event.provider ?? null,
+    receipt: event.receipt ?? null,
     status: event.status,
   });
 

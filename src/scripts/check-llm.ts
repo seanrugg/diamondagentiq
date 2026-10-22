@@ -33,6 +33,7 @@ try {
     output_summary: String(ready.content ?? "").slice(0, 200),
     model: ready.model,
     provider: ready.provider,
+    receipt: ready.receipt,
     status: "ok",
   });
 
@@ -58,6 +59,7 @@ try {
     output_summary: `tool_calls=${hasToolCalls} count=${toolTest.toolCalls.length}`,
     model: toolTest.model,
     provider: toolTest.provider,
+    receipt: toolTest.receipt,
     status: hasToolCalls ? "ok" : "error",
   });
 

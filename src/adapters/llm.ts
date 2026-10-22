@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { z } from "zod";
 import type {
   ChatCompletionMessageParam,
   ChatCompletionTool,
@@ -13,6 +14,42 @@ export type GeneratorOpts = {
   temperature?: number;
 };
 
+export type MeterlessReceipt = {
+  receipt_id: string;
+  requested_model: string;
+  routed_model: string;
+  winning_route: { model: string; provider: string };
+  phases: {
+    phase: string;
+    model: string;
+    ms: number;
+    tokensIn: number;
+    tokensOut: number;
+  }[];
+};
+
+// meterless.compute_receipt.v1: keep only the fields the trace needs.
+// Unknown fields (and anything else in the provider response) are dropped,
+// so receipts never leak provider internals into user-facing output.
+const MeterlessReceiptSchema = z.object({
+  receipt_id: z.string(),
+  requested_model: z.string(),
+  routed_model: z.string(),
+  winning_route: z.object({
+    model: z.string(),
+    provider: z.string(),
+  }),
+  phases: z.array(
+    z.object({
+      phase: z.string(),
+      model: z.string(),
+      ms: z.number(),
+      tokensIn: z.number(),
+      tokensOut: z.number(),
+    }),
+  ),
+});
+
 export type GeneratorResult = {
   content: string | null;
   toolCalls: NonNullable<
@@ -21,7 +58,20 @@ export type GeneratorResult = {
   reasoning: unknown;
   model: string;
   provider: "ollama" | "meterless";
+  receipt?: MeterlessReceipt;
 };
+
+function extractMeterlessReceipt(
+  completion: unknown,
+): MeterlessReceipt | undefined {
+  if (config.LLM_PROVIDER !== "meterless") {
+    return undefined;
+  }
+  const rawReceipt =
+    (completion as Record<string, unknown> | undefined)?.meterless;
+  const parsed = MeterlessReceiptSchema.safeParse(rawReceipt);
+  return parsed.success ? parsed.data : undefined;
+}
 
 function createClient(): OpenAI {
   if (config.LLM_PROVIDER === "meterless") {
@@ -86,5 +136,6 @@ export async function generator(
     reasoning: extractReasoning(message),
     model: completion.model ?? model,
     provider,
+    receipt: extractMeterlessReceipt(completion),
   };
 }

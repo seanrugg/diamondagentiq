@@ -71,7 +71,17 @@ const envSchema = z
     }
   });
 
-const parsed = envSchema.safeParse(process.env);
+function trimStringEnvValues(
+  env: NodeJS.ProcessEnv,
+): z.input<typeof envSchema> {
+  const trimmed: Record<string, string | undefined> = {};
+  for (const [key, value] of Object.entries(env)) {
+    trimmed[key] = typeof value === "string" ? value.trim() : value;
+  }
+  return trimmed as z.input<typeof envSchema>;
+}
+
+const parsed = envSchema.safeParse(trimStringEnvValues(process.env));
 
 if (!parsed.success) {
   const fields = parsed.error.issues
