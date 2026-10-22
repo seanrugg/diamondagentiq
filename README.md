@@ -5,6 +5,7 @@ Open Agent Hackathon 2026 project: a TypeScript foundation for diamond-intellige
 ## Prerequisites
 
 - Node 22 (`nvm use` reads `.nvmrc`)
+- Docker, with Zetaris already running so the external network `zetaris_default` exists
 - Zetaris running locally (UI on port 3000, REST API on 8888)
 - Either [Ollama](https://ollama.com) with an OpenAI-compatible `/v1` endpoint, or Meterless Nightshift
 
@@ -15,9 +16,23 @@ nvm use
 cp .env.example .env
 # fill in ZETARIS_USERNAME and ZETARIS_PASSWORD (login mode),
 # or ZETARIS_API_KEY if ZETARIS_AUTH_MODE=apikey.
-# If using Meterless, also set METERLESS_RUNTIME_TOKEN.
+# Set DIQ_PG_PASSWORD. If using Meterless, also set METERLESS_RUNTIME_TOKEN.
 npm install
 ```
+
+### Data layer
+
+Postgres is published on host port **5433** (container 5432) so it does not collide with a local Postgres on 5432. The container joins `zetaris_default` as hostname `diq-postgres`.
+
+Rule rows in `data/seed.sql` are **drafts** (`verified=false`). Summaries are our own words, not rulebook quotations. Confirm every value against the governing body's current official rules before using it.
+
+```bash
+npm run db:up              # start diq-postgres and wait until healthy
+npm run zetaris:register   # CREATE DATASOURCE diq_pg (skipped if it exists), then REGISTER tables
+npm run check:data         # counts on rules_facts and drills, plus pitch_rest_rules ⋈ house_rules
+```
+
+`npm run db:reset` prints a warning, deletes the named volume, and recreates the database from `data/schema.sql` and `data/seed.sql`.
 
 Set `LLM_PROVIDER` to `ollama` or `meterless`. Leave `SAMPLE_MODE=false` unless a later agent pass enables sample data.
 

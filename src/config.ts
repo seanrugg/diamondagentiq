@@ -30,6 +30,7 @@ const envSchema = z
     ZETARIS_USERNAME: optionalString,
     ZETARIS_PASSWORD: optionalString,
     ZETARIS_API_KEY: optionalString,
+    DIQ_PG_PASSWORD: z.string().min(1),
     LLM_PROVIDER: z
       .string()
       .transform((value) => value.split("#")[0]?.trim() ?? "")
