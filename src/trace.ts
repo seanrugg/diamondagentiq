@@ -12,6 +12,7 @@ export type TraceEvent = {
   output_summary: string;
   model?: string;
   provider?: string;
+  reasoning?: unknown;
   receipt?: MeterlessReceipt;
   status: TraceStatus;
 };
@@ -41,6 +42,7 @@ export function trace(event: TraceEvent): void {
     output_summary: event.output_summary,
     model: event.model ?? null,
     provider: event.provider ?? null,
+    reasoning: event.reasoning ?? null,
     receipt: event.receipt ?? null,
     status: event.status,
   });

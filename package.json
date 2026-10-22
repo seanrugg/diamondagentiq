@@ -13,6 +13,7 @@
     "db:up": "bash src/scripts/db-up.sh",
     "db:reset": "bash src/scripts/db-reset.sh",
     "zetaris:register": "tsx --env-file=.env src/scripts/zetaris-register.ts",
+    "context": "tsx --env-file=.env src/scripts/context.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },
