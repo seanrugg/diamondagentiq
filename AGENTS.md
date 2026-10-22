@@ -81,6 +81,12 @@ Model routing (pin by model ID, through Meterless Nightshift):
 - Protest and appeal rights vary by sanction. Check the data; never generalize.
 - All player data is synthetic. Drills must be age-appropriate and safety-conscious; no medical advice.
 
+## Source material (licensing)
+
+- Real source material lives **outside the repo** in `~/hackathon/sources/` (rulebooks, official PDFs, rec-league house rules, GameChanger exports). Never read it into, copy into, or commit it to this repo.
+- Generators and extractors that process source material write to `~/hackathon/derived/`. Only reviewed, derived outputs (facts with citations, our own summaries, fully synthetic games) are copied into `data/`.
+- Never commit rulebook text, raw exports, or anything identifying a real player, team, date or location.
+
 ## Known gotchas
 
 - **Zetaris rejects API tokens on the local bundle** ("Api token is not allowed"). Default to `ZETARIS_AUTH_MODE=login` (POST `/api/auth/login` → `idToken`).
