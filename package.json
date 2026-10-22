@@ -1,0 +1,26 @@
+{
+  "name": "diamondagentiq",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check:zetaris": "tsx --env-file=.env src/scripts/check-zetaris.ts",
+    "check:llm": "tsx --env-file=.env src/scripts/check-llm.ts",
+    "test": "vitest run",
+    "test:hmem": "npm test --prefix vendor/hmem"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "openai": "^4.104.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.8",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
