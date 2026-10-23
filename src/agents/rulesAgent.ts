@@ -61,7 +61,9 @@ Rules you must follow:
 - Do NOT calculate rest days or dates yourself, and do NOT search for the pitch-count rest chart. Code looks up the chart
   (pitch_rest_rules), turns weekday names into dates, and computes the rest days and the earliest eligible date. Just say
   whether the pitch-rest calculation applies, and don't list the chart, rest thresholds or calendar dates as missing facts.
-- Your summary should explain which rules apply and why. Don't hedge about the eligible date; code reports it alongside your summary.
+- Your summary is for a parent, coach or umpire: explain which rules apply and why, in plain words. Don't mention code, queries
+  or calculations, and don't guess or hedge about whether the player is eligible on a given date; that result is reported
+  separately.
 - If a house rule changes pitching rest, express it as structure:
   {"house_rule_id": "<id>", "kind": "add_days", "min_pitches": <n>, "days": <n>}  (extra days after outings of at least n pitches)
   or {"house_rule_id": "<id>", "kind": "absolute", "rest_days": <n>}
@@ -141,6 +143,7 @@ async function askModel(
   ];
   let toolCallsUsed = 0;
   let answerAttempts = 0;
+  let emptyRetries = 0;
   let lastIssue = "no answer";
 
   for (let step = 0; step < MAX_MODEL_CALLS; step += 1) {
@@ -187,6 +190,14 @@ async function askModel(
           content: "You have used all your tool calls. Reply now with only the JSON object.",
         });
       }
+      continue;
+    }
+
+    // A blank reply (no text, no tool calls) is a provider hiccup, not an
+    // answer: retry the step once without spending an answer attempt.
+    if (!(result.content ?? "").trim() && emptyRetries < 1) {
+      emptyRetries += 1;
+      trace({ agent_name: AGENT, action: "empty_reply", input_summary: `step ${step + 1}`, output_summary: "blank model reply; retrying the step", status: "error" });
       continue;
     }
 

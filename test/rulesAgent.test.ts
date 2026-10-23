@@ -251,4 +251,17 @@ describe("rulesAgent", () => {
     const second = mockedGenerator.mock.calls[1]?.[0] as Array<{ role: string; content: string }>;
     expect(second.find((m) => m.role === "tool")?.content).toMatch(/^ERROR: Only SELECT/);
   });
+
+  it("retries a blank reply without spending an answer attempt", async () => {
+    mockedGenerator
+      .mockResolvedValueOnce(answer(""))
+      .mockResolvedValueOnce(toolCall(FACTS_SQL))
+      .mockResolvedValueOnce(answer("not json"))
+      .mockResolvedValueOnce(answer({ ...goodAnswer, facts_used: [{ table: "rules_facts", id: "F010" }], house_rule_adjustment: null }));
+
+    const result = await rulesAgent(request, context, TODAY);
+
+    expect(result.ok).toBe(true);
+    expect(mockedGenerator).toHaveBeenCalledTimes(4);
+  });
 });
