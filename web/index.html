@@ -219,6 +219,11 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 .small { font-size: 17px; color: var(--pencil); }
 .error-box { border: 2px solid var(--stitch); border-radius: 6px; padding: 12px 14px; color: var(--stitch); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.lineup-toggle { font: 700 20px/1.2 var(--display); cursor: pointer; padding: 12px 0; list-style: none; margin-top: 20px; }
+.lineup-toggle::-webkit-details-marker { display: none; }
+.lineup-toggle::before { content: "▸ "; }
+details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
+.lineup-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 </style>
 </head>
 <body>
@@ -334,16 +339,19 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
   </div>
 
   <div>
-    <section class="lineup" aria-labelledby="lineup-title">
-      <div class="lineup-head">
-        <h2 id="lineup-title">The agent team, play by play</h2>
-        <span class="clock" id="clock" aria-live="off"></span>
-      </div>
-      <p class="lineup-empty" id="empty">Ask a question to watch the agents work it out: who looked up the rules, who wrote the answer, and when the Critic sent a draft back.</p>
-      <ol class="steps" id="steps" aria-live="polite"></ol>
-    </section>
-
     <section class="answer" id="answer" hidden aria-live="polite"></section>
+
+    <details class="lineup-wrap" id="lineup-wrap" open>
+      <summary class="lineup-toggle">Show how the team worked it out</summary>
+      <section class="lineup" aria-labelledby="lineup-title">
+        <div class="lineup-head">
+          <h2 id="lineup-title">The agent team, play by play</h2>
+          <span class="clock" id="clock" aria-live="off"></span>
+        </div>
+        <p class="lineup-empty" id="empty">Ask a question to watch the agents work it out: who looked up the rules, who wrote the answer, and when the Critic sent a draft back.</p>
+        <ol class="steps" id="steps" aria-live="polite"></ol>
+      </section>
+    </details>
   </div>
 </main>
 
@@ -567,6 +575,7 @@ function renderAnswer(a) {
   const el = $("#answer");
   el.innerHTML = parts.join("");
   el.hidden = false;
+  $("#lineup-wrap").open = false;
 }
 
 function renderReview(r) {
@@ -605,6 +614,7 @@ function renderReview(r) {
   const el = $("#answer");
   el.innerHTML = parts.join("");
   el.hidden = false;
+  $("#lineup-wrap").open = false;
 }
 
 /* Tabs */
@@ -668,7 +678,7 @@ $("#use-sample").addEventListener("click", async () => {
 let timer = null;
 async function streamRun(url, body, button, idleLabel, onFinal) {
   $("#steps").innerHTML = ""; $("#empty").hidden = false; $("#empty").textContent = "Starting the team…";
-  $("#answer").hidden = true; button.disabled = true; button.textContent = "The team is working…";
+  $("#answer").hidden = true; $("#lineup-wrap").open = true; button.disabled = true; button.textContent = "The team is working…";
   const started = Date.now();
   clearInterval(timer);
   timer = setInterval(() => { const s = Math.round((Date.now() - started) / 1000); $("#clock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }, 1000);
