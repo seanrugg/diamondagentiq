@@ -3,9 +3,11 @@
  * npm run check:routing [-- <model id> ...]
  * Shows which Nightshift route ids exist (GET /v1/models) and how a small JSON
  * task is routed for each model id: receipt phase, requested vs served model,
- * time and 499 retries. With no ids it tries our two pinned Nemotron ids and
+ * time and 499 retries. Each request carries a nonce so Nightshift's cache
+ * can't answer it (cache hits return instantly with no receipt). With no ids it tries our two pinned Nemotron ids and
  * the meterless/fast and meterless/deep routing modes.
  */
+import { randomUUID } from "node:crypto";
 import { generator } from "../adapters/llm.js";
 import { config, meterlessModelForTier } from "../config.js";
 
@@ -37,9 +39,9 @@ try {
 for (const model of models) {
   const started = Date.now();
   try {
-    const r = await generator(messages, { model });
+    const r = await generator(messages, { model, nonce: randomUUID() }); // unique, so no cache hits
     const phases = r.receipt?.phases.map((p) => `${p.phase} ${p.model.replace("nvidia/", "")} ${p.ms}ms`).join(", ") ?? "no receipt";
-    console.log(`${model.padEnd(40)} ${((Date.now() - started) / 1000).toFixed(1)}s  served ${r.receipt?.routed_model ?? r.model}  [${phases}]  retries=${r.retries}`);
+    console.log(`${model.padEnd(40)} ${((Date.now() - started) / 1000).toFixed(1)}s  served ${r.receipt?.routed_model ?? r.model}  [${phases}]  retries=${r.retries}  answered=${/call_type/.test(r.content ?? "")}`);
   } catch (error) {
     console.log(`${model.padEnd(40)} ${((Date.now() - started) / 1000).toFixed(1)}s  FAILED: ${error instanceof Error ? error.message : String(error)}`);
   }

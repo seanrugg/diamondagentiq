@@ -22,6 +22,12 @@ export type GeneratorOpts = {
   temperature?: number;
   tier?: "super" | "lightning";
   toolChoice?: "none" | "auto";
+  /**
+   * Makes the request unique so Nightshift's response cache can't answer it.
+   * A cache hit comes back instantly with no receipt (and has replayed blank
+   * replies), so retries and routing checks send a fresh nonce.
+   */
+  nonce?: string;
 };
 
 /**
@@ -151,9 +157,12 @@ export async function generator(
   const direct = provider === "meterless" && !opts?.tools && config.METERLESS_DIRECT_MODE === "tools";
   const tools = opts?.tools ?? (direct ? [DIRECT_MODE_TOOL] : undefined);
   const toolChoice = opts?.toolChoice ?? (direct ? "none" : undefined);
+  const sentMessages: ChatCompletionMessageParam[] = opts?.nonce
+    ? [...messages, { role: "system", content: `(request ${opts.nonce})` }]
+    : messages;
   const request = {
     model,
-    messages,
+    messages: sentMessages,
     ...(tools ? { tools } : {}),
     ...(toolChoice ? { tool_choice: toolChoice } : {}),
     ...(opts?.temperature !== undefined ? { temperature: opts.temperature } : {}),

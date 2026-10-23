@@ -31,7 +31,7 @@ import {
   type RulesResult,
 } from "../schemas/rules.js";
 import type { SituationRequest } from "../schemas/situation.js";
-import { trace } from "../trace.js";
+import { getRunId, trace } from "../trace.js";
 import type { ContextOutput } from "./contextAgent.js";
 import { parseModelJson } from "./json.js";
 
@@ -152,6 +152,8 @@ async function askModel(
     const toolsAllowed = toolCallsUsed < MAX_TOOL_CALLS;
     const result = await generator(messages, {
       tier: "super",
+      // After a blank reply, make the retry unique so a cached blank can't come back.
+      ...(emptyRetries > 0 ? { nonce: `${getRunId()}-${step}` } : {}),
       ...(toolsAllowed ? { tools: [run_sql] } : {}),
     });
     trace({
