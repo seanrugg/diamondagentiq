@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   applyHouseRule,
   earliestEligibleDate,
+  applyHouseRuleAdjustment,
   restDaysRequired,
 } from "../src/calculators/pitchRest.js";
 
@@ -146,5 +147,32 @@ describe("applyHouseRule", () => {
       governing: "house_rule",
       conflict: true,
     });
+  });
+});
+
+describe("applyHouseRuleAdjustment", () => {
+  it("returns the sanction value with no adjustment", () => {
+    expect(applyHouseRuleAdjustment(4, 68)).toEqual({ rest_days: 4, governing: "sanction", conflict: false });
+  });
+
+  it("adds days when the outing meets the threshold", () => {
+    expect(applyHouseRuleAdjustment(4, 68, { kind: "add_days", min_pitches: 21, days: 1 })).toEqual({
+      rest_days: 5,
+      governing: "house_rule",
+      conflict: true,
+    });
+  });
+
+  it("leaves rest unchanged below the threshold", () => {
+    expect(applyHouseRuleAdjustment("0", "15", { kind: "add_days", min_pitches: 21, days: 1 })).toEqual({
+      rest_days: 0,
+      governing: "sanction",
+      conflict: false,
+    });
+  });
+
+  it("uses an absolute house rule only when it is stricter", () => {
+    expect(applyHouseRuleAdjustment(2, 40, { kind: "absolute", rest_days: 3 })).toMatchObject({ rest_days: 3, governing: "house_rule", conflict: true });
+    expect(applyHouseRuleAdjustment(4, 70, { kind: "absolute", rest_days: 3 })).toMatchObject({ rest_days: 4, governing: "sanction", conflict: false });
   });
 });

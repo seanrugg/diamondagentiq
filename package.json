@@ -16,6 +16,7 @@
     "rules:load": "bash src/scripts/rules-load.sh",
     "zetaris:register": "tsx --env-file=.env src/scripts/zetaris-register.ts",
     "context": "tsx --env-file=.env src/scripts/context.ts",
+    "rules": "tsx --env-file=.env src/scripts/rules.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },

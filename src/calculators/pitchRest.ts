@@ -169,3 +169,41 @@ export function applyHouseRule(
 
   return { rest_days: sanction, governing: "sanction", conflict: true };
 }
+
+/**
+ * A house or tournament rule expressed as structure (extracted from its text
+ * by an agent; applied here by code):
+ * - add_days: outings of at least `min_pitches` need `days` extra rest days
+ * - absolute: the event's own rest requirement, in days
+ */
+export type HouseRuleAdjustment =
+  | { kind: "add_days"; min_pitches: number; days: number }
+  | { kind: "absolute"; rest_days: number };
+
+/**
+ * Combine the sanction's rest days with an optional house-rule adjustment.
+ * The stricter (larger) requirement governs. `conflict` is true when the house
+ * rule changes the answer, so the conflict can be disclosed.
+ */
+export function applyHouseRuleAdjustment(
+  sanctionRestDays: string | number,
+  pitches: string | number,
+  adjustment?: HouseRuleAdjustment,
+): { rest_days: number; governing: "sanction" | "house_rule"; conflict: boolean } {
+  const sanction = toNumber(sanctionRestDays);
+  if (!adjustment) {
+    return { rest_days: sanction, governing: "sanction", conflict: false };
+  }
+
+  const house =
+    adjustment.kind === "add_days"
+      ? toNumber(pitches) >= adjustment.min_pitches
+        ? sanction + adjustment.days
+        : sanction
+      : adjustment.rest_days;
+
+  if (house > sanction) {
+    return { rest_days: house, governing: "house_rule", conflict: true };
+  }
+  return { rest_days: sanction, governing: "sanction", conflict: false };
+}
