@@ -240,7 +240,7 @@ async function fetchFactSources(codes: string[]): Promise<RuleSource[]> {
   const safe = codes.filter((c) => /^F\d+$/.test(c));
   if (safe.length === 0) return [];
   const rows = await runAgentRows(
-    `SELECT f.fact_code, f.rule_ref, f.verified, s.url, s.edition FROM diq_pg.rules_facts f JOIN diq_pg.rule_sources s ON f.source_id = s.source_id WHERE f.fact_code IN (${quoteList(safe)})`,
+    `SELECT f.fact_code, f.rule_ref, f.verified, f.call_type, f.summary, s.url, s.edition FROM diq_pg.rules_facts f JOIN diq_pg.rule_sources s ON f.source_id = s.source_id WHERE f.fact_code IN (${quoteList(safe)})`,
   );
   return rows.map((r) => ({
     table: "rules_facts" as const,
@@ -250,6 +250,8 @@ async function fetchFactSources(codes: string[]): Promise<RuleSource[]> {
     edition: r.edition ?? null,
     verified: isTrue(r.verified),
     synthetic: false,
+    call_type: r.call_type === "rule" || r.call_type === "judgment" || r.call_type === "mixed" ? r.call_type : null,
+    summary: r.summary ?? null,
   }));
 }
 
@@ -257,7 +259,7 @@ async function fetchHouseRuleSources(ids: string[]): Promise<RuleSource[]> {
   const safe = ids.filter((id) => /^[0-9a-f-]{36}$/i.test(id));
   if (safe.length === 0) return [];
   const rows = await runAgentRows(
-    `SELECT id, event_name, section, source_file, synthetic FROM diq_pg.house_rules WHERE id IN (${quoteList(safe)})`,
+    `SELECT id, event_name, section, source_file, synthetic, rule_text FROM diq_pg.house_rules WHERE id IN (${quoteList(safe)})`,
   );
   return rows.map((r) => ({
     table: "house_rules" as const,
@@ -267,6 +269,8 @@ async function fetchHouseRuleSources(ids: string[]): Promise<RuleSource[]> {
     edition: null,
     verified: false,
     synthetic: isTrue(r.synthetic),
+    call_type: null,
+    summary: r.rule_text ?? null,
   }));
 }
 

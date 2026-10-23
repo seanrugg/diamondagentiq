@@ -10,6 +10,9 @@ const SourceSchema = z.object({
   id: z.string(),
   source_url: z.string().url(),
   verified: z.boolean(),
+  rule_ref: z.string().nullable().optional(),
+  edition: z.string().nullable().optional(),
+  synthetic: z.boolean().optional(),
 });
 
 const WhatHappenedSchema = z.object({
@@ -49,6 +52,17 @@ export const SituationAnswerSchema = z.object({
   sources: z.array(SourceSchema),
   missing_facts: z.array(z.string()),
   trace_id: z.string().min(1),
+  /** Deterministic pitch-rest result, when one was computed. */
+  computation: z.record(z.unknown()).nullable().optional(),
+  draft_data: z.boolean().optional(),
+  /** What the critique loop did: drafts reviewed and anything left unresolved. */
+  review: z
+    .object({
+      drafts: z.number().int(),
+      passed: z.boolean(),
+      unresolved_issues: z.array(z.string()),
+    })
+    .optional(),
 });
 
 export type SituationRequest = z.infer<typeof SituationRequestSchema>;

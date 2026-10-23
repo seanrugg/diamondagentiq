@@ -17,6 +17,7 @@
     "zetaris:register": "tsx --env-file=.env src/scripts/zetaris-register.ts",
     "context": "tsx --env-file=.env src/scripts/context.ts",
     "rules": "tsx --env-file=.env src/scripts/rules.ts",
+    "ask": "tsx --env-file=.env src/scripts/ask.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },

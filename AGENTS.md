@@ -34,6 +34,7 @@ npm run rules:load       # load the rules CSVs into diq-postgres (keeps other ta
 npm run check:llm        # model reply + tool-call test via the configured provider
 npm run context -- ...   # ContextAgent only, live
 npm run rules -- ...     # ContextAgent + RulesAgent, live (see src/scripts/rules.ts)
+npm run ask -- ...       # full agent team via the orchestrator, live; --save writes output_examples/
 ```
 
 Run `npm test` after every change. Run the relevant `check:*` script after touching an adapter.

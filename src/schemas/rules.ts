@@ -41,6 +41,10 @@ export const RuleSourceSchema = z.object({
   edition: z.string().nullable(),
   verified: z.boolean(),
   synthetic: z.boolean(),
+  /** rules_facts only: rule | judgment | mixed. */
+  call_type: z.enum(["rule", "judgment", "mixed"]).nullable().optional(),
+  /** Our own-words summary of the fact or house rule. */
+  summary: z.string().nullable().optional(),
 });
 
 export type RuleSource = z.infer<typeof RuleSourceSchema>;
