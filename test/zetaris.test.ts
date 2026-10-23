@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { normalizeSql } from "../src/adapters/sql.js";
-import { toRows } from "../src/adapters/zetaris.js";
 import {
   decodeJwtExp,
   TOKEN_REFRESH_SKEW_MS,
@@ -59,43 +58,5 @@ describe("Zetaris JWT expiry", () => {
     );
     expect(tokenNeedsRefresh(`${header}.${payload}.sig`, nowMs)).toBe(true);
     expect(decodeJwtExp("not-a-jwt")).toBeUndefined();
-  });
-});
-
-describe("toRows", () => {
-  it("normalizes Zetaris's real shape: an array of string-array rows", () => {
-    // Mirror of the real runSql output shape (synthetic values only):
-    // [["little_league","baseball","9","10","1","20","0","Fall Classic 12U","pitch_rest"], ...]
-    expect(
-      toRows([
-        ["1", "diq_pg_rule", null],
-        ["2", "pitch_rest", "3"],
-      ]),
-    ).toEqual([
-      { "0": "1", "1": "diq_pg_rule", "2": null },
-      { "0": "2", "1": "pitch_rest", "2": "3" },
-    ]);
-  });
-
-  it("passes through an array of row objects (values as string | null)", () => {
-    expect(
-      toRows([{ id: "1", name: "diq" }, { id: "2", note: null }]),
-    ).toEqual([{ id: "1", name: "diq" }, { id: "2", note: null }]);
-  });
-
-  it("zips a { columns, rows } shape", () => {
-    expect(
-      toRows({ columns: ["id", "name"], rows: [["1", "diq"], ["2", null]] }),
-    ).toEqual([{ id: "1", name: "diq" }, { id: "2", name: null }]);
-  });
-
-  it("wraps a single row object", () => {
-    expect(toRows({ id: "1", name: "diq" })).toEqual([{ id: "1", name: "diq" }]);
-  });
-
-  it("returns an empty array for other shapes", () => {
-    expect(toRows(null)).toEqual([]);
-    expect(toRows("nope")).toEqual([]);
-    expect(toRows(42)).toEqual([]);
   });
 });

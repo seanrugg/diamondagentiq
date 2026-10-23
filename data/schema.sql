@@ -1,9 +1,25 @@
 -- DiamondAgentIQ schema. Rule summaries in this database are our own words,
 -- never copied rulebook text. Seeded rule values are drafts to verify.
 
+-- One row per source document or page the facts are drawn from.
+CREATE TABLE rule_sources (
+  source_id TEXT PRIMARY KEY,
+  sanction TEXT NOT NULL,
+  sport TEXT NOT NULL,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  edition TEXT,
+  access TEXT,
+  use_note TEXT,
+  retrieved_on DATE
+);
+
 CREATE TABLE rules_facts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  sport TEXT NOT NULL CHECK (sport IN ('baseball', 'softball')),
+  fact_code TEXT UNIQUE,
+  source_id TEXT REFERENCES rule_sources (source_id),
+  sport TEXT NOT NULL CONSTRAINT rules_facts_sport_check CHECK (sport IN ('baseball', 'softball', 'both')),
+  division TEXT,
   sanction TEXT NOT NULL,
   age_min INTEGER,
   age_max INTEGER,
@@ -12,9 +28,14 @@ CREATE TABLE rules_facts (
   fact_key TEXT NOT NULL,
   fact_value TEXT,
   unit TEXT,
+  rule_ref TEXT,
+  call_type TEXT CHECK (call_type IN ('rule', 'judgment', 'mixed')),
   summary TEXT NOT NULL,
   source_url TEXT,
   verified BOOLEAN NOT NULL DEFAULT FALSE,
+  verified_by TEXT,
+  retrieved_on DATE,
+  verify_note TEXT,
   notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -32,6 +53,7 @@ CREATE TABLE pitch_rest_rules (
   edition TEXT,
   source_url TEXT,
   verified BOOLEAN NOT NULL DEFAULT FALSE,
+  source_id TEXT REFERENCES rule_sources (source_id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

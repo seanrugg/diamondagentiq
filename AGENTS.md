@@ -29,6 +29,8 @@ npm run db:up            # start diq-postgres
 npm run zetaris:register # register diq_pg in Zetaris (idempotent)
 npm run check:zetaris    # SELECT 1 through Zetaris
 npm run check:data       # counts + a join through Zetaris
+npm run rules:build      # regenerate data/rules.sql from data/rules/*.csv
+npm run rules:load       # load the rules CSVs into diq-postgres (keeps other tables)
 npm run check:llm        # model reply + tool-call test via the configured provider
 ```
 

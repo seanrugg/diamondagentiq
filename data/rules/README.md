@@ -22,5 +22,9 @@ These CSVs are the source of truth for rule facts. A loader turns them into the 
 ## Updating
 
 1. Edit the CSV, or fold in corrections from the review workbook.
-2. Re-run the loader, then `npm run check:data`.
-3. Commit the CSV change on its own, with the reviewer's initials in the message.
+2. `npm run rules:build` regenerates `data/rules.sql` (a unit test fails if you forget).
+3. `npm run rules:load` upgrades the schema if needed and replaces the three rules tables in one transaction. Other tables are untouched.
+4. `npm run check:data` confirms counts and a join through Zetaris.
+5. Commit the CSV and `data/rules.sql` together, with the reviewer's initials in the message.
+
+A fresh database (`npm run db:reset`) loads `data/rules.sql` automatically as `03-rules.sql`.

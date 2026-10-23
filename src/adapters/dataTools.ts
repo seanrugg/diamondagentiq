@@ -8,12 +8,14 @@
  */
 
 import { normalizeSql } from "./sql.js";
-import { runSql, toRows } from "./zetaris.js";
+import { selectColumnNames, toRows, type Row } from "./rows.js";
+import { runSql, runSqlDetailed } from "./zetaris.js";
 import { trace } from "../trace.js";
 import type { TraceStatus } from "../trace.js";
 import type { ChatCompletionTool } from "openai/resources/chat/completions";
 
 export const ALLOWED_TABLES = [
+  "rule_sources",
   "rules_facts",
   "pitch_rest_rules",
   "house_rules",
@@ -327,13 +329,40 @@ export async function runAgentSql(sql: string): Promise<unknown> {
 }
 
 /**
- * Like runAgentSql, but normalizes the Zetaris result into an array of
- * row objects with string (or null) values via toRows.
+ * Run an agent SELECT and return rows keyed by real column names.
+ *
+ * Column names come from the Zetaris response metadata when present;
+ * otherwise from the statement's SELECT list. SELECT * is rejected when the
+ * response carries no names, because positional values could be misread
+ * (e.g. rest_days taken for pitches_max).
  */
-export async function runAgentRows(
-  sql: string,
-): Promise<Array<Record<string, string | null>>> {
+export async function runAgentRows(sql: string): Promise<Row[]> {
   const finalSql = prepareSql(sql);
-  const result = await runSql(finalSql);
-  return toRows(result);
+  const derived = selectColumnNames(finalSql);
+  const result = await runSqlDetailed(finalSql);
+  const columns = result.columns ?? derived;
+
+  if (!columns) {
+    const message =
+      "runAgentRows needs explicit column names: list the columns instead of SELECT *";
+    trace({ agent_name: "dataTools", action: "run_sql_rows", input_summary: finalSql, output_summary: message, status: "error" });
+    throw new Error(message);
+  }
+
+  const rows = toRows(result.data, columns);
+  const width = Array.isArray(result.data) && Array.isArray(result.data[0]) ? result.data[0].length : columns.length;
+  if (width !== columns.length) {
+    const message = `Column count mismatch: expected ${columns.length} (${columns.join(", ")}), got ${width}`;
+    trace({ agent_name: "dataTools", action: "run_sql_rows", input_summary: finalSql, output_summary: message, status: "error" });
+    throw new Error(message);
+  }
+
+  trace({
+    agent_name: "dataTools",
+    action: "run_sql_rows",
+    input_summary: finalSql,
+    output_summary: `${rows.length} rows; columns from ${result.columns ? "metadata" : "select list"}`,
+    status: "ok",
+  });
+  return rows;
 }

@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { config } from "../config.js";
+import { columnsFromPayload, toRows } from "./rows.js";
 import { normalizeSql } from "./sql.js";
 import { tokenNeedsRefresh } from "./zetaris-token.js";
 
 const REQUEST_TIMEOUT_MS = 60_000;
 
-export { normalizeSql };
+export { normalizeSql, toRows };
 
 let cachedLoginToken: string | undefined;
 
@@ -98,7 +99,17 @@ async function postSql(
   });
 }
 
-export async function runSql(sql: string): Promise<unknown> {
+export type SqlResult = {
+  /** The payload's data field: Zetaris returns rows as positional string arrays. */
+  data: unknown;
+  /** Column names from response metadata, or null if the response has none. */
+  columns: string[] | null;
+  /** Top-level keys of the response (names only, never values), for diagnostics. */
+  payloadKeys: string[];
+};
+
+/** Run one statement and return the rows plus any column metadata. */
+export async function runSqlDetailed(sql: string): Promise<SqlResult> {
   const statement = normalizeSql(sql);
   const queryId = randomUUID();
 
@@ -107,8 +118,13 @@ export async function runSql(sql: string): Promise<unknown> {
     const response = await postSql(statement, queryId, forceRefresh);
 
     if (response.ok) {
-      const payload = (await response.json()) as { data?: unknown };
-      return payload.data;
+      const payload = (await response.json()) as Record<string, unknown> | null;
+      const record = payload ?? {};
+      return {
+        data: record.data,
+        columns: columnsFromPayload(record),
+        payloadKeys: Object.keys(record),
+      };
     }
 
     const body = await response.text();
@@ -124,70 +140,7 @@ export async function runSql(sql: string): Promise<unknown> {
   throw new Error("Zetaris SQL request failed");
 }
 
-/**
- * Normalize a Zetaris payload into an array of row objects with string (or
- * null) values. Zetaris returns values as strings, so nothing is parsed or
- * converted here — values are passed through as strings.
- *
- * Accepts:
- * - an array of row objects (passed through, values as string | null)
- * - { columns: string[], rows: unknown[][] } (columns zipped onto each row)
- * - a single row object (wrapped in an array)
- * - anything else (empty array)
- */
-export function toRows(
-  data: unknown,
-): Array<Record<string, string | null>> {
-  if (Array.isArray(data)) {
-    return data.map((row) =>
-      Array.isArray(row) ? toPositionalRow(row) : toRowObject(row),
-    );
-  }
-
-  if (data !== null && typeof data === "object") {
-    const object = data as Record<string, unknown>;
-    if (Array.isArray(object.columns) && Array.isArray(object.rows)) {
-      return object.rows.map((row) =>
-        Object.fromEntries(
-          object.columns.map((column, index) => [
-            String(column),
-            toCellValue((row as unknown[])[index]),
-          ]),
-        ),
-      );
-    }
-    return [toRowObject(object)];
-  }
-
-  return [];
-}
-
-/**
- * Zetaris returns rows as positional arrays of strings (no column names in
- * the payload runSql exposes), so key each cell by its zero-based index.
- */
-function toPositionalRow(row: unknown[]): Record<string, string | null> {
-  return Object.fromEntries(
-    row.map((value, index) => [String(index), toCellValue(value)]),
-  );
-}
-
-function toRowObject(row: unknown): Record<string, string | null> {
-  if (row === null || row === undefined || typeof row !== "object") {
-    return {};
-  }
-  if (Array.isArray(row)) {
-    return {};
-  }
-  const object = row as Record<string, unknown>;
-  return Object.fromEntries(
-    Object.entries(object).map(([key, value]) => [key, toCellValue(value)]),
-  );
-}
-
-function toCellValue(value: unknown): string | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  return String(value);
+/** Run one statement and return the payload's data field (positional rows). */
+export async function runSql(sql: string): Promise<unknown> {
+  return (await runSqlDetailed(sql)).data;
 }
