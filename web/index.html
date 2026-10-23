@@ -55,7 +55,7 @@ header.top {
 }
 .wordmark { font: 700 clamp(30px, 5vw, 44px)/1 var(--display); letter-spacing: 0.01em; margin: 0; }
 .wordmark small { display: block; font: 500 16px/1.3 var(--ui); color: var(--pencil); letter-spacing: 0; margin-top: 6px; }
-.status { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--pencil); }
+.status { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 17px; color: var(--pencil); }
 .status b { color: var(--ink); font-weight: 600; }
 
 main {
@@ -69,7 +69,7 @@ form.ask { position: sticky; top: 16px; align-self: start; display: grid; gap: 1
 @media (max-width: 900px) { form.ask { position: static; }
 form.ask[hidden] { display: none; } }
 form.ask h2 { font: 600 24px/1.15 var(--display); margin: 0; }
-label { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
+label { display: grid; gap: 4px; font-size: 17px; font-weight: 600; }
 label span.hint { font-weight: 400; color: var(--pencil); }
 input, select, textarea {
   font: 16px/1.4 var(--ui); color: var(--ink); background: var(--card);
@@ -96,7 +96,7 @@ button.go {
   border: 0; border-radius: 4px; padding: 14px; cursor: pointer;
 }
 button.go[disabled] { opacity: 0.55; cursor: progress; }
-.formnote { font-size: 13px; color: var(--pencil); margin: 0; }
+.formnote { font-size: 17px; color: var(--pencil); margin: 0; }
 
 /* Mode tabs */
 .left { display: grid; gap: 16px; align-self: start; position: sticky; top: 16px; }
@@ -108,8 +108,8 @@ form.ask[hidden] { display: none; }
 .tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
 .upload { display: grid; gap: 8px; }
 .upload img { max-width: 100%; max-height: 220px; object-fit: contain; object-position: left top; border: 1px solid var(--line); border-radius: 4px; background: var(--card); }
-.or { font-size: 13px; color: var(--pencil); }
-table.lines { border-collapse: collapse; font-size: 14px; }
+.or { font-size: 17px; color: var(--pencil); }
+table.lines { border-collapse: collapse; font-size: 17px; }
 table.lines th, table.lines td { padding: 4px 8px; text-align: center; border-top: 1px solid var(--grid); }
 table.lines th { color: var(--pencil); font-weight: 600; border-top: 0; }
 table.lines td:first-child, table.lines th:first-child { text-align: left; }
@@ -139,9 +139,9 @@ ol.steps > li.note { padding-top: 4px; padding-bottom: 6px; border-top: 0; }
 ol.steps > li.note::before { content: ""; }
 .who { font: 600 19px/1.15 var(--display); }
 .who em { display: block; font: 400 13px/1.3 var(--ui); font-style: normal; color: var(--pencil); }
-.what { font-size: 15px; overflow-wrap: anywhere; }
-.what .detail { display: block; color: var(--pencil); font-size: 13px; margin-top: 2px; }
-.meta { text-align: right; font-size: 13px; color: var(--pencil); white-space: nowrap; }
+.what { font-size: 17px; overflow-wrap: anywhere; }
+.what .detail { display: block; color: var(--pencil); font-size: 17px; margin-top: 2px; }
+.meta { text-align: right; font-size: 17px; color: var(--pencil); white-space: nowrap; }
 .chip { display: inline-block; font: 600 14px/1 var(--display); letter-spacing: 0.02em; border: 1px solid currentColor; border-radius: 3px; padding: 3px 6px; color: var(--ink); }
 .chip.lightning { color: var(--dirt); }
 .chip.warn { color: var(--stitch); border-style: dashed; }
@@ -168,14 +168,14 @@ section.answer[hidden] { display: none; }
 }
 .stamp small { display: block; font: 500 12px/1.1 var(--ui); margin-top: 3px; }
 .what-happened { font: 400 21px/1.55 var(--prose); margin: 0; max-width: 68ch; }
-.why-call { margin: 8px 0 0; color: var(--pencil); font-size: 15px; max-width: 68ch; }
+.why-call { margin: 8px 0 0; color: var(--pencil); font-size: 17px; max-width: 68ch; }
 @media (max-width: 640px) { .verdict { grid-template-columns: 1fr; } .stamp { width: 80px; height: 80px; font-size: 17px; } }
 .answer h3 { font: 700 22px/1.1 var(--display); margin: 0 0 6px; }
 .answer p { margin: 0; max-width: 68ch; }
 .prose { font: 400 18px/1.6 var(--prose); }
 .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
 .lesson-titles { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
-.lesson-titles li { font-size: 15px; color: var(--pencil); }
+.lesson-titles li { font-size: 17px; color: var(--pencil); }
 .lesson-titles b { color: var(--ink); font-weight: 600; }
 blockquote.story { margin: 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--dirt); font: italic 400 18px/1.6 var(--prose); max-width: 68ch; }
 blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; color: var(--pencil); margin-top: 8px; }
@@ -189,7 +189,13 @@ blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; colo
 .situation dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 8px 0 0; }
 .situation dt { font-weight: 600; }
 .situation dd { margin: 0; }
-table.sources { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+/* Expandable answer cards */
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.card summary { cursor: pointer; }
+.card summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+@media (prefers-reduced-motion: reduce) { .card, .card * { animation: none !important; transition: none !important; } }
+table.sources { width: 100%; border-collapse: collapse; font-size: 17px; }
 table.sources th, table.sources td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--grid); vertical-align: top; }
 table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 .draft { color: var(--dirt); font-weight: 600; }
@@ -197,7 +203,7 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 .confidence { display: grid; grid-template-columns: auto minmax(120px, 260px); gap: 10px; align-items: center; }
 .meter { height: 10px; border: 1px solid var(--ink); border-radius: 999px; overflow: hidden; }
 .meter span { display: block; height: 100%; background: var(--ink); }
-.small { font-size: 14px; color: var(--pencil); }
+.small { font-size: 17px; color: var(--pencil); }
 .error-box { border: 2px solid var(--stitch); border-radius: 6px; padding: 12px 14px; color: var(--stitch); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
@@ -497,40 +503,49 @@ function addStep(s) {
 
 const list = (items) => items && items.length ? `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="small">Nothing extra here.</p>`;
 
+const firstSentence = (t) => {
+  const s = String(t ?? "").trim();
+  const m = s.match(/^[^.!?]*[.!?]/);
+  return m ? m[0] : s;
+};
+
 function renderAnswer(a) {
   const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", pending: "Pending" }[a.call_type] ?? a.call_type;
   const parts = [];
   parts.push(`<div class="verdict"><div class="stamp" aria-label="Call type: ${esc(stamp)}">${esc(stamp)}<small>call type</small></div>
     <div><p class="what-happened">${esc(a.what_happened.summary)}</p><p class="why-call">${esc(a.call_type_rationale)}</p></div></div>`);
-  parts.push(`<div class="pair">
-    <div><h3>Who to talk to</h3><p><strong>${esc(a.channel.who)}.</strong> ${esc(a.channel.how)}</p></div>
-    <div><h3>The teachable moment</h3><p class="prose">${esc(a.teachable_moment)}</p></div></div>`);
+  const card = (title, html, preview) => `<details class="card"><summary>${esc(title)} — ${esc(firstSentence(preview))}</summary>${html}</details>`;
+  parts.push(card("Who to talk to", `<div><p><strong>${esc(a.channel.who)}.</strong> ${esc(a.channel.how)}</p></div>`, `${a.channel.who}. ${a.channel.how}`));
+  parts.push(card("The teachable moment", `<div><p class="prose">${esc(a.teachable_moment)}</p></div>`, a.teachable_moment));
   if (a.life_lesson && a.life_lesson.text) {
-    parts.push(`<div><h3>Beyond the diamond</h3><p class="prose">${esc(a.life_lesson.text)}</p>
-      <ul class="lesson-titles">${a.life_lesson.lessons.map((l) => `<li><b>${esc(l.title)}.</b> ${esc(l.principle)}</li>`).join("")}</ul></div>`);
+    const lessons = a.life_lesson.lessons.map((l) => `<li><b>${esc(l.title)}.</b> ${esc(l.principle)}</li>`).join("");
+    parts.push(card("Beyond the diamond", `<div><p class="prose">${esc(a.life_lesson.text)}</p><ul class="lesson-titles">${lessons}</ul></div>`, a.life_lesson.text));
   }
   for (const s of a.situations ?? []) {
-    parts.push(`<div class="situation"><h3>${esc(s.name)}</h3><dl><dt>Offense</dt><dd>${esc(s.offense)}</dd><dt>Defense</dt><dd>${esc(s.defense)}</dd>${s.common_mistakes ? `<dt>Watch for</dt><dd>${esc(s.common_mistakes)}</dd>` : ""}</dl></div>`);
+    parts.push(card(s.name, `<div class="situation"><dl><dt>Offense</dt><dd>${esc(s.offense)}</dd><dt>Defense</dt><dd>${esc(s.defense)}</dd>${s.common_mistakes ? `<dt>Watch for</dt><dd>${esc(s.common_mistakes)}</dd>` : ""}</dl></div>`, `${s.offense} ${s.defense} ${s.common_mistakes ?? ""}`));
   }
   if (a.story) {
-    parts.push(`<div><h3>From the dugout</h3><blockquote class="story">${esc(a.story.story)}<footer>${esc(a.story.title)}, a real coaching moment from our team</footer></blockquote></div>`);
+    parts.push(card("From the dugout", `<div><blockquote class="story">${esc(a.story.story)}<footer>${esc(a.story.title)}, a real coaching moment from our team</footer></blockquote></div>`, a.story.story));
   }
-  parts.push(`<div><h3>Improvement plan${a.focus ? `: ${esc(a.focus)}` : ""}</h3><div class="plan">
+  const planBits = [...(a.improvement_plan.individual ?? []), ...(a.improvement_plan.team ?? []), ...(a.improvement_plan.at_home ?? [])];
+  parts.push(card(`Improvement plan${a.focus ? `: ${a.focus}` : ""}`, `<div class="plan">
     <div><h4>For the player</h4>${list(a.improvement_plan.individual)}</div>
     <div><h4>For the team</h4>${list(a.improvement_plan.team)}</div>
-    <div><h4>At home</h4>${list(a.improvement_plan.at_home)}</div></div></div>`);
+    <div><h4>At home</h4>${list(a.improvement_plan.at_home)}</div></div></div>`, planBits[0] ?? ""));
   if (a.sources.length) {
-    parts.push(`<div><h3>Where this comes from</h3><table class="sources"><thead><tr><th>Source</th><th>Reference</th><th>Status</th></tr></thead><tbody>
+    const src = a.sources[0];
+    parts.push(card("Where this comes from", `<div><table class="sources"><thead><tr><th>Source</th><th>Reference</th><th>Status</th></tr></thead><tbody>
       ${a.sources.map((s) => `<tr><td><a href="${esc(s.source_url)}" target="_blank" rel="noopener">${esc(s.table.replace(/_/g, " "))} ${esc(s.id.length > 14 ? s.id.slice(0, 8) : s.id)}</a></td><td>${esc(s.rule_ref || (s.synthetic ? "synthetic demo rule" : ""))}${s.edition ? `, ${esc(s.edition)}` : ""}</td><td class="${s.verified ? "reviewed" : "draft"}">${s.verified ? "Reviewed" : "Draft"}</td></tr>`).join("")}
-    </tbody></table></div>`);
+    </tbody></table></div>`, src.rule_ref || src.table));
   }
   if (a.memory) {
     const rec = a.memory.recalled.length ? a.memory.recalled.map((m) => `${esc(m.content)} (relevance ${m.relevance})`).join("<br>") : "Nothing yet for this team.";
-    parts.push(`<div><h3>What the team's memory added</h3><p class="small">Recalled: ${rec}</p><p class="small">Used in this answer: ${a.memory.used.length ? esc(a.memory.used.join(", ")) : "none"}. Saved for next time: ${esc(a.memory.saved.length)} memories.</p></div>`);
+    parts.push(card("What the team's memory added", `<div><p class="small">Recalled: ${rec}</p><p class="small">Used in this answer: ${a.memory.used.length ? esc(a.memory.used.join(", ")) : "none"}. Saved for next time: ${esc(a.memory.saved.length)} memories.</p></div>`, a.memory.recalled.length ? a.memory.recalled.map((m) => m.content).join(" ") : "Nothing yet for this team."));
   }
   const why = [a.draft_data ? "some sources are draft data that hasn't been reviewed yet" : "", a.missing_facts.length ? `missing: ${a.missing_facts.join("; ")}` : "", a.review && !a.review.passed ? "the Critic still had concerns" : ""].filter(Boolean).join("; ");
-  parts.push(`<div class="confidence"><h3 style="margin:0">Confidence ${Math.round(a.confidence * 100)}%</h3><div class="meter" role="img" aria-label="Confidence ${Math.round(a.confidence * 100)} percent"><span style="width:${Math.round(a.confidence * 100)}%"></span></div></div>
-    <p class="small">${why ? `Lower because ${esc(why)}.` : "Every source is reviewed."} ${a.review ? `${a.review.drafts} draft${a.review.drafts === 1 ? "" : "s"} reviewed.` : ""} Trace ${esc(a.trace_id.slice(0, 8))}.</p>`);
+  const whyPara = `${why ? `Lower because ${esc(why)}.` : "Every source is reviewed."} ${a.review ? `${a.review.drafts} draft${a.review.drafts === 1 ? "" : "s"} reviewed.` : ""} Trace ${esc(a.trace_id.slice(0, 8))}.`;
+  parts.push(card(`Confidence ${Math.round(a.confidence * 100)}%`, `<div class="confidence"><div class="meter" role="img" aria-label="Confidence ${Math.round(a.confidence * 100)} percent"><span style="width:${Math.round(a.confidence * 100)}%"></span></div></div>
+    <p class="small">${whyPara}</p>`, why));
   const el = $("#answer");
   el.innerHTML = parts.join("");
   el.hidden = false;
