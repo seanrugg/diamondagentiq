@@ -272,3 +272,14 @@ describe("generator model selection (tier pinning)", () => {
     expect(lastModel()).toBe("nemotron-3.5-super");
   });
 });
+
+describe("isRetryableLlmError", () => {
+  it("retries only a provider-dropped request (499)", async () => {
+    setEnv();
+    const { isRetryableLlmError } = await import("../src/adapters/llm.js");
+    expect(isRetryableLlmError({ status: 499 })).toBe(true);
+    expect(isRetryableLlmError({ status: 400 })).toBe(false);
+    expect(isRetryableLlmError(new Error("boom"))).toBe(false);
+    expect(isRetryableLlmError(null)).toBe(false);
+  });
+});

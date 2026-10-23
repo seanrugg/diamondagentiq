@@ -7,6 +7,13 @@ import type {
 import { config, meterlessModelForTier } from "../config.js";
 
 const REQUEST_TIMEOUT_MS = 120_000;
+const LLM_RETRY_DELAY_MS = 1_500;
+
+/** True for provider-side drops worth one more try (HTTP 499). */
+export function isRetryableLlmError(error: unknown): boolean {
+  const status = (error as { status?: unknown } | null)?.status;
+  return status === 499;
+}
 
 export type GeneratorOpts = {
   tools?: ChatCompletionTool[];
@@ -116,17 +123,23 @@ export async function generator(
       : config.OLLAMA_MODEL);
   const client = createClient();
 
-  const completion = await client.chat.completions.create(
-    {
-      model,
-      messages,
-      ...(opts?.tools ? { tools: opts.tools } : {}),
-      ...(opts?.temperature !== undefined
-        ? { temperature: opts.temperature }
-        : {}),
-    },
-    { timeout: REQUEST_TIMEOUT_MS },
-  );
+  const request = {
+    model,
+    messages,
+    ...(opts?.tools ? { tools: opts.tools } : {}),
+    ...(opts?.temperature !== undefined ? { temperature: opts.temperature } : {}),
+  };
+  let completion;
+  try {
+    completion = await client.chat.completions.create(request, { timeout: REQUEST_TIMEOUT_MS });
+  } catch (error) {
+    // One bounded retry for a request the provider dropped (e.g. Nightshift
+    // returns 499 while the upstream model is cold). The SDK already retries
+    // 408/429/5xx and connection errors itself.
+    if (!isRetryableLlmError(error)) throw error;
+    await new Promise((resolve) => setTimeout(resolve, LLM_RETRY_DELAY_MS));
+    completion = await client.chat.completions.create(request, { timeout: REQUEST_TIMEOUT_MS });
+  }
 
   const message = completion.choices[0]?.message;
   if (!message) {
