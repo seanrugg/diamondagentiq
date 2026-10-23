@@ -66,7 +66,8 @@ main {
 
 /* Question form */
 form.ask { position: sticky; top: 16px; align-self: start; display: grid; gap: 14px; }
-@media (max-width: 900px) { form.ask { position: static; } }
+@media (max-width: 900px) { form.ask { position: static; }
+form.ask[hidden] { display: none; } }
 form.ask h2 { font: 600 24px/1.15 var(--display); margin: 0; }
 label { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
 label span.hint { font-weight: 400; color: var(--pencil); }
@@ -96,6 +97,25 @@ button.go {
 }
 button.go[disabled] { opacity: 0.55; cursor: progress; }
 .formnote { font-size: 13px; color: var(--pencil); margin: 0; }
+
+/* Mode tabs */
+.left { display: grid; gap: 16px; align-self: start; position: sticky; top: 16px; }
+@media (max-width: 900px) { .left { position: static; } }
+form.ask { position: static; }
+form.ask[hidden] { display: none; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; }
+.tabs button { font: 600 18px/1.1 var(--display); padding: 10px 8px; border: 0; background: var(--card); color: var(--ink); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.upload { display: grid; gap: 8px; }
+.upload img { max-width: 100%; max-height: 220px; object-fit: contain; object-position: left top; border: 1px solid var(--line); border-radius: 4px; background: var(--card); }
+.or { font-size: 13px; color: var(--pencil); }
+table.lines { border-collapse: collapse; font-size: 14px; }
+table.lines th, table.lines td { padding: 4px 8px; text-align: center; border-top: 1px solid var(--grid); }
+table.lines th { color: var(--pencil); font-weight: 600; border-top: 0; }
+table.lines td:first-child, table.lines th:first-child { text-align: left; }
+.priority { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; background: var(--card); display: grid; gap: 6px; }
+.priority h4 { font: 600 20px/1.1 var(--display); margin: 0; }
+.priority .why { color: var(--pencil); }
 
 /* The lineup card: the agent team's order of play, filled in as it happens. */
 section.lineup { background: var(--card); border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; }
@@ -189,7 +209,12 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 </header>
 
 <main>
-  <form class="ask" id="ask">
+  <div class="left">
+  <div class="tabs" role="tablist" aria-label="What do you want to do?">
+    <button type="button" role="tab" id="tab-ask" aria-selected="true" aria-controls="ask">Ask about a moment</button>
+    <button type="button" role="tab" id="tab-review" aria-selected="false" aria-controls="review">Post-game review</button>
+  </div>
+  <form class="ask" id="ask" role="tabpanel" aria-labelledby="tab-ask">
     <h2>Ask about a play, a call or a tough moment</h2>
 
     <fieldset class="roles">
@@ -250,6 +275,45 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
     <p class="formnote">Answers are a learning tool. The umpire is the authority on the field.</p>
   </form>
 
+  <form class="ask" id="review" role="tabpanel" aria-labelledby="tab-review" hidden>
+    <h2>Review a game from its box score</h2>
+    <div class="row2">
+      <label>Sport
+        <select name="sport"><option value="baseball">Baseball</option><option value="softball">Softball</option></select>
+      </label>
+      <label>Players' age
+        <input name="age" type="number" min="4" max="18" value="12" required>
+      </label>
+    </div>
+    <div class="row2">
+      <label>League
+        <select name="sanction">
+          <option value="little_league">Little League</option>
+          <option value="usssa">USSSA</option>
+          <option value="usa_softball">USA Softball</option>
+          <option value="nsa">NSA</option>
+          <option value="babe_ruth_league">Babe Ruth</option>
+          <option value="cal_ripken">Cal Ripken</option>
+        </select>
+      </label>
+      <label>Team <span class="hint">for memory</span>
+        <input name="team" placeholder="Demo Hawks">
+      </label>
+    </div>
+    <div class="upload">
+      <label>Box score screenshot
+        <input name="file" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <div class="examples"><button type="button" id="use-sample">Use the sample box score</button></div>
+      <img id="preview" alt="" hidden>
+      <p class="or">Or paste the box score as text:</p>
+      <textarea name="text" placeholder="Paste the batting and pitching lines here"></textarea>
+    </div>
+    <button class="go" id="go-review" type="submit">Review the game</button>
+    <p class="formnote">Screenshots stay on this computer and its Nightshift. The sample uses made-up teams and players.</p>
+  </form>
+  </div>
+
   <div>
     <section class="lineup" aria-labelledby="lineup-title">
       <div class="lineup-head">
@@ -282,6 +346,8 @@ const AGENTS = {
   criticAgent: ["Critic", "reviews the draft"],
   orchestrator: ["Orchestrator", "runs the team"],
   dataTools: ["Zetaris", "data lookup"],
+  scorebookAgent: ["Scorebook", "reads the box score"],
+  gameReviewAgent: ["Game review", "the post-game coach"],
 };
 
 const $ = (s) => document.querySelector(s);
@@ -342,6 +408,16 @@ function rowFor(s) {
       return out === "passed"
         ? { cls: "counted passed", who: "Verdict", role: "code checks + Critic", what: `<strong>Passed.</strong> ${esc(s.input)} goes out.` }
         : { cls: "counted sent-back", who: "Sent back", role: "code checks + Critic", what: esc(out.replace(/^rejected:\s*/, "")) };
+    case "scorebookAgent:check_totals":
+      return out === "all totals agree"
+        ? { cls: "counted passed", who: "Totals check", role: "calculated in code", what: "<strong>Every total agrees</strong> with the innings and player lines." }
+        : { cls: "counted sent-back", who: "Totals disagree", role: "calculated in code", what: `Sent back for a re-read: ${esc(out.replace(/^totals disagree:\s*/, ""))}` };
+    case "orchestrator:computed_stats": {
+      let c = null;
+      try { c = JSON.parse(out); } catch { /* cut short */ }
+      if (!c) return null;
+      return { cls: "counted", who: "Game math", role: "calculated in code", what: `${esc(c.result)} ${esc(c.score)}; struck out in ${Math.round(c.strikeout_rate * 100)}% of plate appearances; on base ${Math.round(c.on_base_rate * 100)}%; ${esc(c.errors)} errors${c.pitches_per_inning ? `; ${esc(c.pitches_per_inning)} pitches per inning` : ""}.${c.pitcher_rest?.length ? ` Rest: ${esc(c.pitcher_rest.join("; "))}.` : ""}` };
+    }
     case "orchestrator:call_type_by_code":
       return { cls: "counted", who: "Call type", role: "decided in code", what: "A rule question: written pitch-count rules applied to known facts. No umpire judgment involved." };
     case "orchestrator:failed":
@@ -382,6 +458,13 @@ function rowFor(s) {
     extract_context: "Works out the sport, league, age and what kind of help is needed",
     classify_call: "Decides: umpire's judgment, a written rule, or both",
     draft_answer: "Writes the answer and the improvement plan",
+    read_box_score: "Reads every line of the box score",
+    reread_box_score: "Reads the box score again, checking the lines that disagreed",
+    draft_review: "Finds what decided the game and sets practice priorities",
+    review_game_review: (() => {
+      try { const v = JSON.parse(out); return v.pass ? "Reviews the game review for tone and accuracy: no problems" : `Reviews the game review and objects: ${esc((v.issues || []).join("; "))}`; }
+      catch { return "Reviews the game review"; }
+    })(),
     review_draft: (() => {
       try { const v = JSON.parse(out); return v.pass ? "Reviews the draft for tone, safety and respect for the umpire: no problems" : `Reviews the draft and objects: ${esc((v.issues || []).join("; "))}`; }
       catch { return "Reviews the draft"; }
@@ -449,26 +532,69 @@ function renderAnswer(a) {
   el.hidden = false;
 }
 
+function renderReview(r) {
+  const b = r.box_score, s = r.stats;
+  const pct = (x) => `${Math.round(x * 100)}%`;
+  const parts = [];
+  parts.push(`<div class="verdict"><div class="stamp" aria-label="Result: ${esc(s.result)}">${esc(s.result === "win" ? "Win" : s.result === "loss" ? "Loss" : "Tie")}<small>${esc(s.runs_for)}-${esc(s.runs_against)}</small></div>
+    <div><p class="what-happened">${esc(r.headline)}</p><p class="why-call">${esc(b.away_team)} at ${esc(b.home_team)}${b.date ? `, ${esc(b.date)}` : ""}${b.event ? `, ${esc(b.event)}` : ""}.${r.synthetic_input ? " Sample game with made-up teams and players." : ""}</p></div></div>`);
+  const inn = Math.max(b.line_score.away.length, b.line_score.home.length);
+  const head = Array.from({ length: inn }, (_, i) => `<th>${i + 1}</th>`).join("");
+  const row = (name, xs, rhe) => `<tr><td>${esc(name)}</td>${Array.from({ length: inn }, (_, i) => `<td>${esc(xs[i] ?? "")}</td>`).join("")}<td><b>${esc(rhe.r)}</b></td><td>${esc(rhe.h)}</td><td>${esc(rhe.e)}</td></tr>`;
+  parts.push(`<div><h3>What the Scorebook agent read</h3><table class="lines"><tr><th>Team</th>${head}<th>R</th><th>H</th><th>E</th></tr>${row(b.away_team, b.line_score.away, b.line_score.away_rhe)}${row(b.home_team, b.line_score.home, b.line_score.home_rhe)}</table>
+    <p class="small">${r.read.issues.length ? `Some totals still disagree after ${r.read.reads} reads, so check these numbers: ${esc(r.read.issues.join(" "))}` : `All totals agree (${r.read.reads === 1 ? "first read" : `after ${r.read.reads} reads`}). ${b.batting.length} batters, ${b.pitching.length} pitchers.`}</p></div>`);
+  parts.push(`<div class="pair"><div><h3>What decided it</h3>${list(r.what_decided_it)}</div><div><h3>What went well</h3>${list(r.strengths)}</div></div>`);
+  parts.push(`<div><h3>By the numbers</h3><p class="small">Calculated in code from the box score: ${esc(s.plate_appearances)} plate appearances, ${esc(s.hits)} hits, ${esc(s.walks)} walks, ${esc(s.strikeouts)} strikeouts (${pct(s.strikeout_rate)}), on base ${pct(s.on_base_rate)}, ${esc(s.errors_committed)} errors, ${esc(s.walks_allowed)} walks allowed${s.pitches_per_inning ? `, ${esc(s.pitches_per_inning)} pitches per inning` : ""}.</p></div>`);
+  parts.push(`<div><h3>Practice priorities</h3><div style="display:grid;gap:10px">${r.priorities.map((p, i) => `<div class="priority"><h4>${i + 1}. ${esc(p.title)}</h4><p class="why">${esc(p.why)}</p>
+    ${p.drills.map((d) => `<p><strong>${esc(d.title)}</strong> (${esc(d.setting)}). ${esc(d.description)}${d.safety_notes ? ` <span class="small">Safety: ${esc(d.safety_notes)}</span>` : ""}</p>`).join("")}
+    ${p.insights.map((x) => `<p class="small">${esc(x.insight)}</p>`).join("")}</div>`).join("")}</div></div>`);
+  if (r.pitcher_rest.length) {
+    parts.push(`<div><h3>Pitcher rest</h3><table class="sources"><thead><tr><th>Pitcher</th><th>Pitches</th><th>Rest days</th><th>Eligible again</th></tr></thead><tbody>
+      ${r.pitcher_rest.map((p) => `<tr><td>${esc(p.player)}</td><td>${esc(p.pitches)}</td><td>${esc(p.rest_days ?? "?")}</td><td>${esc(p.eligible_again ?? p.note ?? "")}</td></tr>`).join("")}</tbody></table>
+      <p class="small">Calculated in code from the league's pitch-count chart (draft rule data).</p></div>`);
+  }
+  if (r.lesson) parts.push(`<div><h3>Beyond the diamond: ${esc(r.lesson.title)}</h3><p class="prose">${esc(r.team_talk)}</p><p class="small">${esc(r.lesson.principle)}</p></div>`);
+  if (r.at_home.length) parts.push(`<div><h3>At home</h3>${list(r.at_home)}</div>`);
+  if (r.memory) {
+    const rec = r.memory.recalled.length ? r.memory.recalled.map((m) => esc(m.content)).join("<br>") : "Nothing yet for this team.";
+    parts.push(`<div><h3>What the team's memory added</h3><p class="small">Recalled: ${rec}</p><p class="small">Saved this game for next time.</p></div>`);
+  }
+  parts.push(`<div class="confidence"><h3 style="margin:0">Confidence ${Math.round(r.confidence * 100)}%</h3><div class="meter" role="img" aria-label="Confidence ${Math.round(r.confidence * 100)} percent"><span style="width:${Math.round(r.confidence * 100)}%"></span></div></div>
+    <p class="small">${r.review.drafts} draft${r.review.drafts === 1 ? "" : "s"} reviewed${r.review.passed ? "" : "; the Critic still had concerns"}. Coaching notes are drafts until our coach reviews them. Trace ${esc(r.trace_id.slice(0, 8))}.</p>`);
+  const el = $("#answer");
+  el.innerHTML = parts.join("");
+  el.hidden = false;
+}
+
+/* Tabs */
+function showTab(which) {
+  const ask = which === "ask";
+  $("#tab-ask").setAttribute("aria-selected", String(ask));
+  $("#tab-review").setAttribute("aria-selected", String(!ask));
+  $("#ask").hidden = !ask; $("#review").hidden = ask;
+}
+$("#tab-ask").addEventListener("click", () => showTab("ask"));
+$("#tab-review").addEventListener("click", () => showTab("review"));
+
+let reviewImage = null;
+const readAsDataUrl = (blob) => new Promise((resolve, reject) => { const fr = new FileReader(); fr.onload = () => resolve(fr.result); fr.onerror = reject; fr.readAsDataURL(blob); });
+function setImage(url) { reviewImage = url; const img = $("#preview"); img.src = url; img.alt = "Box score to review"; img.hidden = false; }
+$("#review").file.addEventListener("change", async (e) => { const f = e.target.files[0]; if (f) setImage(await readAsDataUrl(f)); });
+$("#use-sample").addEventListener("click", async () => {
+  const blob = await (await fetch("/samples/box-score-demo.png")).blob();
+  setImage(await readAsDataUrl(blob));
+  const f = $("#review"); f.sport.value = "baseball"; f.sanction.value = "little_league"; f.age.value = 12; f.team.value = "Demo Hawks"; f.text.value = "";
+});
+
 let timer = null;
-$("#ask").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const f = e.target;
-  const body = {
-    role: f.role.value, sport: f.sport.value, sanction: f.sanction.value, age: Number(f.age.value),
-    question: f.question.value.trim(),
-    ...(f.event_name.value.trim() ? { event_name: f.event_name.value.trim() } : {}),
-    ...(f.team.value.trim() ? { team: f.team.value.trim() } : {}),
-    ...(forcedToday ? { today: forcedToday } : {}),
-  };
-  if (!body.question) return f.question.focus();
+async function streamRun(url, body, button, idleLabel, onFinal) {
   $("#steps").innerHTML = ""; $("#empty").hidden = false; $("#empty").textContent = "Starting the team…";
-  $("#answer").hidden = true; $("#go").disabled = true; $("#go").textContent = "The team is working…";
+  $("#answer").hidden = true; button.disabled = true; button.textContent = "The team is working…";
   const started = Date.now();
   clearInterval(timer);
   timer = setInterval(() => { const s = Math.round((Date.now() - started) / 1000); $("#clock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }, 1000);
-
   try {
-    const res = await fetch("/run/stream", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
     if (!res.ok || !res.body) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error ? `${err.error}${err.issues ? ` (${err.issues.join("; ")})` : ""}` : `Server answered ${res.status}`);
@@ -486,19 +612,46 @@ $("#ask").addEventListener("submit", async (e) => {
         if (!line.trim()) continue;
         const msg = JSON.parse(line);
         if (msg.type === "step") addStep(msg);
-        else if (msg.type === "answer") renderAnswer(msg.answer);
+        else if (msg.type === "answer" || msg.type === "review") onFinal(msg.answer ?? msg.review);
         else if (msg.type === "error") throw new Error(`The team stopped at ${msg.error.stage}: ${msg.error.message}`);
       }
     }
   } catch (err) {
     const el = $("#answer");
-    el.innerHTML = `<div class="error-box"><strong>No answer this time.</strong> ${esc(err.message)}. Ask again; if it keeps happening, check that Nightshift and Zetaris are running.</div>`;
+    el.innerHTML = `<div class="error-box"><strong>No answer this time.</strong> ${esc(err.message)}. Try again; if it keeps happening, check that Nightshift and Zetaris are running.</div>`;
     el.hidden = false;
   } finally {
     clearInterval(timer);
-    $("#go").disabled = false; $("#go").textContent = "Ask the team";
+    button.disabled = false; button.textContent = idleLabel;
     loadStatus();
   }
+}
+
+$("#review").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const text = f.text.value.trim();
+  if (!reviewImage && !text) { f.file.focus(); return; }
+  const body = {
+    role: "coach", sport: f.sport.value, sanction: f.sanction.value, age: Number(f.age.value),
+    ...(f.team.value.trim() ? { team: f.team.value.trim() } : {}),
+    ...(text && !reviewImage ? { text } : { image: reviewImage }),
+  };
+  streamRun("/review/stream", body, $("#go-review"), "Review the game", renderReview);
+});
+
+$("#ask").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const body = {
+    role: f.role.value, sport: f.sport.value, sanction: f.sanction.value, age: Number(f.age.value),
+    question: f.question.value.trim(),
+    ...(f.event_name.value.trim() ? { event_name: f.event_name.value.trim() } : {}),
+    ...(f.team.value.trim() ? { team: f.team.value.trim() } : {}),
+    ...(forcedToday ? { today: forcedToday } : {}),
+  };
+  if (!body.question) return f.question.focus();
+  streamRun("/run/stream", body, $("#go"), "Ask the team", renderAnswer);
 });
 
 loadStatus();

@@ -8,6 +8,9 @@
  *   POST /run/stream    same, streamed as NDJSON: one {"type":"step"} per trace
  *                       line (the live agent timeline), then {"type":"answer"}
  *                       or {"type":"error"}
+ *   POST /review/stream post-game review of a box score (image data URL or
+ *                       text), streamed the same way
+ *   GET  /samples/box-score-demo.png   the synthetic sample box score
  *
  * One question at a time: Nightshift drops concurrent requests, so a second
  * request while one is running gets 409. Model reasoning stays in the trace
@@ -18,10 +21,14 @@ import { readFileSync } from "node:fs";
 import { openMemory } from "./adapters/hmem.js";
 import { config, meterlessModelForTier } from "./config.js";
 import { runSituation, type OrchestratorResult } from "./orchestrator.js";
+import { runGameReview } from "./gameReview.js";
+import { GameReviewRequestSchema } from "./schemas/boxScore.js";
 import { SituationRequestSchema } from "./schemas/situation.js";
 import { withRun, type TraceRecord } from "./trace.js";
 
 const MAX_BODY_BYTES = 20_000;
+/** A phone screenshot as a base64 data URL. */
+const MAX_REVIEW_BODY_BYTES = 8_000_000;
 const memory = openMemory({ dir: config.DIQ_MEMORY_DIR });
 let busy = false;
 
@@ -53,12 +60,12 @@ export function publicStep(r: TraceRecord) {
   };
 }
 
-async function readJson(req: IncomingMessage): Promise<unknown> {
+async function readJson(req: IncomingMessage, limit = MAX_BODY_BYTES): Promise<unknown> {
   let size = 0;
   const chunks: Buffer[] = [];
   for await (const chunk of req) {
     size += (chunk as Buffer).length;
-    if (size > MAX_BODY_BYTES) throw Object.assign(new Error("Request body is too large"), { status: 413 });
+    if (size > limit) throw Object.assign(new Error("Request body is too large"), { status: 413 });
     chunks.push(chunk as Buffer);
   }
   try {
@@ -99,6 +106,26 @@ async function handleRun(req: IncomingMessage, res: ServerResponse, stream: bool
   }
 }
 
+async function handleReview(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const raw = (await readJson(req, MAX_REVIEW_BODY_BYTES)) as Record<string, unknown>;
+  const parsed = GameReviewRequestSchema.safeParse(raw);
+  if (!parsed.success) return send(res, 400, { error: "Add a box score image or paste the box score, and fill in the details.", issues: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`) });
+  if (busy) return send(res, 409, { error: "Another question is still running. Ask again when it finishes." });
+  busy = true;
+  try {
+    res.writeHead(200, { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" });
+    const write = (obj: unknown) => {
+      if (!res.writableEnded) res.write(`${JSON.stringify(obj)}\n`);
+    };
+    write({ type: "start", today: localToday() });
+    const result = await withRun(() => runGameReview(parsed.data, localToday(), { memory }), (r) => write(publicStep(r)));
+    write(result.ok ? { type: "review", review: result.answer } : { type: "error", error: result.error });
+    res.end();
+  } finally {
+    busy = false;
+  }
+}
+
 export const server = createServer((req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
   const route = `${req.method} ${url.pathname}`;
@@ -116,6 +143,11 @@ export const server = createServer((req, res) => {
         memory: { memories: memory.store.all().length, ledger: memory.ledger.stats() },
       });
     }
+    if (route === "GET /samples/box-score-demo.png") {
+      res.writeHead(200, { "content-type": "image/png" });
+      return res.end(readFileSync(new URL("../data/samples/box-score-demo.png", import.meta.url)));
+    }
+    if (route === "POST /review/stream") return handleReview(req, res);
     if (route === "POST /run") return handleRun(req, res, false);
     if (route === "POST /run/stream") return handleRun(req, res, true);
     return send(res, 404, { error: `No route for ${route}` });
