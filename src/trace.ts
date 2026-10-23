@@ -1,6 +1,7 @@
 import { appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { AsyncLocalStorage } from "node:async_hooks";
 import type { MeterlessReceipt } from "./adapters/llm.js";
 
 export type TraceStatus = "ok" | "error";
@@ -17,7 +18,32 @@ export type TraceEvent = {
   status: TraceStatus;
 };
 
-const runId = randomUUID();
+const processRunId = randomUUID();
+
+export type TraceRecord = {
+  timestamp: string;
+  run_id: string;
+  agent_name: string;
+  action: string;
+  input_summary: string;
+  output_summary: string;
+  model: string | null;
+  provider: string | null;
+  reasoning: unknown;
+  receipt: MeterlessReceipt | null;
+  status: TraceStatus;
+};
+
+/** Per-request context (the server runs many questions in one process). */
+const scope = new AsyncLocalStorage<{ runId: string; listener?: (record: TraceRecord) => void }>();
+
+/**
+ * Run fn with its own run id; every trace line inside it carries that id and
+ * is also handed to listener (used to stream a live timeline to the web page).
+ */
+export function withRun<T>(fn: () => Promise<T>, listener?: (record: TraceRecord) => void): Promise<T> {
+  return scope.run({ runId: randomUUID(), ...(listener ? { listener } : {}) }, fn);
+}
 const startedAt = new Date().toISOString().replaceAll(":", "-");
 const logDir = join(process.cwd(), "logs");
 const logPath = join(logDir, `run-${startedAt}.jsonl`);
@@ -25,7 +51,7 @@ const logPath = join(logDir, `run-${startedAt}.jsonl`);
 mkdirSync(logDir, { recursive: true });
 
 export function getRunId(): string {
-  return runId;
+  return scope.getStore()?.runId ?? processRunId;
 }
 
 export function getTracePath(): string {
@@ -33,9 +59,9 @@ export function getTracePath(): string {
 }
 
 export function trace(event: TraceEvent): void {
-  const line = JSON.stringify({
+  const record: TraceRecord = {
     timestamp: new Date().toISOString(),
-    run_id: runId,
+    run_id: getRunId(),
     agent_name: event.agent_name,
     action: event.action,
     input_summary: event.input_summary,
@@ -45,8 +71,14 @@ export function trace(event: TraceEvent): void {
     reasoning: event.reasoning ?? null,
     receipt: event.receipt ?? null,
     status: event.status,
-  });
+  };
+  const line = JSON.stringify(record);
 
   appendFileSync(logPath, `${line}\n`);
   process.stdout.write(`${line}\n`);
+  try {
+    scope.getStore()?.listener?.(record);
+  } catch {
+    // A broken listener (e.g. a closed browser tab) must never break a run.
+  }
 }

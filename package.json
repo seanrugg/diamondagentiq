@@ -9,6 +9,7 @@
   "scripts": {
     "check:zetaris": "tsx --env-file=.env src/scripts/check-zetaris.ts",
     "check:llm": "tsx --env-file=.env src/scripts/check-llm.ts",
+    "check:routing": "tsx --env-file=.env src/scripts/check-routing.ts",
     "check:data": "tsx --env-file=.env src/scripts/check-data.ts",
     "db:up": "bash src/scripts/db-up.sh",
     "db:reset": "bash src/scripts/db-reset.sh",
@@ -20,6 +21,7 @@
     "ask": "tsx --env-file=.env src/scripts/ask.ts",
     "eval": "tsx --env-file=.env src/scripts/eval.ts",
     "memory": "tsx --env-file=.env src/scripts/memory.ts",
+    "start": "tsx --env-file=.env src/server.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },

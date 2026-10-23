@@ -47,6 +47,13 @@ const envSchema = z
       .string()
       .optional()
       .transform((value) => value?.trim() || "memory"),
+    /** "tools": send plain requests with an inert tool so Nightshift serves them directly (see llm.ts). */
+    METERLESS_DIRECT_MODE: z
+      .string()
+      .optional()
+      .transform((value) => (value?.split("#")[0]?.trim() === "tools" ? "tools" : "off")),
+    /** Port for npm start (the web page and POST /run); binds to 127.0.0.1. */
+    DIQ_PORT: z.coerce.number().int().min(1).max(65535).default(8787),
     SAMPLE_MODE: z
       .enum(["true", "false"])
       .default("false")
@@ -85,7 +92,7 @@ function trimStringEnvValues(
   for (const [key, value] of Object.entries(env)) {
     trimmed[key] = typeof value === "string" ? value.trim() : value;
   }
-  return trimmed as z.input<typeof envSchema>;
+  return trimmed as unknown as z.input<typeof envSchema>;
 }
 
 const parsed = envSchema.safeParse(trimStringEnvValues(process.env));

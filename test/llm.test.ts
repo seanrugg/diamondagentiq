@@ -283,3 +283,35 @@ describe("isRetryableLlmError", () => {
     expect(isRetryableLlmError(null)).toBe(false);
   });
 });
+
+describe("METERLESS_DIRECT_MODE", () => {
+  it("off by default: plain requests carry no tools", async () => {
+    setFixture(meterlessResponse);
+    const { generator } = await loadGenerator();
+    await generator([{ role: "user", content: "hi" }], { tier: "lightning" });
+    expect((lastCreateOptions as { tools?: unknown }).tools).toBeUndefined();
+  });
+
+  it("tools: plain requests get the inert tool with tool_choice none, and it never surfaces as a tool call", async () => {
+    setFixture({
+      ...meterlessResponse,
+      choices: [{ index: 0, message: { role: "assistant", content: "{}", tool_calls: [{ id: "x", type: "function", function: { name: "no_op", arguments: "{}" } }] }, finish_reason: "stop" }],
+    });
+    const { generator } = await loadGenerator({ METERLESS_DIRECT_MODE: "tools" });
+    const result = await generator([{ role: "user", content: "hi" }], { tier: "lightning" });
+    const sent = lastCreateOptions as { tools?: { function: { name: string } }[]; tool_choice?: string };
+    expect(sent.tools?.map((t) => t.function.name)).toEqual(["no_op"]);
+    expect(sent.tool_choice).toBe("none");
+    expect(result.toolCalls).toEqual([]);
+  });
+
+  it("tools: requests that bring their own tools are left alone", async () => {
+    setFixture(meterlessResponse);
+    const { generator } = await loadGenerator({ METERLESS_DIRECT_MODE: "tools" });
+    const own = { type: "function" as const, function: { name: "run_sql", parameters: { type: "object", properties: {} } } };
+    await generator([{ role: "user", content: "hi" }], { tier: "super", tools: [own] });
+    const sent = lastCreateOptions as { tools?: { function: { name: string } }[]; tool_choice?: string };
+    expect(sent.tools?.map((t) => t.function.name)).toEqual(["run_sql"]);
+    expect(sent.tool_choice).toBeUndefined();
+  });
+});

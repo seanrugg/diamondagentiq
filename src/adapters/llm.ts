@@ -21,6 +21,23 @@ export type GeneratorOpts = {
   model?: string;
   temperature?: number;
   tier?: "super" | "lightning";
+  toolChoice?: "none" | "auto";
+};
+
+/**
+ * Nightshift serves requests that carry tools straight to the pinned model
+ * ("final_synthesis" in the receipt, seconds), but runs plain chat requests
+ * through a "planning" phase that re-routes to the Race lane and is cut off
+ * at ~45 s (HTTP 499). With METERLESS_DIRECT_MODE=tools, a request without
+ * tools gets one inert tool and tool_choice "none", so it takes the direct path.
+ */
+export const DIRECT_MODE_TOOL: ChatCompletionTool = {
+  type: "function",
+  function: {
+    name: "no_op",
+    description: "Unused. Never call this; answer in plain text.",
+    parameters: { type: "object", properties: {} },
+  },
 };
 
 export type MeterlessReceipt = {
@@ -131,10 +148,14 @@ export async function generator(
       : config.OLLAMA_MODEL);
   const client = createClient();
 
+  const direct = provider === "meterless" && !opts?.tools && config.METERLESS_DIRECT_MODE === "tools";
+  const tools = opts?.tools ?? (direct ? [DIRECT_MODE_TOOL] : undefined);
+  const toolChoice = opts?.toolChoice ?? (direct ? "none" : undefined);
   const request = {
     model,
     messages,
-    ...(opts?.tools ? { tools: opts.tools } : {}),
+    ...(tools ? { tools } : {}),
+    ...(toolChoice ? { tool_choice: toolChoice } : {}),
     ...(opts?.temperature !== undefined ? { temperature: opts.temperature } : {}),
   };
   // Bounded retries for a request the provider dropped (Nightshift returns 499
@@ -161,7 +182,8 @@ export async function generator(
 
   return {
     content: message.content ?? null,
-    toolCalls: message.tool_calls ?? [],
+    // The inert direct-mode tool is never a real request for action.
+    toolCalls: (message.tool_calls ?? []).filter((c) => c.function?.name !== DIRECT_MODE_TOOL.function.name),
     reasoning: extractReasoning(message),
     model: completion.model ?? model,
     requested_model: model,
