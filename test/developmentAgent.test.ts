@@ -53,6 +53,7 @@ const draft = {
   teachable_moment: "One at-bat is information, not a verdict.",
   improvement_plan: { individual: ["Bat-length check before each at-bat."], team: ["Two-strike rounds."], at_home: ["Tell him you love watching him play."] },
   life_lesson: "Your belief in him matters most when he's struggling, on the field and off it.",
+  memory_used: [],
 };
 
 beforeEach(() => {

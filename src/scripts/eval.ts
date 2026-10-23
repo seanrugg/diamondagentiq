@@ -6,6 +6,7 @@
  * Slow (several model calls per question) and uses Nightshift credits.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { openMemory } from "../adapters/hmem.js";
 import { scoreAnswer, EvalFileSchema } from "../evals/score.js";
 import { runSituation } from "../orchestrator.js";
 import { SituationRequestSchema } from "../schemas/situation.js";
@@ -24,9 +25,11 @@ async function main(): Promise<void> {
   let total = 0;
   for (const [n, q] of questions.entries()) {
     console.error(`\n→ [${n + 1}/${questions.length}] ${q.id} ...`);
-    const request = SituationRequestSchema.parse(q.request);
+    // Each question gets its own team and a fresh in-memory H-MEM, so answers
+    // don't leak into each other; mining is off to save a model call.
+    const request = SituationRequestSchema.parse({ team: `eval-${q.id}`, ...q.request });
     const started = Date.now();
-    const result = await runSituation(request, q.today ?? localToday()).catch((error: unknown) => ({
+    const result = await runSituation(request, q.today ?? localToday(), { memory: openMemory(), mine: false }).catch((error: unknown) => ({
       ok: false as const,
       error: { stage: "eval", message: error instanceof Error ? error.message : String(error), trace_id: "" },
     }));

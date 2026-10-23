@@ -1,18 +1,22 @@
 #!/usr/bin/env tsx
 /**
  * npm run ask -- --role coach --sport baseball --sanction little_league --age 12 \
- *   [--event "Fall Classic 12U"] [--today 2026-10-18] [--save] "<question>"
+ *   [--event "Fall Classic 12U"] [--today 2026-10-18] [--team "Demo Hawks"] [--no-memory] [--save] "<question>"
  *
  * Runs the whole agent team live and prints the answer. --save also writes the
  * input and output to output_examples/ (written by runs, never read by the app).
+ * Memory (H-MEM) is on by default and kept in DIQ_MEMORY_DIR; --team picks
+ * whose memory to use, --no-memory runs without it.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
+import { openMemory } from "../adapters/hmem.js";
+import { config } from "../config.js";
 import { runSituation } from "../orchestrator.js";
 import { SituationRequestSchema } from "../schemas/situation.js";
 import { getTracePath } from "../trace.js";
 
 /** Flags that never take a value, so they can't swallow the question. */
-const BOOLEAN_FLAGS = new Set(["save"]);
+const BOOLEAN_FLAGS = new Set(["save", "no-memory"]);
 
 function parseArgs(argv: string[]): { args: Record<string, string>; positional: string[] } {
   const args: Record<string, string> = {};
@@ -41,7 +45,7 @@ async function main(): Promise<void> {
   const { args, positional } = parseArgs(process.argv.slice(2));
   const question = positional.join(" ").trim();
   if (!question) {
-    console.error('Usage: npm run ask -- --role <role> --sport <sport> --sanction <sanction> --age <age> [--event "<name>"] [--today YYYY-MM-DD] [--save] "<question>"');
+    console.error('Usage: npm run ask -- --role <role> --sport <sport> --sanction <sanction> --age <age> [--event "<name>"] [--today YYYY-MM-DD] [--team "<name>"] [--no-memory] [--save] "<question>"');
     process.exitCode = 1;
     return;
   }
@@ -54,10 +58,12 @@ async function main(): Promise<void> {
     age: args.age === undefined ? undefined : Number(args.age),
     edition: args.edition,
     event_name: args.event ?? args.event_name,
+    team: args.team,
   });
+  const memory = args["no-memory"] === "true" ? null : openMemory({ dir: config.DIQ_MEMORY_DIR });
 
   const started = Date.now();
-  const result = await runSituation(request, today);
+  const result = await runSituation(request, today, { memory });
   const seconds = ((Date.now() - started) / 1000).toFixed(1);
 
   console.log("\n=== Answer ===");

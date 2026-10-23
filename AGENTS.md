@@ -32,6 +32,7 @@ npm run check:data       # counts + a join through Zetaris
 npm run rules:build      # regenerate data/rules.sql from data/rules/*.csv
 npm run rules:load       # load the rules CSVs into diq-postgres (keeps other tables)
 npm run eval             # live: score data/evals/questions.json checklists
+npm run memory           # what MemoryAgent (H-MEM) remembers + ledger counts
 npm run check:llm        # model reply + tool-call test via the configured provider
 npm run context -- ...   # ContextAgent only, live
 npm run rules -- ...     # ContextAgent + RulesAgent, live (see src/scripts/rules.ts)
@@ -58,11 +59,11 @@ src/
 vendor/hmem/           Meterless H-MEM reference — DO NOT EDIT
 ```
 
-Agents (planned): ContextAgent, CallTypeAgent, RulesAgent, CriticAgent, CoachingAgent, DevelopmentAgent, GameReviewAgent.
+Agents: ContextAgent, MemoryAgent (H-MEM), RulesAgent, DevelopmentAgent, CallTypeAgent, CoachingAgent, CriticAgent. Planned: GameReviewAgent.
 
 Model routing (pin by model ID, through Meterless Nightshift):
 - Context, Rules, Coaching, GameReview → `nvidia/nemotron-3.5-super-vl-120b-a12b`
-- CallType, Critic, Development → `nvidia/nemotron-3.5-lightning-30b-a3b`
+- CallType, Critic, Development, Memory (mining) → `nvidia/nemotron-3.5-lightning-30b-a3b`
 
 ## Hard rules
 

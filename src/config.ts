@@ -42,6 +42,11 @@ const envSchema = z
     METERLESS_MODEL: z.string().min(1),
     METERLESS_MODEL_SUPER: optionalString,
     METERLESS_MODEL_LIGHTNING: optionalString,
+    /** Where H-MEM keeps state.json and ledger.jsonl (local only, gitignored). */
+    DIQ_MEMORY_DIR: z
+      .string()
+      .optional()
+      .transform((value) => value?.trim() || "memory"),
     SAMPLE_MODE: z
       .enum(["true", "false"])
       .default("false")

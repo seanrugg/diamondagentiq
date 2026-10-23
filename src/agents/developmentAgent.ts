@@ -259,6 +259,8 @@ export async function developmentAgent(
   mode: DevelopmentMode = "development",
   /** Ruling mode: what RulesAgent found, so the lesson fits the actual answer. */
   ruleSummary?: string,
+  /** MemoryAgent recall, so picks can build on what this team already worked on. */
+  memoryContext = "",
 ): Promise<DevelopmentResult> {
   const [insights, drills, lessons, situations, stories] = await Promise.all([
     fetchInsights(context.sport, context.age),
@@ -301,7 +303,7 @@ Reply with ONLY: {"lesson_ids": ["L001"], "situation_ids": [], "story_id": null,
 
   const user = `Question (${request.role}): ${request.question}
 Sport/age: ${context.sport} / ${context.age} | Topic: ${context.topic}
-${ruleSummary ? `Rules answer already found: ${ruleSummary}\n` : ""}${menu}`;
+${ruleSummary ? `Rules answer already found: ${ruleSummary}\n` : ""}${memoryContext ? `${memoryContext.replace(/; list the ids you use in memory_used/, "")}\n` : ""}${menu}`;
 
   const picked = await askJson("developmentAgent", `pick_${mode}`, "lightning", [
     { role: "system", content: system },

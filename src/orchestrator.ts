@@ -25,6 +25,8 @@ import { developmentAgent, type DevelopmentResult } from "./agents/developmentAg
 import { contextAgent, type ContextOutput } from "./agents/contextAgent.js";
 import { criticAgent, deterministicChecks } from "./agents/criticAgent.js";
 import { rulesAgent } from "./agents/rulesAgent.js";
+import { feedback as memoryFeedback, memoryText, recall, remember, type RecalledMemory } from "./agents/memoryAgent.js";
+import type { Hmem } from "./adapters/hmem.js";
 import type { RulesResult } from "./schemas/rules.js";
 import {
   SituationAnswerSchema,
@@ -142,14 +144,22 @@ export function assembleAnswer(
   return SituationAnswerSchema.parse(answer);
 }
 
+export type RunOptions = {
+  /** H-MEM store for MemoryAgent; omit to run without memory. */
+  memory?: Hmem | null;
+  /** Let MemoryAgent mine the question with a model (default true). */
+  mine?: boolean;
+};
+
 export async function runSituation(
   request: SituationRequest,
   referenceDate: string,
+  opts: RunOptions = {},
 ): Promise<OrchestratorResult> {
   // Per-run record of the stage in progress, so a thrown error names it.
   const track = { stage: "contextAgent" };
   try {
-    return await runStages(request, referenceDate, track);
+    return await runStages(request, referenceDate, track, opts);
   } catch (error) {
     return fail(track.stage, error instanceof Error ? error.message : String(error));
   }
@@ -159,10 +169,20 @@ async function runStages(
   request: SituationRequest,
   referenceDate: string,
   track: { stage: string },
+  opts: RunOptions,
 ): Promise<OrchestratorResult> {
   const context = await contextAgent(request);
   if (!context.ok) return fail("contextAgent", context.error.message);
   const ctx: ContextOutput = context.context;
+
+  const hmem = opts.memory ?? null;
+  let recalled: RecalledMemory[] = [];
+  if (hmem) {
+    track.stage = "memoryAgent";
+    recalled = recall(hmem, request, ctx);
+    handoff("contextAgent", "memoryAgent", `recalled ${recalled.length} memories`);
+  }
+  const memoryContext = memoryText(recalled);
   const intent = ctx.intent ?? "ruling";
 
   let rules: RulesOk;
@@ -187,7 +207,7 @@ async function runStages(
     rules = found;
     handoff("rulesAgent", "developmentAgent", `${found.sources.length} rule sources; computation=${found.computation ? "yes" : "no"}`);
     const ruleSummary = `${found.summary} ${found.computation ? computedResultText(found) : ""}`.trim();
-    const dev: DevelopmentResult = await developmentAgent(request, ctx, "ruling", ruleSummary).catch((error: unknown) => ({
+    const dev: DevelopmentResult = await developmentAgent(request, ctx, "ruling", ruleSummary, memoryContext).catch((error: unknown) => ({
       ok: false as const,
       error: { message: error instanceof Error ? error.message : String(error), attempts: 0 },
     }));
@@ -206,7 +226,7 @@ async function runStages(
   } else {
     handoff("contextAgent", "developmentAgent", JSON.stringify({ intent, topic: ctx.topic }));
     track.stage = "developmentAgent";
-    const dev = await developmentAgent(request, ctx, "development");
+    const dev = await developmentAgent(request, ctx, "development", undefined, memoryContext);
     if (!dev.ok) return fail("developmentAgent", dev.error.message);
     rules = dev.evidence;
     development = toInput(dev, "development");
@@ -232,7 +252,7 @@ async function runStages(
 
   for (let round = 0; round <= MAX_CRITIC_RETRIES; round += 1) {
     track.stage = "coachingAgent";
-    const written = await coachingAgent(request, ctx, rules, callType.value, issues, development).catch(
+    const written = await coachingAgent(request, ctx, rules, callType.value, issues, development, memoryContext).catch(
       (error: unknown) => ({ ok: false as const, error: { message: error instanceof Error ? error.message : String(error), attempts: 1 } }),
     );
     if (!written.ok) {
@@ -273,11 +293,22 @@ async function runStages(
   }
 
   if (!draft) return fail("coachingAgent", "no draft produced");
+  const passed = issues.length === 0;
+  const recalledIds = new Set(recalled.map((m) => m.id));
+  const used = draft.memory_used.filter((id) => recalledIds.has(id)); // never trust an id we didn't give it
   const answer = assembleAnswer(rules, callType.value, draft, {
     drafts,
-    passed: issues.length === 0,
+    passed,
     unresolved_issues: issues,
   }, { intent, focus: development?.focus, development });
+
+  if (hmem) {
+    track.stage = "memoryAgent";
+    memoryFeedback(hmem, used, passed);
+    const saved = await remember(hmem, request, ctx, answer, { mine: opts.mine, referenceDate });
+    answer.memory = { recalled, used, saved };
+    handoff("criticAgent", "memoryAgent", `used ${used.length}; saved ${saved.length}`);
+  }
   trace({
     agent_name: "orchestrator",
     action: "answer",

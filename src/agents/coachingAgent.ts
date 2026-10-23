@@ -70,6 +70,8 @@ export const CoachingDraftSchema = z.object({
   }),
   /** The life lesson applied to this moment (beyond the diamond). */
   life_lesson: z.string().default(""),
+  /** Ids of remembered team facts (MemoryAgent) this answer built on. */
+  memory_used: z.array(z.string()).default([]),
 });
 export type CoachingDraft = z.infer<typeof CoachingDraftSchema>;
 
@@ -115,6 +117,7 @@ export function coachingAgent(
   callType: CallTypeOutput,
   criticIssues: string[] = [],
   development: DevelopmentInput | null = null,
+  memoryContext = "",
 ): Promise<JsonAgentResult<CoachingDraft>> {
   const sources = rules.sources
     .map((s) => `- ${s.table}:${s.id}${s.rule_ref ? ` (${s.rule_ref})` : ""}${s.synthetic ? " [synthetic demo rule]" : ""}${s.verified ? "" : " [unverified draft]"}: ${s.summary ?? ""}`)
@@ -133,13 +136,13 @@ ${development?.mode === "development" ? "" : "- If any rule source is marked unv
 - Channel: say who to talk to and how, calmly and at the right time (e.g. the head coach or tournament director, between innings or after the game). Protests are only for rule interpretation, never for judgment.
 - Improvement plan: short, concrete, age-appropriate (age ${context.age}) and safety-conscious; no medical advice. For pitching workload, include rest and arm-care habits and point to Pitch Smart; for skills, give simple drills. 1-3 items per list.
 - Plain, warm, non-judgmental language. No markdown.
-${development ? `- "life_lesson": 1-3 sentences that apply the given lesson(s) to this moment for a ${request.role}, and say how it reaches beyond the diamond. Encouraging, no blame of players, coaches, parents or umpires. If a coach's story is given, connect to it in a phrase.
+${memoryContext ? "- If something remembered about this team helps, build on it naturally (e.g. what they worked on last time) and list its id in memory_used. Never invent memories.\n" : ""}${development ? `- "life_lesson": 1-3 sentences that apply the given lesson(s) to this moment for a ${request.role}, and say how it reaches beyond the diamond. Encouraging, no blame of players, coaches, parents or umpires. If a coach's story is given, connect to it in a phrase.
 ` : ""}${development?.mode === "ruling" ? `- After the rule answer, go beyond it: the improvement plan should cover what a good coach would add (for pitching: arm care and rest habits, giving other pitchers reps and confidence, not putting winning above development).
 ` : ""}${development?.mode === "development" ? `- This is a development question, not a ruling. "what_happened": acknowledge how the moment feels, reframe it as information (process over result), and name the one focus. If it involves balls and strikes or another judgment call, say that call belonged to the umpire and that the player controls their readiness and approach, never whether the pitches were really balls. "channel": who should help and how, and when (for a parent: let the player talk first, support rather than instruction, leave technique to the coach). "teachable_moment": the lesson for the player. "improvement_plan": built from the coaching insights and drills given; individual = what the player practises, team = what the coach can run, at_home = what the parent can do.
 ` : ""}${development ? `- If any lesson, situation, story or insight is marked draft, add one short sentence saying this guidance comes from draft coaching notes that haven't been reviewed yet.
 ` : ""}
 Reply with ONLY this JSON object:
-{"what_happened": "<2-4 sentences: the answer and why>", "channel": {"who": "...", "how": "..."}, "teachable_moment": "<1-2 sentences>", "improvement_plan": {"individual": ["..."], "team": ["..."], "at_home": ["..."]}${development ? ', "life_lesson": "<1-3 sentences>"' : ""}}`;
+{"what_happened": "<2-4 sentences: the answer and why>", "channel": {"who": "...", "how": "..."}, "teachable_moment": "<1-2 sentences>", "improvement_plan": {"individual": ["..."], "team": ["..."], "at_home": ["..."]}${development ? ', "life_lesson": "<1-3 sentences>"' : ""}${memoryContext ? ', "memory_used": ["mem-..."]' : ""}}`;
 
   const fix = criticIssues.length
     ? `\n\nA reviewer rejected your previous draft. Fix every issue:\n${criticIssues.map((i) => `- ${i}`).join("\n")}`
@@ -152,7 +155,7 @@ ${development?.mode === "development" ? "Evidence (DevelopmentAgent)" : "Rules f
 ${development?.mode === "development" ? "" : `Computed result (from code; use exactly): ${computedResultText(rules)}\n`}Draft data: ${rules.draft_data ? "YES (some sources unverified)" : "no"}
 Missing facts: ${rules.missing_facts.length ? rules.missing_facts.join("; ") : "(none)"}
 Sources:
-${sources || "(none)"}${development ? `\n${developmentText(development, request.role)}` : ""}${fix}`;
+${sources || "(none)"}${development ? `\n${developmentText(development, request.role)}` : ""}${memoryContext ? `\n${memoryContext}` : ""}${fix}`;
 
   return askJson("coachingAgent", "draft_answer", "super", [
     { role: "system", content: system },

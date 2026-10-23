@@ -9,3 +9,4 @@ logs/eval-*.json
 secrets/
 vendor/hmem/node_modules
 .DS_Store
+memory/

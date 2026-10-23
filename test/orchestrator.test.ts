@@ -9,6 +9,7 @@ import { callTypeFromEvidence, computeConfidence, MAX_CRITIC_RETRIES, runSituati
 import type { RulesResult } from "../src/schemas/rules.js";
 import { CallTypeOutputSchema } from "../src/agents/callTypeAgent.js";
 import { developmentAgent } from "../src/agents/developmentAgent.js";
+import { openMemory } from "../src/adapters/hmem.js";
 
 vi.mock("../src/adapters/llm.js", () => ({ generator: vi.fn() }));
 vi.mock("../src/adapters/zetaris.js", () => ({ runSql: vi.fn(), runSqlDetailed: vi.fn() }));
@@ -73,6 +74,7 @@ const goodDraft: CoachingDraft = {
   teachable_moment: "Event rules can be stricter than the league's; the stricter one governs.",
   improvement_plan: { individual: ["Light catch only, no pitching, until Thursday."], team: ["Keep a shared pitch log."], at_home: ["Follow Pitch Smart rest guidance."] },
   life_lesson: "",
+  memory_used: [],
 };
 const draftWithoutDate = { ...goodDraft, what_happened: "She can't pitch Sunday; she needs more rest. This is based on draft rule data that hasn't been verified yet." };
 
@@ -230,7 +232,7 @@ describe("runSituation", () => {
       .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
 
     const result = await runSituation(request, "2026-10-18");
-    expect(mockedDev).toHaveBeenCalledWith(request, context, "ruling", expect.stringMatching(/October 22/));
+    expect(mockedDev).toHaveBeenCalledWith(request, context, "ruling", expect.stringMatching(/October 22/), "");
     expect(mockedRules.mock.invocationCallOrder[0]).toBeLessThan(mockedDev.mock.invocationCallOrder[0] ?? 0);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -261,6 +263,43 @@ describe("runSituation", () => {
     mockedContext.mockRejectedValueOnce(Object.assign(new Error("499 The request was aborted before completion."), { status: 499 }));
     const result = await runSituation(request, "2026-10-18");
     expect(result).toMatchObject({ ok: false, error: { stage: "contextAgent", message: expect.stringMatching(/499/) } });
+  });
+
+  it("MemoryAgent: remembers one answer, recalls it next time, and rewards the memory the answer used", async () => {
+    const hmem = openMemory({ clock: () => 1_790_000_000_000 });
+    const teamRequest = { ...request, team: "Demo Hawks" };
+
+    // Run 1: nothing to recall; the question is mined (Lightning) and the answer summarized.
+    mockedGenerator
+      .mockResolvedValueOnce(reply(goodDraft))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }))
+      .mockResolvedValueOnce(reply('["Our 12U pitcher threw 68 pitches on Friday and wants to pitch Sunday."]')); // mining
+    const first = await runSituation(teamRequest, "2026-10-18", { memory: hmem });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    expect(first.answer.memory?.recalled).toEqual([]);
+    expect(first.answer.memory?.saved).toHaveLength(2);
+    expect(mockedGenerator.mock.calls[2]?.[1]).toMatchObject({ tier: "lightning" });
+
+    // Run 2: same team recalls run 1; the draft says it used the first memory.
+    const usedId = first.answer.memory?.saved[0] ?? "";
+    mockedGenerator
+      .mockResolvedValueOnce(reply({ ...goodDraft, memory_used: [usedId, "mem-999"] }))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+    const second = await runSituation(teamRequest, "2026-10-19", { memory: hmem, mine: false });
+    expect(second.ok).toBe(true);
+    if (!second.ok) return;
+    expect(second.answer.memory?.recalled.map((m) => m.id)).toContain(usedId);
+    expect(second.answer.memory?.used).toEqual([usedId]); // unknown id dropped
+    const coachingUser = (mockedGenerator.mock.calls[3]?.[0] as Array<{ content: string }>)[1]?.content ?? "";
+    expect(coachingUser).toContain("What we remember about this team");
+    expect(hmem.store.get(usedId)?.confidence).toBeCloseTo(0.75, 5); // 0.7 + helpful 0.05
+    expect(hmem.ledger.stats()).toMatchObject({ feedback: 1 });
+
+    // Another team sees none of it.
+    mockedGenerator.mockResolvedValueOnce(reply(goodDraft)).mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+    const other = await runSituation({ ...request, team: "Other Team" }, "2026-10-19", { memory: hmem, mine: false });
+    expect(other.ok && other.answer.memory?.recalled).toEqual([]);
   });
 
   it("returns a structured error naming the stage that failed", async () => {

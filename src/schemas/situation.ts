@@ -39,6 +39,8 @@ export const SituationRequestSchema = z.object({
   age: z.coerce.number().int().nonnegative(),
   edition: z.string().optional(),
   event_name: z.string().optional(),
+  /** Which team's memory to use (H-MEM). Synthetic labels only in the repo. */
+  team: z.string().max(60).optional(),
 });
 
 export const SituationAnswerSchema = z.object({
@@ -72,6 +74,14 @@ export const SituationAnswerSchema = z.object({
     .optional(),
   /** A real coaching moment from the team, shown as written (anonymized). */
   story: z.object({ id: z.string(), title: z.string(), story: z.string() }).optional(),
+  /** MemoryAgent (H-MEM): what was recalled, what the answer used, what was saved. */
+  memory: z
+    .object({
+      recalled: z.array(z.object({ id: z.string(), content: z.string(), relevance: z.number(), confidence: z.number() })),
+      used: z.array(z.string()),
+      saved: z.array(z.string()),
+    })
+    .optional(),
   /** What the critique loop did: drafts reviewed and anything left unresolved. */
   review: z
     .object({
