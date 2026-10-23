@@ -9,6 +9,7 @@
   "scripts": {
     "check:zetaris": "tsx --env-file=.env src/scripts/check-zetaris.ts",
     "check:llm": "tsx --env-file=.env src/scripts/check-llm.ts",
+    "check:vision": "tsx --env-file=.env src/scripts/check-vision.ts",
     "check:routing": "tsx --env-file=.env src/scripts/check-routing.ts",
     "check:data": "tsx --env-file=.env src/scripts/check-data.ts",
     "db:up": "bash src/scripts/db-up.sh",
