@@ -236,7 +236,7 @@ describe("generator model selection (tier pinning)", () => {
 
   it("meterless tier falls back to METERLESS_MODEL when the tier var is unset", async () => {
     setFixture(meterlessResponse);
-    setEnv({});
+    setEnv({ METERLESS_MODEL_SUPER: undefined, METERLESS_MODEL_LIGHTNING: undefined });
     const { generator } = await loadGenerator();
     await generator([{ role: "user", content: "Say hello." }], {
       tier: "super",

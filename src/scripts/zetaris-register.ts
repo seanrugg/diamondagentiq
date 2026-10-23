@@ -1,3 +1,4 @@
+import { ALLOWED_TABLES } from "../adapters/dataTools.js";
 import { runSql } from "../adapters/zetaris.js";
 import { config } from "../config.js";
 import { trace } from "../trace.js";
@@ -55,6 +56,19 @@ try {
     output_summary: `registered=${JSON.stringify(registered).slice(0, 200)}`,
     status: "ok",
   });
+
+  // Zetaris caches table metadata. Refresh each table so new tables and new
+  // columns (e.g. after npm run rules:load) are visible. Best-effort per table.
+  for (const table of ALLOWED_TABLES) {
+    try {
+      await runSql(`REFRESH TABLE diq_pg.${table}`);
+      console.log(`refreshed diq_pg.${table}`);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message.slice(0, 120) : "unknown error";
+      console.log(`could not refresh diq_pg.${table}: ${reason}`);
+    }
+  }
+  console.log("Zetaris registration done");
 } catch (error) {
   const message = error instanceof Error ? error.message : "unknown error";
   if (!/CREATE DATASOURCE/i.test(message)) {

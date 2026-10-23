@@ -1,7 +1,7 @@
-import { config as loadEnv } from "dotenv";
+// Environment comes from the process. npm scripts load .env with `tsx --env-file=.env`;
+// unit tests set what they need. Nothing here reads .env implicitly, so tests stay
+// hermetic on machines that have a real .env.
 import { z } from "zod";
-
-loadEnv();
 
 const optionalString = z
   .string()
