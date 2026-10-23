@@ -193,8 +193,8 @@ blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; colo
 /* Expandable answer cards */
 .card { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
 .card summary { cursor: pointer; list-style: none; display: grid; padding-right: 28px; position: relative; }
-.card summary::after { content: "+"; position: absolute; right: 0; }
-details.card[open] .card summary::after { content: "–"; }
+.card summary::after { content: "+"; position: absolute; right: 0; top: 0; font: 700 24px/1 var(--display); color: var(--ink); }
+details.card[open] > summary::after { content: "–"; }
 details.card[open] .card-preview { display: none; }
 .card summary::-webkit-details-marker { display: none; }
 .card-title { font: 700 20px/1.2 var(--display); display: block; }
