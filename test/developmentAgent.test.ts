@@ -7,6 +7,7 @@ import { developmentAgent } from "../src/agents/developmentAgent.js";
 import { deterministicChecks } from "../src/agents/criticAgent.js";
 import { runSituation } from "../src/orchestrator.js";
 import { LEARNING_PHILOSOPHY } from "../src/agents/philosophy.js";
+import type { RuleSource } from "../src/schemas/rules.js";
 
 vi.mock("../src/adapters/llm.js", () => ({ generator: vi.fn() }));
 vi.mock("../src/adapters/zetaris.js", () => ({ runSql: vi.fn(), runSqlDetailed: vi.fn() }));
@@ -37,17 +38,31 @@ const insightRows = [
 ];
 const drillRows = [{ id: "d-1", skill: "two_strike_hitting", title: "Tee: two-strike outside corner", description: "Shorter swing to the outer half.", setting: "individual", safety_notes: "Helmet on.", reviewed: "false" }];
 
-const pick = { insight_ids: ["C001", "C006", "C999"], drill_ids: ["d-1", "nope"], focus: "Cover the outer half", call_type_hint: "judgment" };
+const URL = "https://github.com/seanrugg/diamondagentiq";
+const lessonRows = [
+  { lesson_code: "L002", title: "Everyone makes mistakes; own yours and learn from it", principle: "We are all human.", life_lesson: "Owning mistakes lasts.", for_player: "Say that's on me.", for_coach: null, for_parent: "Show your child how to own a mistake.", for_umpire: null, tags: "mistake;blame", verified: "false", url: URL },
+  { lesson_code: "L003", title: "Believe in your players", principle: "Feed them confidence.", life_lesson: "People rise to belief.", for_player: null, for_coach: null, for_parent: "Tell them you love watching them play.", for_umpire: null, tags: "confidence;scared_hitter", verified: "false", url: URL },
+];
+const situationRows = [{ situation_code: "SIT003", name: "Dropped third strike, runner on third, 1 out", topic: "dropped_third_strike", offense: "Run.", defense: "Check the runner.", common_mistakes: null, rule_fact_codes: "F034;F148", lesson_codes: "L005", verified: "false", url: URL }];
+const storyRows = [{ story_code: "ST001", title: "The playoff game nobody scripted", story: "The kid ran.", lesson_codes: "L003", situation_codes: "SIT003", verified: "false", url: URL }];
+
+const pick = { lesson_ids: ["L003", "L999"], story_id: "ST001", situation_ids: [], insight_ids: ["C001", "C006", "C999"], drill_ids: ["d-1", "nope"], focus: "Cover the outer half", call_type_hint: "judgment" };
 const draft = {
   what_happened: "Striking out to end a game stings. Whether those pitches were strikes was the umpire's call; what he controls is where he stands and how ready he is. This guidance comes from draft coaching notes that haven't been reviewed yet.",
   channel: { who: "You, then his coach", how: "Let him talk first on the ride home; ask the coach later in the week about plate coverage." },
   teachable_moment: "One at-bat is information, not a verdict.",
   improvement_plan: { individual: ["Bat-length check before each at-bat."], team: ["Two-strike rounds."], at_home: ["Tell him you love watching him play."] },
+  life_lesson: "Your belief in him matters most when he's struggling, on the field and off it.",
 };
 
 beforeEach(() => {
   mockedGenerator.mockReset();
-  mockedRows.mockReset().mockImplementation(async (sql: string) => (sql.includes("coaching_insights") ? insightRows : drillRows));
+  mockedRows.mockReset().mockImplementation(async (sql: string) =>
+    sql.includes("coaching_insights") ? insightRows
+    : sql.includes("coaching_lessons") ? lessonRows
+    : sql.includes("coaching_situations") ? situationRows
+    : sql.includes("coaching_stories") ? storyRows
+    : drillRows);
   mockedContext.mockReset().mockResolvedValue({ ok: true, context });
   mockedRules.mockReset();
 });
@@ -59,8 +74,11 @@ describe("developmentAgent", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.insights.map((i) => i.id)).toEqual(["C001", "C006"]);
+    expect(result.lessons.map((l) => l.id)).toEqual(["L003"]);
+    expect(result.lessons[0]?.tags).toEqual(["confidence", "scared_hitter"]);
+    expect(result.story?.id).toBe("ST001");
+    expect(result.evidence.sources.map((s) => s.table)).toEqual(["coaching_lessons", "coaching_stories", "coaching_insights", "coaching_insights"]);
     expect(result.drills.map((d) => d.id)).toEqual(["d-1"]);
-    expect(result.evidence.sources.every((s) => s.table === "coaching_insights")).toBe(true);
     expect(result.evidence.draft_data).toBe(true); // verified "false" string from Zetaris
     expect(result.evidence.computation).toBeNull();
 
@@ -71,8 +89,8 @@ describe("developmentAgent", () => {
     expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "lightning" });
   });
 
-  it("fails when the model picks nothing that was on the menu", async () => {
-    mockedGenerator.mockResolvedValueOnce(reply({ ...pick, insight_ids: ["C999"] }));
+  it("fails when the model picks no lesson that was on the menu", async () => {
+    mockedGenerator.mockResolvedValueOnce(reply({ ...pick, lesson_ids: ["L999"] }));
     const result = await developmentAgent(request, context);
     expect(result).toMatchObject({ ok: false });
   });
@@ -93,7 +111,9 @@ describe("runSituation, development intent", () => {
     expect(result.answer.intent).toBe("development");
     expect(result.answer.focus).toBe("Cover the outer half");
     expect(result.answer.call_type).toBe("judgment");
-    expect(result.answer.sources.map((s) => s.id)).toEqual(["C001", "C006"]);
+    expect(result.answer.sources.map((s) => s.id)).toEqual(["L003", "ST001", "C001", "C006"]);
+    expect(result.answer.story).toEqual({ id: "ST001", title: "The playoff game nobody scripted", story: "The kid ran." });
+    expect(result.answer.life_lesson?.text).toMatch(/belief/);
     expect(result.answer.confidence).toBe(0.6);
 
     const coachingMessages = mockedGenerator.mock.calls[2]?.[0] as Array<{ content: string }>;
@@ -102,13 +122,16 @@ describe("runSituation, development intent", () => {
     expect(coachingMessages[1]?.content).toContain("Crowd the plate.");
     expect(coachingMessages[1]?.content).toContain("Tee: two-strike outside corner");
     expect(coachingMessages[1]?.content).not.toMatch(/Computed result/);
+    expect(coachingMessages[1]?.content).toContain("For a parent: Tell them you love watching them play.");
+    expect(coachingMessages[0]?.content).toMatch(/life_lesson/);
   });
 
   it("asks for a draft-notes disclosure in coaching wording", () => {
     const evidence = { ok: true as const, summary: "s", call_type_hint: "judgment" as const, computation: null, draft_data: true, missing_facts: [],
-      sources: [{ table: "coaching_insights" as const, id: "C001", rule_ref: null, source_url: "https://x.org", edition: null, verified: false, synthetic: false }] };
+      sources: [{ table: "coaching_insights" as RuleSource["table"], id: "C001", rule_ref: null, source_url: "https://x.org", edition: null, verified: false, synthetic: false }] };
     const noDisclosure = { ...draft, what_happened: "Striking out stings. The umpire made the call." };
     expect(deterministicChecks(noDisclosure, evidence).join(" ")).toMatch(/draft coaching notes/);
     expect(deterministicChecks(draft, evidence)).toEqual([]);
+    expect(deterministicChecks({ ...draft, life_lesson: " " }, evidence, true).join(" ")).toMatch(/life_lesson/);
   });
 });

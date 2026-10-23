@@ -18,6 +18,7 @@
     "context": "tsx --env-file=.env src/scripts/context.ts",
     "rules": "tsx --env-file=.env src/scripts/rules.ts",
     "ask": "tsx --env-file=.env src/scripts/ask.ts",
+    "eval": "tsx --env-file=.env src/scripts/eval.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },

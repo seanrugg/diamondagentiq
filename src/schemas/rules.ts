@@ -34,7 +34,7 @@ export const RulesModelOutputSchema = z.object({
 export type RulesModelOutput = z.infer<typeof RulesModelOutputSchema>;
 
 export const RuleSourceSchema = z.object({
-  table: z.enum(["rules_facts", "house_rules", "pitch_rest_rules", "coaching_insights"]),
+  table: z.enum(["rules_facts", "house_rules", "pitch_rest_rules", "coaching_insights", "coaching_lessons", "coaching_situations", "coaching_stories"]),
   id: z.string(),
   rule_ref: z.string().nullable(),
   source_url: z.string().nullable(),

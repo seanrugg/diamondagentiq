@@ -12,9 +12,12 @@ const { sql, counts } = buildRulesSql({
   rulesFacts: read("rules/rules_facts.csv"),
   pitchRestRules: read("rules/pitch_rest_rules.csv"),
   coachingInsights: read("coaching/insights.csv"),
+  lessons: read("coaching/lessons.csv"),
+  situations: read("coaching/situations.csv"),
+  stories: read("coaching/stories.csv"),
 });
 
 writeFileSync(new URL("../../data/rules.sql", import.meta.url), sql);
 console.log(
-  `Wrote data/rules.sql: ${counts.sources} sources, ${counts.facts} facts, ${counts.tiers} pitch-rest tiers, ${counts.insights} coaching insights`,
+  `Wrote data/rules.sql: ${counts.sources} sources, ${counts.facts} facts, ${counts.tiers} pitch-rest tiers, ${counts.insights} coaching insights, ${counts.lessons} lessons, ${counts.situations} situations, ${counts.stories} stories`,
 );

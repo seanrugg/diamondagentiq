@@ -74,6 +74,57 @@ const INSIGHT_COLUMNS: ColumnSpec[] = [
   { csv: "verify_note", column: "verify_note", type: "text" },
 ];
 
+const LESSON_COLUMNS: ColumnSpec[] = [
+  { csv: "lesson_id", column: "lesson_code", type: "text", required: true },
+  { csv: "title", column: "title", type: "text", required: true },
+  { csv: "principle", column: "principle", type: "text", required: true },
+  { csv: "life_lesson", column: "life_lesson", type: "text", required: true },
+  { csv: "for_player", column: "for_player", type: "text" },
+  { csv: "for_coach", column: "for_coach", type: "text" },
+  { csv: "for_parent", column: "for_parent", type: "text" },
+  { csv: "for_umpire", column: "for_umpire", type: "text" },
+  { csv: "tags", column: "tags", type: "text" },
+  { csv: "source_id", column: "source_id", type: "text", required: true },
+  { csv: "verified", column: "verified", type: "bool", required: true },
+  { csv: "verified_by", column: "verified_by", type: "text" },
+  { csv: "verify_note", column: "verify_note", type: "text" },
+];
+
+const SITUATION_COLUMNS: ColumnSpec[] = [
+  { csv: "situation_id", column: "situation_code", type: "text", required: true },
+  { csv: "name", column: "name", type: "text", required: true },
+  { csv: "topic", column: "topic", type: "text", required: true },
+  { csv: "bases", column: "bases", type: "text" },
+  { csv: "outs", column: "outs", type: "text" },
+  { csv: "count", column: "pitch_count_state", type: "text" },
+  { csv: "rule_fact_codes", column: "rule_fact_codes", type: "text" },
+  { csv: "offense", column: "offense", type: "text", required: true },
+  { csv: "defense", column: "defense", type: "text", required: true },
+  { csv: "common_mistakes", column: "common_mistakes", type: "text" },
+  { csv: "lesson_ids", column: "lesson_codes", type: "text" },
+  { csv: "source_id", column: "source_id", type: "text", required: true },
+  { csv: "verified", column: "verified", type: "bool", required: true },
+  { csv: "verified_by", column: "verified_by", type: "text" },
+  { csv: "verify_note", column: "verify_note", type: "text" },
+];
+
+const STORY_COLUMNS: ColumnSpec[] = [
+  { csv: "story_id", column: "story_code", type: "text", required: true },
+  { csv: "title", column: "title", type: "text", required: true },
+  { csv: "story", column: "story", type: "text", required: true },
+  { csv: "lesson_ids", column: "lesson_codes", type: "text" },
+  { csv: "situation_ids", column: "situation_codes", type: "text" },
+  { csv: "source_id", column: "source_id", type: "text", required: true },
+  { csv: "verified", column: "verified", type: "bool", required: true },
+  { csv: "verified_by", column: "verified_by", type: "text" },
+  { csv: "verify_note", column: "verify_note", type: "text" },
+];
+
+/** "L001; L002" -> ["L001", "L002"] */
+export function splitList(raw: string | undefined): string[] {
+  return (raw ?? "").split(";").map((x) => x.trim()).filter(Boolean);
+}
+
 const AUDIENCES = new Set(["all", "player", "parent", "coach", "umpire"]);
 
 const SPORTS = new Set(["baseball", "softball", "both"]);
@@ -85,11 +136,15 @@ export type RulesCsvInput = {
   pitchRestRules: string;
   /** data/coaching/insights.csv; optional so older callers keep working. */
   coachingInsights?: string;
+  /** data/coaching/lessons.csv, situations.csv, stories.csv (optional). */
+  lessons?: string;
+  situations?: string;
+  stories?: string;
 };
 
 export type RulesSqlOutput = {
   sql: string;
-  counts: { sources: number; facts: number; tiers: number; insights: number };
+  counts: { sources: number; facts: number; tiers: number; insights: number; lessons: number; situations: number; stories: number };
 };
 
 /** Quote a value as a SQL literal according to its column type. */
@@ -134,6 +189,18 @@ function insertBlock(table: string, specs: ColumnSpec[], tuples: string[]): stri
   return chunks.join("\n");
 }
 
+function optionalBlock(
+  text: string | undefined,
+  table: string,
+  specs: ColumnSpec[],
+  rows: Record<string, string>[],
+  key: string,
+): string[] {
+  if (text === undefined) return [];
+  const sorted = [...rows].sort((a, b) => ((a[key] ?? "") < (b[key] ?? "") ? -1 : (a[key] ?? "") > (b[key] ?? "") ? 1 : 0));
+  return [insertBlock(table, specs, sorted.map((r) => toTuple(r, specs, `${table} ${r[key]}`)))];
+}
+
 export function buildRulesSql(input: RulesCsvInput): RulesSqlOutput {
   const sources = parseCsvRecords(input.ruleSources);
   const facts = parseCsvRecords(input.rulesFacts);
@@ -174,6 +241,44 @@ export function buildRulesSql(input: RulesCsvInput): RulesSqlOutput {
     if (!/^[a-z][a-z0-9_]*$/.test(c.topic ?? "")) throw new Error(`${where}: topic must be snake_case`);
   }
 
+  const parseOpt = (text: string | undefined) => (text === undefined ? [] : parseCsvRecords(text));
+  const lessons = parseOpt(input.lessons);
+  const situations = parseOpt(input.situations);
+  const stories = parseOpt(input.stories);
+
+  const uniqueIds = (rows: Record<string, string>[], key: string, table: string): Set<string> => {
+    const ids = new Set<string>();
+    for (const r of rows) {
+      const id = r[key] ?? "";
+      if (ids.has(id)) throw new Error(`${table} ${id}: duplicate ${key}`);
+      ids.add(id);
+      if (!sourceIds.has(r.source_id ?? "")) throw new Error(`${table} ${id}: unknown source_id ${r.source_id}`);
+    }
+    return ids;
+  };
+  const checkRefs = (table: string, id: string, refs: string[], known: Set<string>, kind: string) => {
+    for (const ref of refs) if (!known.has(ref)) throw new Error(`${table} ${id}: unknown ${kind} ${ref}`);
+  };
+  const lessonIds = uniqueIds(lessons, "lesson_id", "coaching_lessons");
+  const situationIds = uniqueIds(situations, "situation_id", "coaching_situations");
+  uniqueIds(stories, "story_id", "coaching_stories");
+  for (const l of lessons) {
+    for (const tag of splitList(l.tags)) {
+      if (!/^[a-z][a-z0-9_]*$/.test(tag)) throw new Error(`coaching_lessons ${l.lesson_id}: tag "${tag}" must be snake_case`);
+    }
+  }
+  for (const s of situations) {
+    const id = s.situation_id ?? "";
+    if (!/^[a-z][a-z0-9_]*$/.test(s.topic ?? "")) throw new Error(`coaching_situations ${id}: topic must be snake_case`);
+    checkRefs("coaching_situations", id, splitList(s.rule_fact_codes), factCodes, "fact");
+    checkRefs("coaching_situations", id, splitList(s.lesson_ids), lessonIds, "lesson");
+  }
+  for (const st of stories) {
+    const id = st.story_id ?? "";
+    checkRefs("coaching_stories", id, splitList(st.lesson_ids), lessonIds, "lesson");
+    checkRefs("coaching_stories", id, splitList(st.situation_ids), situationIds, "situation");
+  }
+
   const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
   const sortedSources = [...sources].sort((a, b) => byText(a.source_id ?? "", b.source_id ?? ""));
   const sortedFacts = [...facts].sort((a, b) => byText(a.fact_id ?? "", b.fact_id ?? ""));
@@ -202,7 +307,10 @@ export function buildRulesSql(input: RulesCsvInput): RulesSqlOutput {
               .map((r) => toTuple(r, INSIGHT_COLUMNS, `coaching_insights ${r.insight_id}`)),
           ),
         ]),
+    ...optionalBlock(input.lessons, "coaching_lessons", LESSON_COLUMNS, lessons, "lesson_id"),
+    ...optionalBlock(input.situations, "coaching_situations", SITUATION_COLUMNS, situations, "situation_id"),
+    ...optionalBlock(input.stories, "coaching_stories", STORY_COLUMNS, stories, "story_id"),
   ].join("\n");
 
-  return { sql, counts: { sources: sources.length, facts: facts.length, tiers: tiers.length, insights: insights.length } };
+  return { sql, counts: { sources: sources.length, facts: facts.length, tiers: tiers.length, insights: insights.length, lessons: lessons.length, situations: situations.length, stories: stories.length } };
 }

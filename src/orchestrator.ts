@@ -2,11 +2,13 @@
  * Orchestrator: runs the agent team for one situation and owns the
  * critique/retry loop.
  *
- *   ContextAgent -> RulesAgent       -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (intent "ruling")
- *   ContextAgent -> DevelopmentAgent -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (development, equipment, general)
+ *   ContextAgent -> RulesAgent + DevelopmentAgent (parallel) -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (intent "ruling")
+ *   ContextAgent -> DevelopmentAgent                         -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (development, equipment, general)
  *
- * Both middle agents return the same evidence shape (sources, summary,
- * computation, draft flag), so the rest of the team is shared.
+ * Every answer carries a lesson: on rulings DevelopmentAgent adds the
+ * teachable moment beyond the rule (if it fails, the rule answer still goes
+ * out). Both middle agents return the same evidence shape, so the rest of the
+ * team is shared.
  * CriticAgent (code checks + Lightning review) can send a draft back to
  * CoachingAgent at most MAX_CRITIC_RETRIES times (AGENTS.md rule 9). Every
  * handoff is traced. Confidence is computed in code from the evidence, not
@@ -14,7 +16,7 @@
  */
 import { callTypeAgent, type CallTypeOutput } from "./agents/callTypeAgent.js";
 import { coachingAgent, type CoachingDraft, type DevelopmentInput } from "./agents/coachingAgent.js";
-import { developmentAgent } from "./agents/developmentAgent.js";
+import { developmentAgent, type DevelopmentResult } from "./agents/developmentAgent.js";
 import { contextAgent, type ContextOutput } from "./agents/contextAgent.js";
 import { criticAgent, deterministicChecks } from "./agents/criticAgent.js";
 import { rulesAgent } from "./agents/rulesAgent.js";
@@ -63,12 +65,26 @@ function isUrl(value: string | null): value is string {
   }
 }
 
+/** Lessons, situations and story come straight from the tables; only the applied text is the model's. */
+function lessonParts(draft: CoachingDraft, dev: DevelopmentInput | null) {
+  if (!dev) return {};
+  return {
+    ...(dev.lessons.length
+      ? { life_lesson: { text: draft.life_lesson, lessons: dev.lessons.map((l) => ({ id: l.id, title: l.title, principle: l.principle })) } }
+      : {}),
+    ...(dev.situations.length
+      ? { situations: dev.situations.map((t) => ({ id: t.id, name: t.name, offense: t.offense, defense: t.defense, common_mistakes: t.common_mistakes })) }
+      : {}),
+    ...(dev.story ? { story: { id: dev.story.id, title: dev.story.title, story: dev.story.story } } : {}),
+  };
+}
+
 export function assembleAnswer(
   rules: RulesOk,
   callType: CallTypeOutput,
   draft: CoachingDraft,
   review: { drafts: number; passed: boolean; unresolved_issues: string[] },
-  route: { intent?: ContextOutput["intent"]; focus?: string } = {},
+  route: { intent?: ContextOutput["intent"]; focus?: string; development?: DevelopmentInput | null } = {},
 ): SituationAnswer {
   const answer = {
     what_happened: {
@@ -98,6 +114,7 @@ export function assembleAnswer(
     draft_data: rules.draft_data,
     ...(route.intent ? { intent: route.intent } : {}),
     ...(route.focus ? { focus: route.focus } : {}),
+    ...lessonParts(draft, route.development ?? null),
     review,
   };
   return SituationAnswerSchema.parse(answer);
@@ -114,19 +131,48 @@ export async function runSituation(
 
   let rules: RulesOk;
   let development: DevelopmentInput | null = null;
+  const toInput = (dev: Extract<DevelopmentResult, { ok: true }>, mode: DevelopmentInput["mode"]): DevelopmentInput => ({
+    mode,
+    focus: dev.focus,
+    insights: dev.insights,
+    drills: dev.drills,
+    lessons: dev.lessons,
+    situations: dev.situations,
+    story: dev.story,
+  });
+  const devSummary = (dev: Extract<DevelopmentResult, { ok: true }>) =>
+    `focus: ${dev.focus}; lessons ${dev.lessons.map((l) => l.id).join(",")}; situations ${dev.situations.map((t) => t.id).join(",") || "none"}; story ${dev.story?.id ?? "none"}; insights ${dev.insights.length}; drills ${dev.drills.length}`;
+
   if (intent === "ruling") {
-    handoff("contextAgent", "rulesAgent", JSON.stringify({ intent, topic: ctx.topic, entities: ctx.entities }));
-    const found = await rulesAgent(request, ctx, referenceDate);
+    handoff("contextAgent", "rulesAgent+developmentAgent", JSON.stringify({ intent, topic: ctx.topic, entities: ctx.entities }));
+    const [found, dev] = await Promise.all([
+      rulesAgent(request, ctx, referenceDate),
+      developmentAgent(request, ctx, "ruling").catch((error: unknown) => ({
+        ok: false as const,
+        error: { message: error instanceof Error ? error.message : String(error), attempts: 0 },
+      })),
+    ]);
     if (!found.ok) return fail("rulesAgent", found.error.message);
     rules = found;
-    handoff("rulesAgent", "callTypeAgent", `${rules.sources.length} sources; computation=${rules.computation ? "yes" : "no"}; draft_data=${rules.draft_data}`);
+    if (dev.ok) {
+      development = toInput(dev, "ruling");
+      rules = {
+        ...found,
+        sources: [...found.sources, ...dev.evidence.sources],
+        draft_data: found.draft_data || dev.evidence.draft_data,
+      };
+      handoff("developmentAgent", "callTypeAgent", devSummary(dev));
+    } else {
+      trace({ agent_name: "orchestrator", action: "lesson_skipped", input_summary: "developmentAgent", output_summary: dev.error.message.slice(0, 300), status: "error" });
+    }
+    handoff("rulesAgent", "callTypeAgent", `${found.sources.length} rule sources; computation=${found.computation ? "yes" : "no"}; draft_data=${found.draft_data}`);
   } else {
     handoff("contextAgent", "developmentAgent", JSON.stringify({ intent, topic: ctx.topic }));
-    const dev = await developmentAgent(request, ctx);
+    const dev = await developmentAgent(request, ctx, "development");
     if (!dev.ok) return fail("developmentAgent", dev.error.message);
     rules = dev.evidence;
-    development = { focus: dev.focus, insights: dev.insights, drills: dev.drills };
-    handoff("developmentAgent", "callTypeAgent", `focus: ${dev.focus}; insights ${dev.insights.map((i) => i.id).join(",")}; drills ${dev.drills.length}`);
+    development = toInput(dev, "development");
+    handoff("developmentAgent", "callTypeAgent", devSummary(dev));
   }
 
   const callType = await callTypeAgent(request, ctx, rules);
@@ -147,7 +193,7 @@ export async function runSituation(
     drafts += 1;
     handoff("coachingAgent", "criticAgent", `draft ${drafts}`);
 
-    const codeIssues = deterministicChecks(draft, rules);
+    const codeIssues = deterministicChecks(draft, rules, (development?.lessons.length ?? 0) > 0);
     const review = await criticAgent(request, draft, callType.value, ctx.age);
     const modelIssues = review.ok && !review.value.pass ? review.value.issues : [];
     issues = [...codeIssues, ...modelIssues];
@@ -168,7 +214,7 @@ export async function runSituation(
     drafts,
     passed: issues.length === 0,
     unresolved_issues: issues,
-  }, { intent, focus: development?.focus });
+  }, { intent, focus: development?.focus, development });
   trace({
     agent_name: "orchestrator",
     action: "answer",

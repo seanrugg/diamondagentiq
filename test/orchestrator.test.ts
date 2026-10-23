@@ -8,15 +8,18 @@ import type { CoachingDraft } from "../src/agents/coachingAgent.js";
 import { computeConfidence, MAX_CRITIC_RETRIES, runSituation } from "../src/orchestrator.js";
 import type { RulesResult } from "../src/schemas/rules.js";
 import { CallTypeOutputSchema } from "../src/agents/callTypeAgent.js";
+import { developmentAgent } from "../src/agents/developmentAgent.js";
 
 vi.mock("../src/adapters/llm.js", () => ({ generator: vi.fn() }));
 vi.mock("../src/adapters/zetaris.js", () => ({ runSql: vi.fn(), runSqlDetailed: vi.fn() }));
 vi.mock("../src/agents/contextAgent.js", () => ({ contextAgent: vi.fn() }));
 vi.mock("../src/agents/rulesAgent.js", () => ({ rulesAgent: vi.fn() }));
+vi.mock("../src/agents/developmentAgent.js", () => ({ developmentAgent: vi.fn() }));
 
 const mockedGenerator = generator as unknown as ReturnType<typeof vi.fn>;
 const mockedContext = contextAgent as unknown as ReturnType<typeof vi.fn>;
 const mockedRules = rulesAgent as unknown as ReturnType<typeof vi.fn>;
+const mockedDev = developmentAgent as unknown as ReturnType<typeof vi.fn>;
 
 const reply = (value: unknown, model = "test-model") => ({
   content: typeof value === "string" ? value : JSON.stringify(value),
@@ -69,6 +72,7 @@ const goodDraft: CoachingDraft = {
   channel: { who: "Tournament director", how: "Confirm the pitch log at check-in before Thursday's game." },
   teachable_moment: "Event rules can be stricter than the league's; the stricter one governs.",
   improvement_plan: { individual: ["Light catch only, no pitching, until Thursday."], team: ["Keep a shared pitch log."], at_home: ["Follow Pitch Smart rest guidance."] },
+  life_lesson: "",
 };
 const draftWithoutDate = { ...goodDraft, what_happened: "She can't pitch Sunday; she needs more rest. This is based on draft rule data that hasn't been verified yet." };
 
@@ -76,6 +80,7 @@ beforeEach(() => {
   mockedGenerator.mockReset();
   mockedContext.mockReset().mockResolvedValue({ ok: true, context });
   mockedRules.mockReset().mockResolvedValue(rules);
+  mockedDev.mockReset().mockResolvedValue({ ok: false, error: { message: "no lessons in this test", attempts: 0 } });
 });
 
 describe("askJson", () => {
@@ -176,6 +181,48 @@ describe("runSituation", () => {
     expect(result.answer.review?.unresolved_issues.join(" ")).toMatch(/Tone is too harsh/);
     expect(result.answer.confidence).toBe(0.4);
     expect(mockedGenerator).toHaveBeenCalledTimes(1 + 2 * (MAX_CRITIC_RETRIES + 1));
+  });
+
+  it("adds a lesson to a ruling, run alongside RulesAgent, and requires the life_lesson", async () => {
+    const lesson = { id: "L004", title: "Winning comes from a winning formula", principle: "Healthy arms and depth.", life_lesson: "Build people.", for_player: null, for_coach: "Build depth.", for_parent: null, for_umpire: null, tags: ["pitch_count"], source_url: "https://github.com/seanrugg/diamondagentiq", verified: false };
+    mockedDev.mockResolvedValueOnce({
+      ok: true, focus: "Rest and build depth", insights: [], drills: [], lessons: [lesson], situations: [], story: null,
+      evidence: { ok: true, summary: "s", call_type_hint: "rule", computation: null, draft_data: true, missing_facts: [],
+        sources: [{ table: "coaching_lessons", id: "L004", rule_ref: null, source_url: lesson.source_url, edition: null, verified: false, synthetic: false, call_type: null, summary: "Winning formula" }] },
+    });
+    mockedGenerator
+      .mockResolvedValueOnce(reply(callType))
+      .mockResolvedValueOnce(reply(goodDraft)) // no life_lesson: code check rejects it
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }))
+      .mockResolvedValueOnce(reply({ ...goodDraft, life_lesson: "Resting her builds another pitcher's confidence; teams win with depth, and so do families." }))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+
+    const result = await runSituation(request, "2026-10-18");
+    expect(mockedDev).toHaveBeenCalledWith(request, context, "ruling");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.answer.review?.drafts).toBe(2);
+    expect(result.answer.sources.map((s) => s.id)).toEqual(["F003", "hr-1", "L004"]);
+    expect(result.answer.life_lesson?.lessons[0]?.title).toBe("Winning comes from a winning formula");
+    expect(result.answer.life_lesson?.text).toMatch(/depth/);
+    expect(result.answer.computation).toMatchObject({ earliest_eligible_date: "2026-10-22" });
+
+    const coachingSystem = (mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>)[0]?.content ?? "";
+    expect(coachingSystem).toMatch(/arm care/);
+    const coachingUser = (mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>)[1]?.content ?? "";
+    expect(coachingUser).toContain("Computed result");
+    expect(coachingUser).toContain("For a coach: Build depth.");
+  });
+
+  it("still answers a ruling when DevelopmentAgent throws", async () => {
+    mockedDev.mockRejectedValueOnce(new Error("zetaris down"));
+    mockedGenerator
+      .mockResolvedValueOnce(reply(callType))
+      .mockResolvedValueOnce(reply(goodDraft))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+    const result = await runSituation(request, "2026-10-18");
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.answer.life_lesson).toBeUndefined();
   });
 
   it("returns a structured error naming the stage that failed", async () => {

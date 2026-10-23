@@ -54,7 +54,7 @@ const tinyTiers =
 describe("buildRulesSql", () => {
   it("builds escaped INSERTs with NULLs for empty cells", () => {
     const { sql, counts } = buildRulesSql({ ruleSources: tinySources, rulesFacts: tinyFacts, pitchRestRules: tinyTiers });
-    expect(counts).toEqual({ sources: 1, facts: 1, tiers: 1, insights: 0 });
+    expect(counts).toEqual({ sources: 1, facts: 1, tiers: 1, insights: 0, lessons: 0, situations: 0, stories: 0 });
     expect(sql).not.toContain("coaching_insights");
     expect(sql).toContain("'It''s a rule, not judgment.'");
     expect(sql).toMatch(/'little_league', NULL, NULL, NULL, '2026'/);
@@ -81,12 +81,34 @@ describe("buildRulesSql", () => {
     expect(() => buildRulesSql({ ...base, coachingInsights: header + row + row })).toThrow(/duplicate insight_id/);
   });
 
+  it("builds lessons, situations and stories and checks every cross-reference", () => {
+    const base = { ruleSources: tinySources, rulesFacts: tinyFacts, pitchRestRules: tinyTiers };
+    const lessons = "lesson_id,title,principle,life_lesson,for_player,for_coach,for_parent,for_umpire,tags,source_id,verified,verified_by,verify_note\n" +
+      "L001,Team,Win together,Share the load,,,,,team;last_out,S1,false,,\n";
+    const situations = "situation_id,name,topic,bases,outs,count,rule_fact_codes,offense,defense,common_mistakes,lesson_ids,source_id,verified,verified_by,verify_note\n" +
+      "SIT001,D3K,dropped_third_strike,third,1,two strikes,F001,Run,Throw,,L001,S1,false,,\n";
+    const stories = "story_id,title,story,lesson_ids,situation_ids,source_id,verified,verified_by,verify_note\n" +
+      "ST001,Title,Once upon a time,L001,SIT001,S1,false,,\n";
+    const ok = buildRulesSql({ ...base, lessons, situations, stories });
+    expect(ok.counts).toMatchObject({ lessons: 1, situations: 1, stories: 1 });
+    expect(ok.sql).toContain("INSERT INTO coaching_lessons");
+    expect(ok.sql).toContain("INSERT INTO coaching_situations");
+    expect(ok.sql).toContain("INSERT INTO coaching_stories");
+    expect(() => buildRulesSql({ ...base, lessons, situations: situations.replace(",F001,", ",F999,"), stories })).toThrow(/unknown fact F999/);
+    expect(() => buildRulesSql({ ...base, lessons, situations: situations.replace(",L001,S1", ",L009,S1"), stories })).toThrow(/unknown lesson L009/);
+    expect(() => buildRulesSql({ ...base, lessons, situations, stories: stories.replace(",SIT001,", ",SIT009,") })).toThrow(/unknown situation SIT009/);
+    expect(() => buildRulesSql({ ...base, lessons: lessons.replace("team;last_out", "Team Work"), situations, stories })).toThrow(/snake_case/);
+  });
+
   it("matches the row counts of the real CSVs", () => {
     const input = {
       ruleSources: read("rules/rule_sources.csv"),
       rulesFacts: read("rules/rules_facts.csv"),
       pitchRestRules: read("rules/pitch_rest_rules.csv"),
       coachingInsights: read("coaching/insights.csv"),
+      lessons: read("coaching/lessons.csv"),
+      situations: read("coaching/situations.csv"),
+      stories: read("coaching/stories.csv"),
     };
     const { counts } = buildRulesSql(input);
     expect(counts).toEqual({
@@ -94,6 +116,9 @@ describe("buildRulesSql", () => {
       facts: parseCsvRecords(input.rulesFacts).length,
       tiers: parseCsvRecords(input.pitchRestRules).length,
       insights: parseCsvRecords(input.coachingInsights).length,
+      lessons: parseCsvRecords(input.lessons).length,
+      situations: parseCsvRecords(input.situations).length,
+      stories: parseCsvRecords(input.stories).length,
     });
   });
 
@@ -103,6 +128,9 @@ describe("buildRulesSql", () => {
       rulesFacts: read("rules/rules_facts.csv"),
       pitchRestRules: read("rules/pitch_rest_rules.csv"),
       coachingInsights: read("coaching/insights.csv"),
+      lessons: read("coaching/lessons.csv"),
+      situations: read("coaching/situations.csv"),
+      stories: read("coaching/stories.csv"),
     });
     expect(read("rules.sql")).toBe(sql); // run `npm run rules:build` if this fails
   });

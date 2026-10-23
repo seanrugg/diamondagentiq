@@ -59,6 +59,19 @@ export const SituationAnswerSchema = z.object({
   intent: z.enum(["ruling", "development", "equipment", "general"]).optional(),
   /** Development path: the one next step DevelopmentAgent chose. */
   focus: z.string().optional(),
+  /** The life lesson, applied to this moment, and the lessons it came from (our own words). */
+  life_lesson: z
+    .object({
+      text: z.string(),
+      lessons: z.array(z.object({ id: z.string(), title: z.string(), principle: z.string() })),
+    })
+    .optional(),
+  /** Game situations: how offense and defense should react (from the situations table). */
+  situations: z
+    .array(z.object({ id: z.string(), name: z.string(), offense: z.string(), defense: z.string(), common_mistakes: z.string().nullable() }))
+    .optional(),
+  /** A real coaching moment from the team, shown as written (anonymized). */
+  story: z.object({ id: z.string(), title: z.string(), story: z.string() }).optional(),
   /** What the critique loop did: drafts reviewed and anything left unresolved. */
   review: z
     .object({

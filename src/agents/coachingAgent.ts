@@ -10,14 +10,42 @@ import type { RulesResult } from "../schemas/rules.js";
 import type { SituationRequest } from "../schemas/situation.js";
 import type { CallTypeOutput } from "./callTypeAgent.js";
 import type { ContextOutput } from "./contextAgent.js";
-import type { Drill, Insight } from "./developmentAgent.js";
+import type { DevelopmentMode, Drill, Insight, Lesson, Situation, Story } from "./developmentAgent.js";
 import { askJson, type JsonAgentResult } from "./modelJson.js";
 import { LEARNING_PHILOSOPHY } from "./philosophy.js";
 
-/** Coaching knowledge chosen by DevelopmentAgent (development/equipment/general questions). */
-export type DevelopmentInput = { focus: string; insights: Insight[]; drills: Drill[] };
+/** Coaching knowledge chosen by DevelopmentAgent. mode "ruling" adds the lesson to a rules answer. */
+export type DevelopmentInput = {
+  mode: DevelopmentMode;
+  focus: string;
+  insights: Insight[];
+  drills: Drill[];
+  lessons: Lesson[];
+  situations: Situation[];
+  story: Story | null;
+};
 
-export function developmentText(dev: DevelopmentInput): string {
+const ROLE_ANGLE = { player: "for_player", coach: "for_coach", parent: "for_parent", umpire: "for_umpire" } as const;
+
+export function developmentText(dev: DevelopmentInput, role: keyof typeof ROLE_ANGLE = "parent"): string {
+  const angle = ROLE_ANGLE[role];
+  const lessons = dev.lessons
+    .map((l) => `- ${l.id} "${l.title}"${l.verified ? "" : " [draft]"}: ${l.principle} Beyond the diamond: ${l.life_lesson}${l[angle] ? ` For a ${role}: ${l[angle]}` : ""}`)
+    .join("\n");
+  const situations = dev.situations
+    .map((t) => `- ${t.name}${t.verified ? "" : " [draft]"}. Offense: ${t.offense} Defense: ${t.defense}${t.common_mistakes ? ` Common mistakes: ${t.common_mistakes}` : ""} (Applies only where this rule is in effect; see the rule sources.)`)
+    .join("\n");
+  const story = dev.story ? `"${dev.story.title}"${dev.story.verified ? "" : " [draft]"} (shown to the reader in full next to your answer; connect to it, don't retell it): ${dev.story.story}` : "(none)";
+  return `Lessons (philosophy):
+${lessons}
+Situations (strategy):
+${situations || "(none)"}
+Coach's story:
+${story}
+${developmentInsightsText(dev)}`;
+}
+
+function developmentInsightsText(dev: DevelopmentInput): string {
   const insights = dev.insights
     .map((i) => `- ${i.id} [${i.topic}${i.verified ? "" : "; draft, not yet reviewed"}]: ${i.insight}${i.why ? ` Why: ${i.why}` : ""}${i.try_this ? ` Try: ${i.try_this}` : ""}`)
     .join("\n");
@@ -40,6 +68,8 @@ export const CoachingDraftSchema = z.object({
     team: z.array(z.string()).default([]),
     at_home: z.array(z.string()).default([]),
   }),
+  /** The life lesson applied to this moment (beyond the diamond). */
+  life_lesson: z.string().default(""),
 });
 export type CoachingDraft = z.infer<typeof CoachingDraftSchema>;
 
@@ -99,15 +129,17 @@ Non-negotiable:
 - This is a learning tool, not a protest generator or mid-game replay.
 - Use ONLY the rules, coaching insights and computed result given below. Never invent rule numbers; only mention a rule reference that appears in the sources list.
 - If the computed result is given, state the earliest eligible date and the game-day answer exactly as given.
-${development ? "" : "- If any source is marked unverified, say plainly that the answer is based on draft rule data that hasn't been verified yet.\n"}- If a house or tournament rule is stricter than the sanction, explain that the stricter rule governs at that event.
+${development?.mode === "development" ? "" : "- If any rule source is marked unverified, say plainly that the answer is based on draft rule data that hasn't been verified yet.\n"}- If a house or tournament rule is stricter than the sanction, explain that the stricter rule governs at that event.
 - Channel: say who to talk to and how, calmly and at the right time (e.g. the head coach or tournament director, between innings or after the game). Protests are only for rule interpretation, never for judgment.
 - Improvement plan: short, concrete, age-appropriate (age ${context.age}) and safety-conscious; no medical advice. For pitching workload, include rest and arm-care habits and point to Pitch Smart; for skills, give simple drills. 1-3 items per list.
 - Plain, warm, non-judgmental language. No markdown.
-${development ? `- This is a development question, not a ruling. "what_happened": acknowledge how the moment feels, reframe it as information (process over result), and name the one focus. If it involves balls and strikes or another judgment call, say that call belonged to the umpire and that the player controls their readiness and approach, never whether the pitches were really balls. "channel": who should help and how, and when (for a parent: let the player talk first, support rather than instruction, leave technique to the coach). "teachable_moment": the lesson for the player. "improvement_plan": built from the coaching insights and drills given; individual = what the player practises, team = what the coach can run, at_home = what the parent can do.
-- If an insight is marked draft, add one short sentence saying this guidance comes from draft coaching notes that haven't been reviewed yet.
+${development ? `- "life_lesson": 1-3 sentences that apply the given lesson(s) to this moment for a ${request.role}, and say how it reaches beyond the diamond. Encouraging, no blame of players, coaches, parents or umpires. If a coach's story is given, connect to it in a phrase.
+` : ""}${development?.mode === "ruling" ? `- After the rule answer, go beyond it: the improvement plan should cover what a good coach would add (for pitching: arm care and rest habits, giving other pitchers reps and confidence, not putting winning above development).
+` : ""}${development?.mode === "development" ? `- This is a development question, not a ruling. "what_happened": acknowledge how the moment feels, reframe it as information (process over result), and name the one focus. If it involves balls and strikes or another judgment call, say that call belonged to the umpire and that the player controls their readiness and approach, never whether the pitches were really balls. "channel": who should help and how, and when (for a parent: let the player talk first, support rather than instruction, leave technique to the coach). "teachable_moment": the lesson for the player. "improvement_plan": built from the coaching insights and drills given; individual = what the player practises, team = what the coach can run, at_home = what the parent can do.
+` : ""}${development ? `- If any lesson, situation, story or insight is marked draft, add one short sentence saying this guidance comes from draft coaching notes that haven't been reviewed yet.
 ` : ""}
 Reply with ONLY this JSON object:
-{"what_happened": "<2-4 sentences: the answer and why>", "channel": {"who": "...", "how": "..."}, "teachable_moment": "<1-2 sentences>", "improvement_plan": {"individual": ["..."], "team": ["..."], "at_home": ["..."]}}`;
+{"what_happened": "<2-4 sentences: the answer and why>", "channel": {"who": "...", "how": "..."}, "teachable_moment": "<1-2 sentences>", "improvement_plan": {"individual": ["..."], "team": ["..."], "at_home": ["..."]}${development ? ', "life_lesson": "<1-3 sentences>"' : ""}}`;
 
   const fix = criticIssues.length
     ? `\n\nA reviewer rejected your previous draft. Fix every issue:\n${criticIssues.map((i) => `- ${i}`).join("\n")}`
@@ -116,11 +148,11 @@ Reply with ONLY this JSON object:
   const user = `Question: ${request.question}
 Role: ${request.role} | Sport: ${context.sport} | Sanction: ${context.sanction} | Age: ${context.age} | Event: ${request.event_name ?? "(none)"}
 Call type: ${callType.call_type}. ${callType.rationale}
-${development ? "Evidence (DevelopmentAgent)" : "Rules found (RulesAgent summary)"}: ${rules.summary}
-${development ? "" : `Computed result (from code; use exactly): ${computedResultText(rules)}\n`}Draft data: ${rules.draft_data ? "YES (some sources unverified)" : "no"}
+${development?.mode === "development" ? "Evidence (DevelopmentAgent)" : "Rules found (RulesAgent summary)"}: ${rules.summary}
+${development?.mode === "development" ? "" : `Computed result (from code; use exactly): ${computedResultText(rules)}\n`}Draft data: ${rules.draft_data ? "YES (some sources unverified)" : "no"}
 Missing facts: ${rules.missing_facts.length ? rules.missing_facts.join("; ") : "(none)"}
 Sources:
-${sources || "(none)"}${development ? `\n${developmentText(development)}` : ""}${fix}`;
+${sources || "(none)"}${development ? `\n${developmentText(development, request.role)}` : ""}${fix}`;
 
   return askJson("coachingAgent", "draft_answer", "super", [
     { role: "system", content: system },

@@ -29,6 +29,7 @@ function draftText(draft: CoachingDraft): string {
     draft.channel.who,
     draft.channel.how,
     draft.teachable_moment,
+    draft.life_lesson,
     ...draft.improvement_plan.individual,
     ...draft.improvement_plan.team,
     ...draft.improvement_plan.at_home,
@@ -46,7 +47,7 @@ function dateForms(iso: string): string[] {
 
 const RULE_REF = /\b(?:Rule|Regulation|Reg\.)\s+[0-9IVX][\w.()-]*/gi;
 
-export function deterministicChecks(draft: CoachingDraft, rules: RulesOk): string[] {
+export function deterministicChecks(draft: CoachingDraft, rules: RulesOk, needsLesson = false): string[] {
   const text = draftText(draft);
   const issues: string[] = [];
 
@@ -59,7 +60,7 @@ export function deterministicChecks(draft: CoachingDraft, rules: RulesOk): strin
   }
   if (rules.draft_data && !/\b(draft|unverified|not yet verified|hasn't been verified|has not been verified)\b/i.test(text)) {
     issues.push(
-      rules.sources.every((s) => s.table === "coaching_insights")
+      rules.sources.every((s) => s.table.startsWith("coaching_"))
         ? "Add one short sentence saying this guidance comes from draft coaching notes that haven't been reviewed yet."
         : "Disclose that the answer is based on draft rule data that hasn't been verified yet.",
     );
@@ -70,6 +71,10 @@ export function deterministicChecks(draft: CoachingDraft, rules: RulesOk): strin
     if (!cited.includes(ref.toLowerCase().replace(/[.,;:]$/, ""))) {
       issues.push(`Remove the rule reference "${ref}": it is not in the cited sources.`);
     }
+  }
+
+  if (needsLesson && draft.life_lesson.trim() === "") {
+    issues.push("Add the life_lesson: 1-3 sentences applying the given lesson to this moment.");
   }
 
   const plan = draft.improvement_plan;
@@ -91,6 +96,8 @@ export function criticAgent(
 - The channel is missing, vague, or not calm and respectful.
 - Advice is unsafe, not appropriate for age ${age}, or gives medical advice.
 - It is not written in plain, respectful language for a ${request.role}.
+- It blames or shames a player, coach, parent or umpire, or is discouraging. The app's job is education and encouragement: mistakes are chances to learn, and everyone is human.
+- It puts winning above a player's health or development.
 Do not fail it for style preferences. Reply with ONLY: {"pass": true|false, "issues": ["<specific fix>", ...]}`;
 
   const user = `Question: ${request.question}
