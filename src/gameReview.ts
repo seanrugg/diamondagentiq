@@ -1,7 +1,8 @@
 /**
  * Post-game review: the coaching-staff mode.
  *
- *   ScorebookAgent (Super VL) reads the box score -> code checks the totals
+ *   A pasted play-by-play goes to the play-by-play parser (code only).
+ *   Otherwise ScorebookAgent (Super VL) reads the box score -> code checks the totals
  *   (one re-read if they disagree) -> code computes team stats and pitcher
  *   rest (league chart via Zetaris) -> MemoryAgent recalls this team ->
  *   GameReviewAgent drafts <-> CriticAgent (judge tier, one redraft) ->
@@ -9,13 +10,14 @@
  */
 import type { Hmem } from "./adapters/hmem.js";
 import { runAgentRows } from "./adapters/dataTools.js";
-import { teamStats } from "./calculators/boxScore.js";
+import { teamStats, type TeamStats } from "./calculators/boxScore.js";
+import { looksLikePlayByPlay, parsePlayByPlay, pbpTeamStats, type PbpExtras, type PlayByPlay } from "./calculators/playByPlay.js";
 import { earliestEligibleDate, restDaysRequired } from "./calculators/pitchRest.js";
 import { fetchDrills, fetchInsights, fetchLessons } from "./agents/developmentAgent.js";
 import { gameReviewAgent, MAX_REVIEW_REDRAFTS, reviewChecks, reviewCritic, type GameReviewDraft, type PitcherRest, type ReviewInputs } from "./agents/gameReviewAgent.js";
 import { memoryText, type RecalledMemory } from "./agents/memoryAgent.js";
 import { scorebookAgent } from "./agents/scorebookAgent.js";
-import { GameReviewAnswerSchema, type BoxScore, type GameReviewAnswer, type GameReviewRequest } from "./schemas/boxScore.js";
+import { GameReviewAnswerSchema, type BoxScore, type GameReviewAnswer, type GameReviewRequest, type GameSummary } from "./schemas/boxScore.js";
 import { getRunId, trace } from "./trace.js";
 
 export type GameReviewResult =
@@ -57,19 +59,77 @@ export async function runGameReview(
   }
 }
 
+/** Synthetic demo teams (data/samples): answers say the game is made up. */
+const DEMO_TEAMS = /demo hawks|riverside comets|wrenmoor|tallowmere|saltreach|brackenfell|quillhaven|dunmarrow/i;
+
+type GameFacts = {
+  game: GameSummary;
+  box: BoxScore | null;
+  stats: TeamStats & Partial<PbpExtras>;
+  reads: number;
+  readIssues: string[];
+  ruleMoments: PlayByPlay["rule_moments"];
+  describe: string;
+};
+
+/** Play-by-play text: parsed and counted in code, no model call. */
+function fromPlayByPlay(request: GameReviewRequest): GameFacts | string {
+  const pbp = parsePlayByPlay(request.text ?? "");
+  const ours = pbpTeamStats(pbp, request.team ?? "");
+  if (!ours) return `Tell us which team is yours: ${pbp.away.name} (${pbp.away.abbr}) or ${pbp.home.name} (${pbp.home.abbr}).`;
+  const { us, them, ...stats } = ours;
+  const side = (t: typeof us) => ({ r: t.runs, h: t.batting.hits, e: t.pitching.errors });
+  const trace_ = `${pbp.game}: ${pbp.away.abbr} ${pbp.away.runs}, ${pbp.home.abbr} ${pbp.home.runs}; ${pbp.rule_moments.length} rule moments; ${pbp.issues.length ? pbp.issues.join(" ") : "all checks pass"}`;
+  trace({ agent_name: "playByPlay", action: "parse", input_summary: `${request.text?.length ?? 0} chars`, output_summary: trace_.slice(0, 600), status: pbp.issues.length ? "error" : "ok" });
+  return {
+    game: {
+      source: "play_by_play",
+      away_team: pbp.away.name,
+      home_team: pbp.home.name,
+      our_team: us.name,
+      date: null,
+      event: null,
+      line_score: { away: pbp.away.runs_by_inning, home: pbp.home.runs_by_inning, away_rhe: side(pbp.away), home_rhe: side(pbp.home) },
+    },
+    box: null,
+    stats,
+    reads: 1,
+    readIssues: pbp.issues,
+    ruleMoments: pbp.rule_moments,
+    describe: `${us.name} vs ${them.name}: ${stats.plate_appearances} plate appearances, ${stats.pitches} pitches thrown (play-by-play)`,
+  };
+}
+
 async function run(request: GameReviewRequest, today: string, hmem: Hmem | null, track: { stage: string }): Promise<GameReviewResult> {
-  const read = await scorebookAgent(request);
-  if (!read.ok) return fail("scorebookAgent", read.error.message);
-  const box = read.boxScore;
+  let facts: GameFacts;
+  if (request.text && looksLikePlayByPlay(request.text)) {
+    track.stage = "playByPlay";
+    const parsed = fromPlayByPlay(request);
+    if (typeof parsed === "string") return fail("playByPlay", parsed);
+    facts = parsed;
+  } else {
+    const read = await scorebookAgent(request);
+    if (!read.ok) return fail("scorebookAgent", read.error.message);
+    const b = read.boxScore;
+    facts = {
+      game: { source: "box_score", away_team: b.away_team, home_team: b.home_team, our_team: b.stats_team, date: b.date, event: b.event, line_score: b.line_score },
+      box: b,
+      stats: teamStats(b),
+      reads: read.reads,
+      readIssues: read.issues,
+      ruleMoments: [],
+      describe: `${b.stats_team}: ${b.batting.length} batters, ${b.pitching.length} pitchers`,
+    };
+  }
+  const { game, box, stats } = facts;
 
   track.stage = "calculators";
-  const stats = teamStats(box);
-  const gameDate = box.date ?? today;
-  const rest = await pitcherRest(box, request, gameDate);
+  const gameDate = game.date ?? today;
+  const rest = box ? await pitcherRest(box, request, gameDate) : [];
   trace({
     agent_name: "orchestrator",
     action: "computed_stats",
-    input_summary: `${box.stats_team}: ${box.batting.length} batters, ${box.pitching.length} pitchers`,
+    input_summary: facts.describe,
     output_summary: JSON.stringify({ result: stats.result, score: `${stats.runs_for}-${stats.runs_against}`, strikeout_rate: stats.strikeout_rate, on_base_rate: stats.on_base_rate, errors: stats.errors_committed, pitches_per_inning: stats.pitches_per_inning, pitcher_rest: rest.map((r) => `${r.player}: ${r.pitches} -> eligible ${r.eligible_again}`) }),
     status: "ok",
   });
@@ -80,12 +140,12 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
   let recalled: RecalledMemory[] = [];
   if (hmem) {
     track.stage = "memoryAgent";
-    const q = `post-game review ${box.stats_team} strikeouts walks errors practice priorities`;
+    const q = `post-game review ${game.our_team} strikeouts walks errors practice priorities`;
     recalled = hmem.query(q, { topN: 3, threshold: 0.15, chatId: teamKey(request) }).memories.map(({ memory, relevance }) => ({ id: memory.id, content: memory.content, relevance: Number(relevance.toFixed(3)), confidence: Number(memory.confidence.toFixed(3)) }));
     trace({ agent_name: "memoryAgent", action: "recall", input_summary: `${teamKey(request)}: ${q}`, output_summary: recalled.length ? recalled.map((m) => `${m.id} (${m.relevance}): ${m.content.slice(0, 80)}`).join(" | ") : "nothing relevant yet", status: "ok" });
   }
 
-  const inputs: ReviewInputs = { request, boxScore: box, stats, readIssues: read.issues, pitcherRest: rest, lessons, insights, drills, memoryContext: memoryText(recalled) };
+  const inputs: ReviewInputs = { request, game, stats, ruleMoments: facts.ruleMoments, readIssues: facts.readIssues, pitcherRest: rest, lessons, insights, drills, memoryContext: memoryText(recalled) };
 
   let draft: GameReviewDraft | null = null;
   let issues: string[] = [];
@@ -128,7 +188,7 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
   ];
   const draftData = sources.some((s) => !s.verified);
   let confidence = 0.9;
-  if (read.issues.length) confidence = Math.min(confidence, 0.5);
+  if (facts.readIssues.length) confidence = Math.min(confidence, 0.5);
   if (draftData) confidence = Math.min(confidence, 0.7);
   if (issues.length) confidence -= 0.2;
 
@@ -137,8 +197,10 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
   const used = draft.memory_used.filter((id) => recalledIds.has(id));
 
   const answer: GameReviewAnswer = GameReviewAnswerSchema.parse({
+    game,
     box_score: box,
-    read: { reads: read.reads, issues: read.issues },
+    rule_moments: facts.ruleMoments,
+    read: { reads: facts.reads, issues: facts.readIssues },
     stats,
     pitcher_rest: rest,
     headline: draft.headline,
@@ -151,7 +213,7 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
     sources,
     confidence: Math.round(Math.max(0.1, confidence) * 100) / 100,
     review: { drafts, passed, unresolved_issues: issues },
-    synthetic_input: /synthetic demo data/i.test(`${box.event ?? ""} ${request.text ?? ""}`) || /demo hawks/i.test(box.stats_team),
+    synthetic_input: /synthetic demo data/i.test(`${game.event ?? ""} ${request.text ?? ""}`) || DEMO_TEAMS.test(`${game.away_team} ${game.home_team}`),
     trace_id: getRunId(),
   });
 
@@ -159,7 +221,7 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
     track.stage = "memoryAgent";
     for (const id of used) hmem.feedback(id, passed ? "helpful" : "not_helpful");
     const saved = hmem.add({
-      content: `${gameDate}: ${stats.result} ${stats.runs_for}-${stats.runs_against} vs ${box.stats_team === box.home_team ? box.away_team : box.home_team}. Struck out in ${Math.round(stats.strikeout_rate * 100)}% of plate appearances; ${stats.errors_committed} errors; ${stats.walks_allowed} walks allowed. Practice priorities: ${priorities.map((p) => p.title).join("; ")}.`,
+      content: `${gameDate}: ${stats.result} ${stats.runs_for}-${stats.runs_against} vs ${game.our_team === game.home_team ? game.away_team : game.home_team}. Struck out in ${Math.round(stats.strikeout_rate * 100)}% of plate appearances; ${stats.errors_committed} errors; ${stats.walks_allowed} walks allowed. Practice priorities: ${priorities.map((p) => p.title).join("; ")}.`,
       type: "factual",
       layer: "working",
       tags: ["game", stats.result, ...priorities.map((p) => p.title.toLowerCase().split(" ")[0] ?? "")].filter(Boolean),

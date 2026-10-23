@@ -13,7 +13,7 @@ Ask "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?" or "My son s
 - end with a **teachable moment, a life lesson and an improvement plan**, from a coaching philosophy written by our team (a youth coach and a youth umpire);
 - **remember** the team across questions with the Meterless H-MEM engine.
 
-A **post-game review** mode reads a box score and acts like a member of the coaching staff: what decided the game, what went well, practice priorities with drills, and pitcher rest dates.
+A **post-game review** mode reads a box score or a play-by-play and acts like a member of the coaching staff: what decided the game, what went well, practice priorities with drills, and pitcher rest dates.
 
 Every step is visible: a live "play by play" of the agent team on the page, a JSONL trace per run, and Meterless Nightshift receipts naming the Nemotron model behind each step.
 
@@ -87,7 +87,7 @@ Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST
 **Web page** (`npm start`): two tabs.
 
 - *Ask about a moment*: role (parent, coach, player, umpire), sport, league, age, optional tournament and team, and the question. Example buttons fill in real cases.
-- *Post-game review*: paste a box score (or use the sample). The **play by play** panel fills in live as each agent works; the answer follows.
+- *Post-game review*: paste a box score or a play-by-play (or use the sample). The **play by play** panel fills in live as each agent works; the answer follows.
 
 **API**
 
@@ -98,6 +98,8 @@ curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" \
        "question":"My son struck out to end the game on three pitches that looked outside. How do I help him?"}}'
 # A post-game review
 curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/05-post-game-review.json
+# The same review from a pasted play-by-play (counted in code; 14-18 summer league demo season)
+curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/06-post-game-play-by-play.json
 ```
 
 Returns `{run_id, status, mode, output | error, agents, trace_id, log_file, execution_time_seconds, sample_mode}`. Failures come back as a structured error naming the stage. `POST /run/stream` and `POST /review/stream` stream the same run as NDJSON (one line per agent step) for the page. `GET /healthz` reports models, sample mode and memory counts.
@@ -139,6 +141,7 @@ flowchart LR
 | CallTypeAgent | fast (code decides pure rule cases) | Umpire's judgment, written rule, or both |
 | CoachingAgent | deep | Writes the answer, channel (who to talk to and how), teachable moment, life lesson and improvement plan |
 | CriticAgent | judge (falls back to fast) | Fails drafts that rule on judgment calls, blame anyone, give unsafe or age-inappropriate advice, or put winning above health. Code checks run first: computed date stated, draft data disclosed, no rule number that isn't cited, a life lesson present. Max 2 redrafts |
+| Play-by-play parser | code | Counts a pasted play-by-play (runs by inning, called third strikes, first-pitch takes, two-strike counts, steals, wild pitches, rule moments) and checks it against the line score. No model |
 | ScorebookAgent | deep | Transcribes a box score; code checks that every total agrees and asks for one re-read with the exact disagreements |
 | GameReviewAgent | deep | Post-game: what decided it, strengths, 1–3 practice priorities from the drill and tip menus, the team-talk lesson; reviewed by the Critic |
 
@@ -180,7 +183,7 @@ Every row is marked draft until our coach reviews it, and answers say so.
 
 - **Rules**: `data/rules/*.csv` (143 sources, 276 facts, 51 pitch-rest tiers) are our own one-line summaries of public pages from Little League, USA Baseball / Pitch Smart, USSSA, USA Softball, NSA, Babe Ruth / Cal Ripken, NFHS and WBSC, each with `source_url`, edition and `verified=false` until checked. No rulebook text is copied; licensed rulebooks stay outside the repo. Known gaps are listed in `data/rules/gaps.csv`.
 - **Coaching content**: written by our team (source `DIQ-SME`) or summarized from cited public guidance (USA Baseball's American Development Model, Little League parent resources, Pitch Smart).
-- **Synthetic data only**: tournament house rules, drills, the sample box score ("Demo Hawks" vs "Riverside Comets") and all players are made up and labeled synthetic. Real GameChanger exports, rosters and minors' data never go in the repo; team memory stays in a local, gitignored folder.
+- **Synthetic data only**: tournament house rules, drills, the sample box score ("Demo Hawks" vs "Riverside Comets"), the 10-game demo season in `data/samples/season/` and all players are made up and labeled synthetic. Real GameChanger exports, rosters and minors' data never go in the repo; team memory stays in a local, gitignored folder.
 - No secrets in code, logs or traces; `.env` is gitignored and `.env.example` has placeholders only.
 
 ## Tests and evaluation

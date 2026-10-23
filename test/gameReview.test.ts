@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { generator } from "../src/adapters/llm.js";
 import { runAgentRows } from "../src/adapters/dataTools.js";
@@ -93,5 +94,33 @@ describe("runGameReview", () => {
     expect(result.ok && result.answer.review.drafts).toBe(2);
     const redraft = JSON.stringify(mockedGenerator.mock.calls[2]?.[0]);
     expect(redraft).toMatch(/Drill made-up is not on the drill menu/);
+  });
+
+  it("reviews a pasted play-by-play with code-only counting (no Scorebook read)", async () => {
+    const text = readFileSync(new globalThis.URL("../data/samples/season/play_by_play/G03_play_by_play.txt", import.meta.url), "utf8");
+    mockedGenerator
+      .mockResolvedValueOnce(reply({ ...draft, priorities: [{ ...draft.priorities[0], why: "3 of 7 strikeouts were called third strikes." }] }))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+    const result = await runGameReview({ text, role: "coach", sport: "baseball", sanction: "pitch_smart", age: 16, team: "Wrenmoor Wolves" }, "2026-10-23");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const a = result.answer;
+    expect(a.box_score).toBeNull();
+    expect(a.game).toMatchObject({ source: "play_by_play", our_team: "Wrenmoor Wolves", line_score: { away_rhe: { r: 2 }, home_rhe: { r: 12 } } });
+    expect(a.stats).toMatchObject({ result: "loss", strikeouts: 7, strikeouts_looking: 3 });
+    expect(a.rule_moments.map((m) => m.kind)).toContain("offensive_interference");
+    expect(a.pitcher_rest).toEqual([]);
+    expect(a.synthetic_input).toBe(true);
+    // Only the review and the critic call a model; the facts carry the play-by-play counts.
+    expect(mockedGenerator.mock.calls).toHaveLength(2);
+    expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ agent: "gameReviewAgent" });
+    expect(JSON.stringify(mockedGenerator.mock.calls[0]?.[0])).toMatch(/called third strikes 3 of 7 strikeouts/);
+  });
+
+  it("asks which team is yours when the play-by-play team doesn't match", async () => {
+    const text = readFileSync(new globalThis.URL("../data/samples/season/play_by_play/G03_play_by_play.txt", import.meta.url), "utf8");
+    const result = await runGameReview({ text, role: "coach", sport: "baseball", sanction: "pitch_smart", age: 16 }, "2026-10-23");
+    expect(result).toMatchObject({ ok: false, error: { stage: "playByPlay", message: expect.stringMatching(/Wrenmoor Wolves \(WRN\) or Tallowmere Tigers \(TAL\)/) } });
+    expect(mockedGenerator).not.toHaveBeenCalled();
   });
 });

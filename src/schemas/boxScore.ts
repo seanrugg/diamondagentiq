@@ -45,8 +45,8 @@ export type PitchingLine = z.infer<typeof PitchingLineSchema>;
 export const GameReviewRequestSchema = z.object({
   /** data:image/png;base64,... or data:image/jpeg;base64,... */
   image: z.string().regex(/^data:image\/(png|jpe?g|webp);base64,/).optional(),
-  /** Or the box score pasted as text. */
-  text: z.string().max(20_000).optional(),
+  /** Or pasted text: a box score, or a play-by-play ([T1] ... lines). */
+  text: z.string().max(60_000).optional(),
   role: z.enum(["parent", "coach", "umpire", "player"]).default("coach"),
   sport: z.enum(["baseball", "softball"]),
   sanction: z.string().min(1),
@@ -56,8 +56,26 @@ export const GameReviewRequestSchema = z.object({
 
 export type GameReviewRequest = z.infer<typeof GameReviewRequestSchema>;
 
+/** The game as both input kinds describe it: teams, line score, R/H/E. */
+export const GameSummarySchema = z.object({
+  source: z.enum(["box_score", "play_by_play"]),
+  away_team: z.string(),
+  home_team: z.string(),
+  our_team: z.string(),
+  date: z.string().nullable(),
+  event: z.string().nullable(),
+  line_score: BoxScoreSchema.shape.line_score,
+});
+export type GameSummary = z.infer<typeof GameSummarySchema>;
+
+export const RuleMomentOutSchema = z.object({ kind: z.string(), half: z.string(), batting_team: z.string(), text: z.string() });
+
 export const GameReviewAnswerSchema = z.object({
-  box_score: BoxScoreSchema,
+  game: GameSummarySchema,
+  /** Present when the input was a box score (image or text). */
+  box_score: BoxScoreSchema.nullable(),
+  /** Rule moments found in a play-by-play: teaching moments, not protests. */
+  rule_moments: z.array(RuleMomentOutSchema).default([]),
   read: z.object({ reads: z.number().int(), issues: z.array(z.string()) }),
   stats: z.record(z.unknown()),
   pitcher_rest: z.array(z.object({ player: z.string(), pitches: z.number(), rest_days: z.number().nullable(), eligible_again: z.string().nullable(), note: z.string().nullable() })),

@@ -49,8 +49,8 @@
   "sample_mode": true,
   "run_id": "example-03",
   "mode": "situation",
-  "trace_id": "f80af0a2-3f7f-49d8-bae8-04a8e70b7e88",
-  "log_file": "logs/trace-f80af0a2-3f7f-49d8-bae8-04a8e70b7e88.jsonl",
+  "trace_id": "708d1893-970c-438d-8531-8f4a95d00c0b",
+  "log_file": "logs/trace-708d1893-970c-438d-8531-8f4a95d00c0b.jsonl",
   "execution_time_seconds": 0,
   "status": "success",
   "output": {
@@ -78,7 +78,7 @@
         "Plan more short, active practices with stations rather than adding more games."
       ],
       "team": [
-        "First-to-third reads: Runner at first on a ball in the outfield gap. Read the fielder’s angle and the cutoff, then decide stay-at-second vs. third without watching the ball bounce twice. Safety: No slides into unprotected coaches. Clear the rundown lane before the next rep."
+        "Soft toss: two-strike low pitches: Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate. Safety: Keep tosses out of the hitter’s feet. Helmets for hitter and tosser."
       ],
       "at_home": [
         "Put kids in situations where they can fail or succeed. That's where growth and team belief come from."
@@ -142,7 +142,7 @@
       }
     ],
     "missing_facts": [],
-    "trace_id": "f80af0a2-3f7f-49d8-bae8-04a8e70b7e88",
+    "trace_id": "708d1893-970c-438d-8531-8f4a95d00c0b",
     "computation": null,
     "draft_data": true,
     "intent": "ruling",

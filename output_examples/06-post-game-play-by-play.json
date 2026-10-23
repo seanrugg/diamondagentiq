@@ -1,0 +1,254 @@
+{
+  "agents": [
+    {
+      "name": "ContextAgent",
+      "role": "Reads the question: sport, league, age, what kind of help is needed",
+      "model": "sample-offline"
+    },
+    {
+      "name": "MemoryAgent",
+      "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
+      "model": "sample-offline"
+    },
+    {
+      "name": "RulesAgent",
+      "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
+      "model": "sample-offline"
+    },
+    {
+      "name": "DevelopmentAgent",
+      "role": "Picks the lesson, game situation, story, coaching tips and drills",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CallTypeAgent",
+      "role": "Umpire's judgment, written rule, or both",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CoachingAgent",
+      "role": "Writes the answer, teachable moment, life lesson and improvement plan",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CriticAgent",
+      "role": "Reviews every draft (with code checks) and sends it back when it falls short",
+      "model": "sample-offline"
+    },
+    {
+      "name": "ScorebookAgent",
+      "role": "Transcribes a box score; code checks the totals and asks for a re-read",
+      "model": "sample-offline"
+    },
+    {
+      "name": "GameReviewAgent",
+      "role": "Post-game: what decided the game and the practice priorities",
+      "model": "sample-offline"
+    }
+  ],
+  "sample_mode": true,
+  "run_id": "example-06",
+  "mode": "review",
+  "trace_id": "48833ab1-4141-4141-9ea7-73d360a69063",
+  "log_file": "logs/trace-48833ab1-4141-4141-9ea7-73d360a69063.jsonl",
+  "execution_time_seconds": 0,
+  "status": "success",
+  "output": {
+    "game": {
+      "source": "play_by_play",
+      "away_team": "Wrenmoor Wolves",
+      "home_team": "Tallowmere Tigers",
+      "our_team": "Wrenmoor Wolves",
+      "date": null,
+      "event": null,
+      "line_score": {
+        "away": [
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "home": [
+          5,
+          0,
+          3,
+          1,
+          3
+        ],
+        "away_rhe": {
+          "r": 2,
+          "h": 4,
+          "e": 6
+        },
+        "home_rhe": {
+          "r": 12,
+          "h": 7,
+          "e": 1
+        }
+      }
+    },
+    "box_score": null,
+    "rule_moments": [
+      {
+        "kind": "inning_run_cap",
+        "half": "Bottom 1",
+        "batting_team": "Tallowmere Tigers",
+        "text": "Half-inning ended by scorekeeper."
+      },
+      {
+        "kind": "courtesy_runner",
+        "half": "Top 2",
+        "batting_team": "Wrenmoor Wolves",
+        "text": "Courtesy runner #15 Kenji Waverly in for #44 Dashiell Kowalczyk"
+      },
+      {
+        "kind": "offensive_interference",
+        "half": "Top 3",
+        "batting_team": "Wrenmoor Wolves",
+        "text": "#31 Idris Thornbury out due to offensive interference"
+      },
+      {
+        "kind": "courtesy_runner",
+        "half": "Top 4",
+        "batting_team": "Wrenmoor Wolves",
+        "text": "Courtesy runner #17 Rhys Delacroix in for #44 Dashiell Kowalczyk"
+      }
+    ],
+    "read": {
+      "reads": 1,
+      "issues": []
+    },
+    "stats": {
+      "result": "loss",
+      "runs_for": 2,
+      "runs_against": 12,
+      "plate_appearances": 25,
+      "hits": 4,
+      "walks": 5,
+      "strikeouts": 7,
+      "strikeout_rate": 0.28,
+      "on_base_rate": 0.44,
+      "batting_average": 0.222,
+      "errors_committed": 6,
+      "pitches": 103,
+      "outs_recorded": 14,
+      "pitches_per_inning": 22.1,
+      "walks_allowed": 5,
+      "strikeouts_pitched": 4,
+      "big_innings_against": [
+        {
+          "inning": 1,
+          "runs": 5
+        },
+        {
+          "inning": 3,
+          "runs": 3
+        },
+        {
+          "inning": 5,
+          "runs": 3
+        }
+      ],
+      "hit_by_pitch": 2,
+      "strikeouts_looking": 3,
+      "first_pitch_called_strikes": 4,
+      "first_pitch_swings": 7,
+      "two_strike_pas": 11,
+      "stolen_bases": 2,
+      "caught_stealing": 1,
+      "strike_rate": 0.524,
+      "first_pitch_strike_rate": 0.519,
+      "wild_pitches": 1,
+      "passed_balls": 0
+    },
+    "pitcher_rest": [],
+    "headline": "A tough one, and a clear next step for practice.",
+    "what_decided_it": [
+      "The other team's big inning (inning 1: 5; inning 3: 3; inning 5: 3).",
+      "7 strikeouts in 25 plate appearances."
+    ],
+    "strengths": [
+      "We kept competing to the last out."
+    ],
+    "priorities": [
+      {
+        "title": "Two-strike approach",
+        "why": "3 of our 7 strikeouts were called third strikes: protect the zone with two strikes.",
+        "drills": [],
+        "insights": [
+          {
+            "id": "C003",
+            "insight": "With two strikes, protect the zone: widen what you'll swing at, shorten the swing, choke up slightly, and try to put the ball in play or foul off tough pitches.",
+            "source_url": "https://github.com/seanrugg/diamondagentiq",
+            "verified": false
+          }
+        ]
+      },
+      {
+        "title": "Clean up routine plays",
+        "why": "We made 6 errors.",
+        "drills": [],
+        "insights": []
+      },
+      {
+        "title": "Throw strikes early in the count",
+        "why": "Our pitchers walked 5.",
+        "drills": [],
+        "insights": [
+          {
+            "id": "C014",
+            "insight": "Follow pitch counts and rest days, don't pitch on three days in a row, avoid catching on non-pitching days, and take time off from throwing each year.",
+            "source_url": "https://www.mlb.com/pitch-smart/pitching-guidelines/ages-9-12",
+            "verified": false
+          }
+        ]
+      }
+    ],
+    "lesson": {
+      "id": "L008",
+      "title": "A game built on failure",
+      "principle": "In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition.",
+      "life_lesson": "Failing often on the way to success is normal in anything worth doing; what matters is learning from each try."
+    },
+    "team_talk": "We lost that one as a team, and we'll get better as a team. Nobody here is defined by one game.",
+    "at_home": [
+      "Ten dry swings with a two-strike, choked-up grip."
+    ],
+    "sources": [
+      {
+        "table": "coaching_lessons",
+        "id": "L008",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C003",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C014",
+        "source_url": "https://www.mlb.com/pitch-smart/pitching-guidelines/ages-9-12",
+        "verified": false
+      }
+    ],
+    "confidence": 0.7,
+    "review": {
+      "drafts": 1,
+      "passed": true,
+      "unresolved_issues": []
+    },
+    "synthetic_input": true,
+    "trace_id": "48833ab1-4141-4141-9ea7-73d360a69063",
+    "memory": {
+      "recalled": [],
+      "used": [],
+      "saved": [
+        "mem-9"
+      ]
+    }
+  }
+}

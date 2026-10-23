@@ -49,8 +49,8 @@
   "sample_mode": true,
   "run_id": "example-04",
   "mode": "situation",
-  "trace_id": "a1eec354-72ad-43c2-8de1-c27c7d83b185",
-  "log_file": "logs/trace-a1eec354-72ad-43c2-8de1-c27c7d83b185.jsonl",
+  "trace_id": "4c0194d3-fdb4-46f6-85e0-bf9d4b7e6b5c",
+  "log_file": "logs/trace-4c0194d3-fdb4-46f6-85e0-bf9d4b7e6b5c.jsonl",
   "execution_time_seconds": 0,
   "status": "success",
   "output": {
@@ -122,7 +122,7 @@
       }
     ],
     "missing_facts": [],
-    "trace_id": "a1eec354-72ad-43c2-8de1-c27c7d83b185",
+    "trace_id": "4c0194d3-fdb4-46f6-85e0-bf9d4b7e6b5c",
     "computation": null,
     "draft_data": true,
     "intent": "development",

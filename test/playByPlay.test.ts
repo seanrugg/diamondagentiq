@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { looksLikePlayByPlay, parsePlayByPlay, pitchesIn } from "../src/calculators/playByPlay.js";
+import { looksLikePlayByPlay, parsePlayByPlay, pbpTeamStats, pitchesIn } from "../src/calculators/playByPlay.js";
 
 const game = (g: string) =>
   readFileSync(new URL(`../data/samples/season/play_by_play/${g}_play_by_play.txt`, import.meta.url), "utf8");
@@ -69,6 +69,16 @@ describe("play-by-play parser", () => {
     const r = parsePlayByPlay(text);
     expect(r.home.runs).toBe(12);
     expect(r.issues.join(" ")).toMatch(/line score says 13/);
+  });
+
+  it("turns one side into review stats, matched by name or abbreviation", () => {
+    const r = parsePlayByPlay(game("G03"));
+    const s = pbpTeamStats(r, "Wrenmoor Wolves");
+    expect(s && [s.result, s.runs_for, s.runs_against, s.outs_recorded, s.pitches, s.pitches_per_inning]).toEqual(["loss", 2, 12, 14, 103, 22.1]);
+    expect(s?.strikeouts_looking).toBe(3);
+    expect(s?.big_innings_against.map((b) => b.inning)).toEqual([1, 3, 5]);
+    expect(pbpTeamStats(r, "tal")?.result).toBe("win");
+    expect(pbpTeamStats(r, "Demo Hawks")).toBeNull();
   });
 
   it("detects the format and rejects text without a header", () => {

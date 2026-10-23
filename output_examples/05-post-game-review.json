@@ -49,11 +49,47 @@
   "sample_mode": true,
   "run_id": "example-05",
   "mode": "review",
-  "trace_id": "262d47c4-0d36-4fc9-be7f-94d173e35c35",
-  "log_file": "logs/trace-262d47c4-0d36-4fc9-be7f-94d173e35c35.jsonl",
+  "trace_id": "c80c4fc1-73e6-4c99-961c-18b26d9ee694",
+  "log_file": "logs/trace-c80c4fc1-73e6-4c99-961c-18b26d9ee694.jsonl",
   "execution_time_seconds": 0,
   "status": "success",
   "output": {
+    "game": {
+      "source": "box_score",
+      "away_team": "Riverside Comets",
+      "home_team": "Demo Hawks",
+      "our_team": "Demo Hawks",
+      "date": "2026-10-17",
+      "event": "Fall Classic 12U",
+      "line_score": {
+        "away": [
+          0,
+          1,
+          0,
+          2,
+          0,
+          1
+        ],
+        "home": [
+          1,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        "away_rhe": {
+          "r": 4,
+          "h": 7,
+          "e": 1
+        },
+        "home_rhe": {
+          "r": 3,
+          "h": 6,
+          "e": 2
+        }
+      }
+    },
     "box_score": {
       "away_team": "Riverside Comets",
       "home_team": "Demo Hawks",
@@ -211,6 +247,7 @@
         "pitches": 105
       }
     },
+    "rule_moments": [],
     "read": {
       "reads": 1,
       "issues": []
@@ -257,7 +294,7 @@
     ],
     "headline": "A close game and a clear next step for practice.",
     "what_decided_it": [
-      "The other team's big inning (inning 4: 2.).",
+      "The other team's big inning (inning 4: 2).",
       "9 strikeouts in 26 plate appearances."
     ],
     "strengths": [
@@ -269,7 +306,7 @@
         "why": "We struck out in 9 of 26 plate appearances (35%).",
         "drills": [
           {
-            "id": "e43f297f-56fb-4ca9-958e-4676ba366025",
+            "id": "3027dbb8-adb2-41a8-b878-57b2282ac9af",
             "title": "Soft toss: two-strike low pitches",
             "description": "Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate.",
             "setting": "team",
@@ -296,7 +333,7 @@
         "why": "We made 2 errors.",
         "drills": [
           {
-            "id": "c92ad72a-2dc0-4c1b-b003-639fabd317e5",
+            "id": "333a48e5-de3f-4a47-b4a4-b09cdd9897bb",
             "title": "Low-zone framing holds",
             "description": "From a kneeling or receiving stance, catcher tracks low strikes, beats the ball to the bottom of the zone, and holds a quiet glove for one beat. No stabbing.",
             "setting": "individual",
@@ -343,7 +380,7 @@
       "unresolved_issues": []
     },
     "synthetic_input": true,
-    "trace_id": "262d47c4-0d36-4fc9-be7f-94d173e35c35",
+    "trace_id": "c80c4fc1-73e6-4c99-961c-18b26d9ee694",
     "memory": {
       "recalled": [],
       "used": [],

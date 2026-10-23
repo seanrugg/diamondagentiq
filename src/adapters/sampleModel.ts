@@ -317,19 +317,23 @@ function gameReview(messages: Msg[]): SampleReply {
   const pa = Number(t.match(/Plate appearances (\d+)/)?.[1] ?? 0);
   const errors = Number(t.match(/Errors committed (\d+)/)?.[1] ?? 0);
   const walksAllowed = Number(t.match(/Walks allowed (\d+)/)?.[1] ?? 0);
-  const big = t.match(/big innings \(2\+ runs\): ([^\n]+)/)?.[1] ?? "none";
+  const big = (t.match(/big innings \(2\+ runs\): ([^\n]+)/)?.[1] ?? "none").replace(/\.$/, "");
+  const finals = t.match(/^Game: .+? (\d+), .+? (\d+)[ .]/m);
+  const margin = finals ? Math.abs(Number(finals[1]) - Number(finals[2])) : 0;
+  const called = t.match(/called third strikes (\d+) of (\d+) strikeouts/);
+  const calledKs = Number(called?.[1] ?? 0);
   const lessons = menu(t, "Lessons:", "L\\d+");
   const insights = menu(t, "Coaching insights:", "C\\d+");
   const drills = menu(t, "Drills:", "[0-9a-f-]{8,}");
   const find = (items: MenuItem[], re: RegExp) => items.find((i) => re.test(i.text))?.id;
   const priorities: { title: string; why: string; drill_ids: string[]; insight_ids: string[] }[] = [];
-  if (kRate >= 25) priorities.push({ title: "Two-strike approach", why: `We struck out in ${ks} of ${pa} plate appearances (${kRate}%).`, drill_ids: [find(drills, /two_strike/)].filter(Boolean) as string[], insight_ids: [find(insights, /two_strike_approach/), find(insights, /plate_coverage/)].filter(Boolean) as string[] });
+  if (kRate >= 25 || calledKs >= 3) priorities.push({ title: "Two-strike approach", why: calledKs >= 3 ? `${calledKs} of our ${ks} strikeouts were called third strikes: protect the zone with two strikes.` : `We struck out in ${ks} of ${pa} plate appearances (${kRate}%).`, drill_ids: [find(drills, /two_strike/)].filter(Boolean) as string[], insight_ids: [find(insights, /two_strike_approach/), find(insights, /plate_coverage/)].filter(Boolean) as string[] });
   if (errors >= 2) priorities.push({ title: "Clean up routine plays", why: `We made ${errors} errors.`, drill_ids: [find(drills, /catching|fielding|ground/)].filter(Boolean) as string[], insight_ids: [] });
   if (walksAllowed >= 4) priorities.push({ title: "Throw strikes early in the count", why: `Our pitchers walked ${walksAllowed}.`, drill_ids: [], insight_ids: [find(insights, /pitch_workload/)].filter(Boolean) as string[] });
   if (priorities.length === 0) priorities.push({ title: "Quality at-bats", why: `We reached base and competed in ${pa} plate appearances; keep building on it.`, drill_ids: [], insight_ids: [] });
   const lesson = (result === "win" ? find(lessons, /Win as a team/) : find(lessons, /built on failure/) ?? find(lessons, /Win as a team/)) ?? lessons[0]?.id ?? "L001";
   return json({
-    headline: result === "win" ? "A team win, with something to build on." : "A close game and a clear next step for practice.",
+    headline: result === "win" ? "A team win, with something to build on." : margin <= 2 ? "A close game and a clear next step for practice." : "A tough one, and a clear next step for practice.",
     what_decided_it: [big !== "none" ? `The other team's big inning (${big}).` : "A tight game decided by a few plays.", ...(kRate >= 25 ? [`${ks} strikeouts in ${pa} plate appearances.`] : [])].slice(0, 3),
     strengths: [walksAllowed <= 3 ? `Our pitchers walked only ${walksAllowed}.` : "We kept competing to the last out."],
     priorities: priorities.slice(0, 3),

@@ -537,7 +537,7 @@ function renderAnswer(a) {
 }
 
 function renderReview(r) {
-  const b = r.box_score, s = r.stats;
+  const b = r.game, box = r.box_score, s = r.stats;
   const pct = (x) => `${Math.round(x * 100)}%`;
   const parts = [];
   parts.push(`<div class="verdict"><div class="stamp" aria-label="Result: ${esc(s.result)}">${esc(s.result === "win" ? "Win" : s.result === "loss" ? "Loss" : "Tie")}<small>${esc(s.runs_for)}-${esc(s.runs_against)}</small></div>
@@ -545,13 +545,17 @@ function renderReview(r) {
   const inn = Math.max(b.line_score.away.length, b.line_score.home.length);
   const head = Array.from({ length: inn }, (_, i) => `<th>${i + 1}</th>`).join("");
   const row = (name, xs, rhe) => `<tr><td>${esc(name)}</td>${Array.from({ length: inn }, (_, i) => `<td>${esc(xs[i] ?? "")}</td>`).join("")}<td><b>${esc(rhe.r)}</b></td><td>${esc(rhe.h)}</td><td>${esc(rhe.e)}</td></tr>`;
-  parts.push(`<div><h3>What the Scorebook agent read</h3><table class="lines"><tr><th>Team</th>${head}<th>R</th><th>H</th><th>E</th></tr>${row(b.away_team, b.line_score.away, b.line_score.away_rhe)}${row(b.home_team, b.line_score.home, b.line_score.home_rhe)}</table>
-    <p class="small">${r.read.issues.length ? `Some totals still disagree after ${r.read.reads} reads, so check these numbers: ${esc(r.read.issues.join(" "))}` : `All totals agree (${r.read.reads === 1 ? "first read" : `after ${r.read.reads} reads`}). ${b.batting.length} batters, ${b.pitching.length} pitchers.`}</p></div>`);
+  parts.push(`<div><h3>${box ? "What the Scorebook agent read" : "What the play-by-play adds up to"}</h3><table class="lines"><tr><th>Team</th>${head}<th>R</th><th>H</th><th>E</th></tr>${row(b.away_team, b.line_score.away, b.line_score.away_rhe)}${row(b.home_team, b.line_score.home, b.line_score.home_rhe)}</table>
+    <p class="small">${r.read.issues.length ? `Some totals still disagree after ${r.read.reads} reads, so check these numbers: ${esc(r.read.issues.join(" "))}` : `${box ? `All totals agree (${r.read.reads === 1 ? "first read" : `after ${r.read.reads} reads`}). ${box.batting.length} batters, ${box.pitching.length} pitchers.` : "Counted in code from every play: runs match the line score and every half-inning has its outs."}`}</p></div>`);
   parts.push(`<div class="pair"><div><h3>What decided it</h3>${list(r.what_decided_it)}</div><div><h3>What went well</h3>${list(r.strengths)}</div></div>`);
-  parts.push(`<div><h3>By the numbers</h3><p class="small">Calculated in code from the box score: ${esc(s.plate_appearances)} plate appearances, ${esc(s.hits)} hits, ${esc(s.walks)} walks, ${esc(s.strikeouts)} strikeouts (${pct(s.strikeout_rate)}), on base ${pct(s.on_base_rate)}, ${esc(s.errors_committed)} errors, ${esc(s.walks_allowed)} walks allowed${s.pitches_per_inning ? `, ${esc(s.pitches_per_inning)} pitches per inning` : ""}.</p></div>`);
+  parts.push(`<div><h3>By the numbers</h3><p class="small">Calculated in code from the ${box ? "box score" : "play-by-play"}: ${esc(s.plate_appearances)} plate appearances, ${esc(s.hits)} hits, ${esc(s.walks)} walks, ${esc(s.strikeouts)} strikeouts (${pct(s.strikeout_rate)})${s.strikeouts_looking !== undefined ? `, ${esc(s.strikeouts_looking)} of them called third strikes` : ""}, on base ${pct(s.on_base_rate)}, ${esc(s.errors_committed)} errors, ${esc(s.walks_allowed)} walks allowed${s.pitches_per_inning ? `, ${esc(s.pitches_per_inning)} pitches per inning` : ""}.</p></div>`);
   parts.push(`<div><h3>Practice priorities</h3><div style="display:grid;gap:10px">${r.priorities.map((p, i) => `<div class="priority"><h4>${i + 1}. ${esc(p.title)}</h4><p class="why">${esc(p.why)}</p>
     ${p.drills.map((d) => `<p><strong>${esc(d.title)}</strong> (${esc(d.setting)}). ${esc(d.description)}${d.safety_notes ? ` <span class="small">Safety: ${esc(d.safety_notes)}</span>` : ""}</p>`).join("")}
     ${p.insights.map((x) => `<p class="small">${esc(x.insight)}</p>`).join("")}</div>`).join("")}</div></div>`);
+  if (r.rule_moments?.length) {
+    const label = { dropped_third_strike: "Dropped third strike", balk: "Balk", offensive_interference: "Offensive interference", courtesy_runner: "Courtesy runner", inning_run_cap: "Run cap ended the half-inning", pickoff_out: "Pickoff" };
+    parts.push(`<div><h3>Rule moments to teach</h3>${list(r.rule_moments.map((m) => `${label[m.kind] ?? m.kind}: ${m.half}, ${m.batting_team} batting.`))}<p class="small">Found in the play-by-play. Ask about any of them on the "Ask about a moment" tab to learn the rule.</p></div>`);
+  }
   if (r.pitcher_rest.length) {
     parts.push(`<div><h3>Pitcher rest</h3><table class="sources"><thead><tr><th>Pitcher</th><th>Pitches</th><th>Rest days</th><th>Eligible again</th></tr></thead><tbody>
       ${r.pitcher_rest.map((p) => `<tr><td>${esc(p.player)}</td><td>${esc(p.pitches)}</td><td>${esc(p.rest_days ?? "?")}</td><td>${esc(p.eligible_again ?? p.note ?? "")}</td></tr>`).join("")}</tbody></table>

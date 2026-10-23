@@ -13,6 +13,7 @@
  * about, plus the rule moments found in the text. The model never counts.
  */
 import { z } from "zod";
+import type { TeamStats } from "./boxScore.js";
 
 export const PbpTeamSchema = z.object({
   name: z.string(),
@@ -28,6 +29,7 @@ export const PbpTeamSchema = z.object({
     strikeouts: z.number().int(),
     strikeouts_looking: z.number().int(),
     reached_on_error: z.number().int(),
+    sacrifices: z.number().int(),
     first_pitch_called_strikes: z.number().int(),
     first_pitch_swings: z.number().int(),
     first_pitch_balls: z.number().int(),
@@ -41,6 +43,7 @@ export const PbpTeamSchema = z.object({
     pitches: z.number().int(),
     strikes: z.number().int(),
     batters_faced: z.number().int(),
+    outs_recorded: z.number().int(),
     first_pitch_strikes: z.number().int(),
     walks: z.number().int(),
     hit_by_pitch: z.number().int(),
@@ -124,6 +127,7 @@ function emptyTeam(name: string, abbr: string, side: "away" | "home"): PbpTeam {
       strikeouts: 0,
       strikeouts_looking: 0,
       reached_on_error: 0,
+      sacrifices: 0,
       first_pitch_called_strikes: 0,
       first_pitch_swings: 0,
       first_pitch_balls: 0,
@@ -136,6 +140,7 @@ function emptyTeam(name: string, abbr: string, side: "away" | "home"): PbpTeam {
       pitches: 0,
       strikes: 0,
       batters_faced: 0,
+      outs_recorded: 0,
       first_pitch_strikes: 0,
       walks: 0,
       hit_by_pitch: 0,
@@ -247,6 +252,7 @@ export function parsePlayByPlay(text: string): PlayByPlay {
       fld.pitching.hit_by_pitch += 1;
     }
     if (ev === "Error") bat.batting.reached_on_error += 1;
+    if (/^Sacrifice/.test(ev)) bat.batting.sacrifices += 1;
     if (ev === "Strikeout" || ev === "Dropped 3rd Strike") {
       bat.batting.strikeouts += 1;
       if (/Strike 3 looking/.test(sequence!)) bat.batting.strikeouts_looking += 1;
@@ -264,6 +270,7 @@ export function parsePlayByPlay(text: string): PlayByPlay {
 
   // Every half-inning except the game's last should end with 3 outs.
   for (const [half, outs] of halfOuts) {
+    (half.startsWith("Top") ? home : away).pitching.outs_recorded += outs;
     if (half !== lastHalf && outs !== 3) issues.push(`${half} ended with ${outs} outs.`);
   }
 
@@ -291,3 +298,68 @@ export function parsePlayByPlay(text: string): PlayByPlay {
     issues,
   });
 }
+
+/**
+ * One team's game in the shape the post-game review uses for a box score
+ * (TeamStats), plus the extra counts only a play-by-play has.
+ * Returns null when `team` matches neither side.
+ */
+export function pbpTeamStats(pbp: PlayByPlay, team: string): (TeamStats & PbpExtras & { us: PbpTeam; them: PbpTeam }) | null {
+  const want = team.trim().toLowerCase();
+  if (!want) return null;
+  const hit = (t: PbpTeam) => t.abbr.toLowerCase() === want || t.name.toLowerCase().includes(want) || want.includes(t.name.toLowerCase());
+  const us = hit(pbp.away) ? pbp.away : hit(pbp.home) ? pbp.home : null;
+  if (!us) return null;
+  const them = us === pbp.away ? pbp.home : pbp.away;
+  const b = us.batting;
+  const p = us.pitching;
+  const pa = b.plate_appearances;
+  const ab = pa - b.walks - b.hit_by_pitch - b.sacrifices;
+  const r3 = (x: number) => Math.round(x * 1000) / 1000;
+  return {
+    us,
+    them,
+    result: us.runs > them.runs ? "win" : us.runs < them.runs ? "loss" : "tie",
+    runs_for: us.runs,
+    runs_against: them.runs,
+    plate_appearances: pa,
+    hits: b.hits,
+    walks: b.walks,
+    strikeouts: b.strikeouts,
+    strikeout_rate: pa ? r3(b.strikeouts / pa) : 0,
+    on_base_rate: pa ? r3((b.hits + b.walks + b.hit_by_pitch) / pa) : 0,
+    batting_average: ab > 0 ? r3(b.hits / ab) : 0,
+    errors_committed: p.errors,
+    pitches: p.pitches,
+    outs_recorded: p.outs_recorded,
+    pitches_per_inning: p.outs_recorded ? Math.round((p.pitches / (p.outs_recorded / 3)) * 10) / 10 : null,
+    walks_allowed: p.walks,
+    strikeouts_pitched: them.batting.strikeouts,
+    big_innings_against: them.runs_by_inning.map((runs, i) => ({ inning: i + 1, runs })).filter((x) => x.runs >= 2),
+    hit_by_pitch: b.hit_by_pitch,
+    strikeouts_looking: b.strikeouts_looking,
+    first_pitch_called_strikes: b.first_pitch_called_strikes,
+    first_pitch_swings: b.first_pitch_swings,
+    two_strike_pas: b.two_strike_pas,
+    stolen_bases: b.stolen_bases,
+    caught_stealing: b.caught_stealing,
+    strike_rate: p.pitches ? r3(p.strikes / p.pitches) : 0,
+    first_pitch_strike_rate: p.batters_faced ? r3(p.first_pitch_strikes / p.batters_faced) : 0,
+    wild_pitches: p.wild_pitches,
+    passed_balls: p.passed_balls,
+  };
+}
+
+export type PbpExtras = {
+  hit_by_pitch: number;
+  strikeouts_looking: number;
+  first_pitch_called_strikes: number;
+  first_pitch_swings: number;
+  two_strike_pas: number;
+  stolen_bases: number;
+  caught_stealing: number;
+  strike_rate: number;
+  first_pitch_strike_rate: number;
+  wild_pitches: number;
+  passed_balls: number;
+};

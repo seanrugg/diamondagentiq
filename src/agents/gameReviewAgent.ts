@@ -6,9 +6,9 @@
  * A judge-tier review then checks tone and grounding (one redraft at most).
  */
 import { z } from "zod";
-import type { BoxScore } from "../schemas/boxScore.js";
-import type { GameReviewRequest } from "../schemas/boxScore.js";
+import type { GameReviewRequest, GameSummary } from "../schemas/boxScore.js";
 import type { TeamStats } from "../calculators/boxScore.js";
+import type { PbpExtras, PlayByPlay } from "../calculators/playByPlay.js";
 import type { Drill, Insight, Lesson } from "./developmentAgent.js";
 import { askJson, type JsonAgentResult } from "./modelJson.js";
 import { LEARNING_PHILOSOPHY } from "./philosophy.js";
@@ -43,8 +43,10 @@ export type PitcherRest = { player: string; pitches: number; rest_days: number |
 
 export type ReviewInputs = {
   request: GameReviewRequest;
-  boxScore: BoxScore;
-  stats: TeamStats;
+  game: GameSummary;
+  stats: TeamStats & Partial<PbpExtras>;
+  /** Rule moments from a play-by-play (empty for a box score). */
+  ruleMoments: PlayByPlay["rule_moments"];
   readIssues: string[];
   pitcherRest: PitcherRest[];
   lessons: Lesson[];
@@ -56,14 +58,21 @@ export type ReviewInputs = {
 function factsText(i: ReviewInputs): string {
   const s = i.stats;
   const pct = (x: number) => `${Math.round(x * 100)}%`;
-  return `Game: ${i.boxScore.away_team} ${i.boxScore.line_score.away_rhe.r}, ${i.boxScore.home_team} ${i.boxScore.line_score.home_rhe.r}${i.boxScore.date ? ` on ${i.boxScore.date}` : ""}${i.boxScore.event ? ` (${i.boxScore.event})` : ""}. Our team: ${i.boxScore.stats_team}, result: ${s.result}.
+  const g = i.game;
+  const pbp = g.source === "play_by_play"
+    ? `
+- From the play-by-play: called third strikes ${s.strikeouts_looking ?? 0} of ${s.strikeouts} strikeouts; first pitch was a called strike in ${s.first_pitch_called_strikes ?? 0} plate appearances and a swing in ${s.first_pitch_swings ?? 0}; ${s.two_strike_pas ?? 0} plate appearances reached two strikes.
+- Our running: ${s.stolen_bases ?? 0} stolen bases, ${s.caught_stealing ?? 0} caught stealing. Our pitching: ${pct(s.strike_rate ?? 0)} strikes, first-pitch strikes to ${pct(s.first_pitch_strike_rate ?? 0)} of batters, ${s.wild_pitches ?? 0} wild pitches, ${s.passed_balls ?? 0} passed balls.
+- Rule moments in this game (teach them; never treat them as complaints about the umpire): ${i.ruleMoments.length ? i.ruleMoments.map((m) => `${m.half}, ${m.batting_team} batting: ${m.kind.replace(/_/g, " ")}`).join("; ") : "none"}.`
+    : "";
+  return `Game: ${g.away_team} ${g.line_score.away_rhe.r}, ${g.home_team} ${g.line_score.home_rhe.r}${g.date ? ` on ${g.date}` : ""}${g.event ? ` (${g.event})` : ""}. Our team: ${g.our_team}, result: ${s.result}.
 Computed in code (use these numbers exactly; don't compute your own):
 - Plate appearances ${s.plate_appearances}; hits ${s.hits}; walks ${s.walks}; strikeouts ${s.strikeouts} (${pct(s.strikeout_rate)} of plate appearances); on-base rate ${pct(s.on_base_rate)}.
 - Errors committed ${s.errors_committed}. Walks allowed ${s.walks_allowed}; strikeouts by our pitchers ${s.strikeouts_pitched}.
 - Pitches ${s.pitches ?? "not recorded"}${s.pitches_per_inning !== null ? `, ${s.pitches_per_inning} per inning` : ""}.
-- Opponent's big innings (2+ runs): ${s.big_innings_against.length ? s.big_innings_against.map((b) => `inning ${b.inning}: ${b.runs}`).join("; ") : "none"}.
+- Opponent's big innings (2+ runs): ${s.big_innings_against.length ? s.big_innings_against.map((b) => `inning ${b.inning}: ${b.runs}`).join("; ") : "none"}.${pbp}
 - Pitcher rest (computed from the league chart): ${i.pitcherRest.map((p) => `${p.player} ${p.pitches} pitches -> ${p.rest_days ?? "?"} days, eligible ${p.eligible_again ?? "unknown"}`).join("; ") || "no pitch counts"}.
-${i.readIssues.length ? `Totals that didn't agree when the box score was read (mention that the numbers may be off): ${i.readIssues.join(" ")}` : "All box-score totals agree."}`;
+${i.readIssues.length ? `Totals that didn't agree when the ${g.source === "play_by_play" ? "play-by-play was checked" : "box score was read"} (mention that the numbers may be off): ${i.readIssues.join(" ")}` : `All ${g.source === "play_by_play" ? "play-by-play" : "box-score"} totals agree.`}`;
 }
 
 export function gameReviewAgent(i: ReviewInputs, criticIssues: string[] = []): Promise<JsonAgentResult<GameReviewDraft>> {

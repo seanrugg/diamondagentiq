@@ -49,9 +49,9 @@
   "sample_mode": true,
   "run_id": "example-01",
   "mode": "situation",
-  "trace_id": "e2044d78-5aa5-44d4-8be2-3f2dffa16c45",
-  "log_file": "logs/trace-e2044d78-5aa5-44d4-8be2-3f2dffa16c45.jsonl",
-  "execution_time_seconds": 2,
+  "trace_id": "44530a3b-3671-4dda-99a0-3179a4f1fe19",
+  "log_file": "logs/trace-44530a3b-3671-4dda-99a0-3179a4f1fe19.jsonl",
+  "execution_time_seconds": 2.1,
   "status": "success",
   "output": {
     "what_happened": {
@@ -61,7 +61,7 @@
         "rules_facts:F002",
         "rules_facts:F003",
         "rules_facts:F004",
-        "house_rules:54b948d5-8e32-443b-a1a9-17cac8bf1d8c",
+        "house_rules:64a10585-16d2-494b-88ac-f7c6f9670413",
         "pitch_rest_rules:LL-PITCH: age 11-12, 66-85 pitches",
         "coaching_lessons:L004",
         "coaching_lessons:L003",
@@ -80,7 +80,7 @@
         "Track pitches every outing and plan the rotation before a tournament weekend."
       ],
       "team": [
-        "Tee: two-strike low pitch: Tee at the bottom of the zone. Hitters stay on the back hip, match the low plane, and keep the ball out of the air. No upward chop. Safety: Give the hitter a clear cage or fence. Do not kneel in the swing path to set the tee."
+        "Between-outing recovery circuit: Light movement, band work, and a short catch progression the day after a high-pitch outing. Stop at any sharp elbow or shoulder pain and check rest rules before the next live inning. Safety: This is recovery, not a bullpen. No max-effort throws. Pair with the pitcher’s remaining rest days."
       ],
       "at_home": [
         "Protect arms and build depth: give more pitchers reps in lower-pressure innings so they're ready when you need them. Rest your best arm when the rules or their body say so."
@@ -126,7 +126,7 @@
       },
       {
         "table": "house_rules",
-        "id": "54b948d5-8e32-443b-a1a9-17cac8bf1d8c",
+        "id": "64a10585-16d2-494b-88ac-f7c6f9670413",
         "source_url": "synthetic://fall-classic-12u/house-rules.txt",
         "verified": false,
         "rule_ref": "Fall Classic 12U, Pitching rest",
@@ -171,7 +171,7 @@
       }
     ],
     "missing_facts": [],
-    "trace_id": "e2044d78-5aa5-44d4-8be2-3f2dffa16c45",
+    "trace_id": "44530a3b-3671-4dda-99a0-3179a4f1fe19",
     "computation": {
       "pitches": 68,
       "age": 12,
@@ -181,7 +181,7 @@
       "rest_days": 5,
       "governing": "house_rule",
       "conflict": true,
-      "house_rule_id": "54b948d5-8e32-443b-a1a9-17cac8bf1d8c",
+      "house_rule_id": "64a10585-16d2-494b-88ac-f7c6f9670413",
       "earliest_eligible_date": "2026-10-22",
       "eligible_on_game_date": false
     },
