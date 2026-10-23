@@ -46,14 +46,16 @@ curl -s -X POST http://localhost:8787/run -H "Content-Type: application/json" -d
 
 Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST :8888), and **Meterless Nightshift** with an NVIDIA key in Setup → Providers.
 
-1. **Nightshift lanes** (NIGHT → LANES). The app pins models by ID, and Nightshift serves a pinned model when it sits in the **Race** row:
+1. **Nightshift lanes** (NIGHT → LANES). Seat the Nemotron models in the **Race** row and one in **Verify** (Nightshift warns without one):
 
-   | Row | Job | Model | Used by |
-   |---|---|---|---|
-   | Race | Solve a complex problem | `nvidia/nemotron-3.5-super-vl-120b-a12b` | Context, Rules, Coaching, Scorebook, Game review |
-   | Race | Solve a complex problem / Extract structured data | `nvidia/nemotron-3.5-lightning-30b-a3b` | Development, Call type, Memory |
-   | Race | Solve a complex problem | `nvidia/nemotron-3-ultra-550b-a55b` | Critic |
-   | Verify | Check an answer | `nvidia/nemotron-3-nano-30b-a3b` | Nightshift's own settle/verify step |
+   | Row | Job | Model |
+   |---|---|---|
+   | Race | Solve a complex problem | `nvidia/nemotron-3.5-super-vl-120b-a12b` |
+   | Race | Solve a complex problem | `nvidia/nemotron-3.5-lightning-30b-a3b` |
+   | Race | Solve a complex problem | `nvidia/nemotron-3-ultra-550b-a55b` |
+   | Verify | Check an answer | `nvidia/nemotron-3-nano-30b-a3b` |
+
+   Each agent asks for a tier (`deep` for reasoning and writing, `fast` for quick picks, a judge tier for the Critic). In our tests Nightshift **races the Race row** and the receipt names the model that answered; which Nemotron wins a given call isn't fully under the app's control (`npm run check:routing` shows it). The traces and the page always show the model that actually answered.
 
 2. **Environment**
 
@@ -62,7 +64,7 @@ Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST
    npm ci
    ```
 
-   Key settings (no secrets shown): `LLM_PROVIDER=meterless`, `METERLESS_MODEL_SUPER`, `METERLESS_MODEL_LIGHTNING`, `METERLESS_MODEL_JUDGE` (model IDs above), `METERLESS_DIRECT_MODE=tools`, `METERLESS_APP_STREAMS=per-agent`. Inside Docker, point `METERLESS_BASE_URL` and the Zetaris URLs at `host.docker.internal`.
+   Key settings (no secrets shown): `LLM_PROVIDER=meterless`, `METERLESS_MODEL_SUPER=meterless/text.deep`, `METERLESS_MODEL_LIGHTNING=meterless/text.fast`, `METERLESS_MODEL_JUDGE` (optional; empty uses the fast tier), `METERLESS_DIRECT_MODE=tools`, `METERLESS_APP_STREAMS=per-agent`. Inside Docker, point `METERLESS_BASE_URL` and the Zetaris URLs at `host.docker.internal`.
 
 3. **Data**
 
@@ -128,17 +130,17 @@ flowchart LR
   A --> M2[MemoryAgent: mine, remember,<br/>trust feedback]
 ```
 
-| Agent | Model (via Nightshift) | Job |
+| Agent | Tier requested (Nightshift) | Job |
 |---|---|---|
-| ContextAgent | Super | Reads the question: sport, league, age, intent (ruling, development, equipment, general) |
-| MemoryAgent | Lightning (mining) + code | H-MEM recall before the team works; after, mines lasting facts from the question, saves the answer summary, and raises or lowers trust in memories the answer used, based on the Critic's verdict |
-| RulesAgent | Super, with a read-only SQL tool | Queries `rules_facts` and `house_rules` through Zetaris (max 4 tool calls); may cite only rows its queries returned. Code then looks up the pitch-rest chart and computes rest days and the earliest eligible date, applying a stricter house rule |
-| DevelopmentAgent | Lightning | Picks from menus code fetched via Zetaris: the life lesson, game situation, coaching story, tips and drills. Ids not on the menu are dropped |
-| CallTypeAgent | Lightning (code decides pure rule cases) | Umpire's judgment, written rule, or both |
-| CoachingAgent | Super | Writes the answer, channel (who to talk to and how), teachable moment, life lesson and improvement plan |
-| CriticAgent | Ultra (judge tier) | Fails drafts that rule on judgment calls, blame anyone, give unsafe or age-inappropriate advice, or put winning above health. Code checks run first: computed date stated, draft data disclosed, no rule number that isn't cited, a life lesson present. Max 2 redrafts |
-| ScorebookAgent | Super (VL) | Transcribes a box score; code checks that every total agrees and asks for one re-read with the exact disagreements |
-| GameReviewAgent | Super | Post-game: what decided it, strengths, 1–3 practice priorities from the drill and tip menus, the team-talk lesson; reviewed by the Critic |
+| ContextAgent | deep | Reads the question: sport, league, age, intent (ruling, development, equipment, general) |
+| MemoryAgent | fast (mining) + code | H-MEM recall before the team works; after, mines lasting facts from the question, saves the answer summary, and raises or lowers trust in memories the answer used, based on the Critic's verdict |
+| RulesAgent | deep, with a read-only SQL tool | Queries `rules_facts` and `house_rules` through Zetaris (max 4 tool calls); may cite only rows its queries returned. Code then looks up the pitch-rest chart and computes rest days and the earliest eligible date, applying a stricter house rule |
+| DevelopmentAgent | fast | Picks from menus code fetched via Zetaris: the life lesson, game situation, coaching story, tips and drills. Ids not on the menu are dropped |
+| CallTypeAgent | fast (code decides pure rule cases) | Umpire's judgment, written rule, or both |
+| CoachingAgent | deep | Writes the answer, channel (who to talk to and how), teachable moment, life lesson and improvement plan |
+| CriticAgent | judge (falls back to fast) | Fails drafts that rule on judgment calls, blame anyone, give unsafe or age-inappropriate advice, or put winning above health. Code checks run first: computed date stated, draft data disclosed, no rule number that isn't cited, a life lesson present. Max 2 redrafts |
+| ScorebookAgent | deep | Transcribes a box score; code checks that every total agrees and asks for one re-read with the exact disagreements |
+| GameReviewAgent | deep | Post-game: what decided it, strengths, 1–3 practice priorities from the drill and tip menus, the team-talk lesson; reviewed by the Critic |
 
 Bounded everywhere: max 4 tool calls per agent turn, max 2 critic retries, one box-score re-read, timeouts and bounded 499 retries on every model call. Confidence is computed in code from the evidence (draft data, missing facts, unresolved review issues).
 
@@ -168,11 +170,11 @@ Every row is marked draft until our coach reviews it, and answers say so.
 - *Nightshift* is the primary AI provider: every model call goes through one `generator()` to the Nightshift Runtime with the `meterless-app` / `meterless-scope` headers, and the `meterless.compute_receipt.v1` receipt is copied into each trace line. With `METERLESS_APP_STREAMS=per-agent`, each agent appears in Nightshift as its own app stream (`diamondagentiq-rules`, `diamondagentiq-critic`, …), so Nightshift's Jobs, Monitor and Replay views show the team at work.
 - *H-MEM* (the Meterless memory engine, vendored at a pinned commit in `vendor/hmem`, Apache-2.0) gives the team memory across questions: per-team recall with H-MEM's hybrid ranking, model-assisted mining through its `minerFn` hook, and feedback deltas from the Critic's verdict, all written to its append-only trust ledger.
 
-**NVIDIA.** Three Nemotron models through Nightshift, each matched to the work: **Nemotron 3.5 Super VL 120B** for reasoning, tool calls and long documents; **Nemotron 3.5 Lightning 30B** for fast structured picks and classification; **Nemotron 3 Ultra 550B** as the judge. Code was also generated with Claude Code running locally on Nemotron 3.5 Super via Ollama during the build.
+**NVIDIA.** Every model call is answered by a Nemotron model through Nightshift: **Nemotron 3.5 Super VL 120B**, **Nemotron 3.5 Lightning 30B** and **Nemotron 3 Ultra 550B** race in Nightshift's Race row (with **Nemotron 3 Nano 30B** in Verify), and each trace line and timeline row names the model that answered, from the Nightshift receipt. Code was also generated with Claude Code running locally on Nemotron 3.5 Super via Ollama during the build.
 
 **Cursor.** The project scaffold and editing were done in Cursor; see the tooling note below.
 
-**What's unique.** Nightshift isn't only a model endpoint here: each agent is its own Nightshift app stream and every step's receipt is on our timeline, so a coach can watch which Nemotron model did what. H-MEM's trust ledger is driven by our Critic, so memories that lead to good answers are trusted more next time. And Zetaris holds a learning curriculum, not just rules: the agents pull lessons and game situations through it the same way they pull rules.
+**What's unique.** Nightshift isn't only a model endpoint here: each agent is its own Nightshift app stream and every step's receipt is on our timeline, so anyone can see which Nemotron model answered each step. H-MEM's trust ledger is driven by our Critic, so memories that lead to good answers are trusted more next time. And Zetaris holds a learning curriculum, not just rules: the agents pull lessons and game situations through it the same way they pull rules.
 
 ## Data, licensing and privacy
 
@@ -190,7 +192,7 @@ Every row is marked draft until our coach reviews it, and answers say so.
 ## Known limitations
 
 - **Draft data.** Rules and coaching content are unverified drafts; confidence is capped and answers say so.
-- **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score; screenshots work only where Nightshift can serve vision. The Critic uses Ultra by pinning it in the Race row.
+- **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score; screenshots work only where Nightshift can serve vision. Asking for a specific model by name isn't reliably honored either: Nightshift races the Race row, so the receipts, not our settings, say which Nemotron answered each step.
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
 - **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap.
 - **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording.
