@@ -151,6 +151,19 @@ function extractReasoning(
   return extra.reasoning ?? extra.reasoning_content ?? null;
 }
 
+function withNonce(messages: ChatCompletionMessageParam[], nonce: string): ChatCompletionMessageParam[] {
+  const tag = `\n\n(request id ${nonce}; ignore this line)`;
+  const i = messages.map((m) => m.role).lastIndexOf("user");
+  if (i < 0) return [...messages, { role: "user", content: tag.trim() }];
+  return messages.map((m, n) => {
+    if (n !== i) return m;
+    const c = (m as { content: unknown }).content;
+    if (typeof c === "string") return { ...m, content: c + tag } as ChatCompletionMessageParam;
+    if (Array.isArray(c)) return { ...m, content: [...c, { type: "text", text: tag }] } as ChatCompletionMessageParam;
+    return m;
+  });
+}
+
 export async function generator(
   messages: ChatCompletionMessageParam[],
   opts?: GeneratorOpts,
@@ -181,9 +194,9 @@ export async function generator(
   const direct = provider === "meterless" && !opts?.tools && config.METERLESS_DIRECT_MODE === "tools";
   const tools = opts?.tools ?? (direct ? [DIRECT_MODE_TOOL] : undefined);
   const toolChoice = opts?.toolChoice ?? (direct ? "none" : undefined);
-  const sentMessages: ChatCompletionMessageParam[] = opts?.nonce
-    ? [...messages, { role: "system", content: `(request ${opts.nonce})` }]
-    : messages;
+  // The nonce goes into the last user message: Nightshift's cache matched
+  // requests whose only difference was an extra system message.
+  const sentMessages: ChatCompletionMessageParam[] = opts?.nonce ? withNonce(messages, opts.nonce) : messages;
   const request = {
     model,
     messages: sentMessages,

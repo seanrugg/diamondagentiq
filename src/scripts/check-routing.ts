@@ -19,16 +19,17 @@ const messages = [
 ];
 
 const ids = process.argv.slice(2).filter((a) => !a.startsWith("--"));
-const models = ids.length
+const models = [...new Set(ids.length
   ? ids
   : [
       meterlessModelForTier("lightning"),
       meterlessModelForTier("super"),
+      meterlessModelForTier("judge"),
       "meterless/text.fast",
       "meterless/text.deep",
       "meterless/judge",
       "meterless/text.fusion",
-    ];
+    ])];
 
 console.log(`provider ${config.LLM_PROVIDER}; METERLESS_DIRECT_MODE=${config.METERLESS_DIRECT_MODE}\n`);
 
