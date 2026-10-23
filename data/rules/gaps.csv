@@ -1,0 +1,10 @@
+gap,sanction,why,priority
+Cal Ripken rest-day table,cal_ripken,The pitch sheet's rest table didn't extract cleanly. Needs the 2026 BRL rules e-book ($10) or a league copy.,High: demo scenario 2 if you use Cal Ripken
+Babe Ruth 13-18 pitching limits,babe_ruth_league,No free page states them.,Medium
+USA Softball league-level pitching limits,usa_softball,The 2026 rulebook sets none for youth; local leagues and tournaments may add their own.,Low
+LL threshold-mid-batter note,little_league,Wording ambiguous in automatic extraction (see F005).,Medium
+LL baseball obstruction award detail,little_league,Softball Type A/B is now covered (comparison sheet). Baseball awards still need the rulebook app.,High: demo scenario 1
+2026 USABat guide,usa_baseball,Issuu viewer couldn't be read automatically.,Low
+LL softball leaping rule conflict,little_league,2024 change says leaping is legal; the 2026 FAQ says it is illegal. Check the rulebook app.,High: contradictory sources
+Babe Ruth baseball age cutoff,babe_ruth_league,The page is only a birth-date calculator.,Low
+"Balks and leading off by division (LL, Cal Ripken)",little_league; cal_ripken,Not on free pages.,Medium: good judgment-vs-rule examples
