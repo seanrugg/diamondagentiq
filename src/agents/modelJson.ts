@@ -74,8 +74,8 @@ export async function askJson<T>(
     trace({
       agent_name: agent,
       action,
-      input_summary: `attempt ${attempt}/${maxAttempts} (${tier})`,
-      output_summary: value ? content.slice(0, 600) : issue.slice(0, 400),
+      input_summary: `attempt ${attempt}/${maxAttempts} (${tier}; requested ${result.requested_model}${result.model !== result.requested_model ? `; provider served ${result.model}` : ""}${result.retries ? `; ${result.retries} retr${result.retries === 1 ? "y" : "ies"} after 499` : ""})`,
+      output_summary: value ? content.slice(0, 600) : `${issue.slice(0, 400)} (finish_reason=${result.finish_reason ?? "none"})`,
       model: result.model,
       provider: result.provider,
       reasoning: result.reasoning,

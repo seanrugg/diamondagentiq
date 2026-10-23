@@ -22,10 +22,14 @@ async function main(): Promise<void> {
   const report: unknown[] = [];
   let passed = 0;
   let total = 0;
-  for (const q of questions) {
+  for (const [n, q] of questions.entries()) {
+    console.error(`\n→ [${n + 1}/${questions.length}] ${q.id} ...`);
     const request = SituationRequestSchema.parse(q.request);
     const started = Date.now();
-    const result = await runSituation(request, q.today ?? localToday());
+    const result = await runSituation(request, q.today ?? localToday()).catch((error: unknown) => ({
+      ok: false as const,
+      error: { stage: "eval", message: error instanceof Error ? error.message : String(error), trace_id: "" },
+    }));
     const seconds = Math.round((Date.now() - started) / 1000);
     if (!result.ok) {
       console.log(`\n✗ ${q.id} (${seconds}s): failed at ${result.error.stage}: ${result.error.message}`);

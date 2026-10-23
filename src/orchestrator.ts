@@ -2,8 +2,13 @@
  * Orchestrator: runs the agent team for one situation and owns the
  * critique/retry loop.
  *
- *   ContextAgent -> RulesAgent + DevelopmentAgent (parallel) -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (intent "ruling")
- *   ContextAgent -> DevelopmentAgent                         -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (development, equipment, general)
+ *   ContextAgent -> RulesAgent -> DevelopmentAgent -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (intent "ruling")
+ *   ContextAgent -> DevelopmentAgent               -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (development, equipment, general)
+ *
+ * Agents run one at a time: Nightshift dropped requests (HTTP 499) when two
+ * ran at once, and DevelopmentAgent picks a better lesson once it knows the
+ * rule answer. A thrown error at any stage becomes a structured error naming
+ * that stage, so one bad call never crashes a caller (e.g. npm run eval).
  *
  * Every answer carries a lesson: on rulings DevelopmentAgent adds the
  * teachable moment beyond the rule (if it fails, the rule answer still goes
@@ -15,7 +20,7 @@
  * by a model.
  */
 import { callTypeAgent, type CallTypeOutput } from "./agents/callTypeAgent.js";
-import { coachingAgent, type CoachingDraft, type DevelopmentInput } from "./agents/coachingAgent.js";
+import { coachingAgent, computedResultText, type CoachingDraft, type DevelopmentInput } from "./agents/coachingAgent.js";
 import { developmentAgent, type DevelopmentResult } from "./agents/developmentAgent.js";
 import { contextAgent, type ContextOutput } from "./agents/contextAgent.js";
 import { criticAgent, deterministicChecks } from "./agents/criticAgent.js";
@@ -124,6 +129,20 @@ export async function runSituation(
   request: SituationRequest,
   referenceDate: string,
 ): Promise<OrchestratorResult> {
+  // Per-run record of the stage in progress, so a thrown error names it.
+  const track = { stage: "contextAgent" };
+  try {
+    return await runStages(request, referenceDate, track);
+  } catch (error) {
+    return fail(track.stage, error instanceof Error ? error.message : String(error));
+  }
+}
+
+async function runStages(
+  request: SituationRequest,
+  referenceDate: string,
+  track: { stage: string },
+): Promise<OrchestratorResult> {
   const context = await contextAgent(request);
   if (!context.ok) return fail("contextAgent", context.error.message);
   const ctx: ContextOutput = context.context;
@@ -144,16 +163,17 @@ export async function runSituation(
     `focus: ${dev.focus}; lessons ${dev.lessons.map((l) => l.id).join(",")}; situations ${dev.situations.map((t) => t.id).join(",") || "none"}; story ${dev.story?.id ?? "none"}; insights ${dev.insights.length}; drills ${dev.drills.length}`;
 
   if (intent === "ruling") {
-    handoff("contextAgent", "rulesAgent+developmentAgent", JSON.stringify({ intent, topic: ctx.topic, entities: ctx.entities }));
-    const [found, dev] = await Promise.all([
-      rulesAgent(request, ctx, referenceDate),
-      developmentAgent(request, ctx, "ruling").catch((error: unknown) => ({
-        ok: false as const,
-        error: { message: error instanceof Error ? error.message : String(error), attempts: 0 },
-      })),
-    ]);
+    handoff("contextAgent", "rulesAgent", JSON.stringify({ intent, topic: ctx.topic, entities: ctx.entities }));
+    track.stage = "rulesAgent";
+    const found = await rulesAgent(request, ctx, referenceDate);
     if (!found.ok) return fail("rulesAgent", found.error.message);
     rules = found;
+    handoff("rulesAgent", "developmentAgent", `${found.sources.length} rule sources; computation=${found.computation ? "yes" : "no"}`);
+    const ruleSummary = `${found.summary} ${found.computation ? computedResultText(found) : ""}`.trim();
+    const dev: DevelopmentResult = await developmentAgent(request, ctx, "ruling", ruleSummary).catch((error: unknown) => ({
+      ok: false as const,
+      error: { message: error instanceof Error ? error.message : String(error), attempts: 0 },
+    }));
     if (dev.ok) {
       development = toInput(dev, "ruling");
       rules = {
@@ -168,6 +188,7 @@ export async function runSituation(
     handoff("rulesAgent", "callTypeAgent", `${found.sources.length} rule sources; computation=${found.computation ? "yes" : "no"}; draft_data=${found.draft_data}`);
   } else {
     handoff("contextAgent", "developmentAgent", JSON.stringify({ intent, topic: ctx.topic }));
+    track.stage = "developmentAgent";
     const dev = await developmentAgent(request, ctx, "development");
     if (!dev.ok) return fail("developmentAgent", dev.error.message);
     rules = dev.evidence;
@@ -175,6 +196,7 @@ export async function runSituation(
     handoff("developmentAgent", "callTypeAgent", devSummary(dev));
   }
 
+  track.stage = "callTypeAgent";
   const callType = await callTypeAgent(request, ctx, rules);
   if (!callType.ok) return fail("callTypeAgent", callType.error.message);
   handoff("callTypeAgent", "coachingAgent", `${callType.value.call_type}: ${callType.value.rationale}`);
@@ -184,6 +206,7 @@ export async function runSituation(
   let draft: CoachingDraft | null = null;
 
   for (let round = 0; round <= MAX_CRITIC_RETRIES; round += 1) {
+    track.stage = "coachingAgent";
     const written = await coachingAgent(request, ctx, rules, callType.value, issues, development);
     if (!written.ok) {
       if (draft) break; // keep the last good draft
@@ -194,6 +217,7 @@ export async function runSituation(
     handoff("coachingAgent", "criticAgent", `draft ${drafts}`);
 
     const codeIssues = deterministicChecks(draft, rules, (development?.lessons.length ?? 0) > 0);
+    track.stage = "criticAgent";
     const review = await criticAgent(request, draft, callType.value, ctx.age);
     const modelIssues = review.ok && !review.value.pass ? review.value.issues : [];
     issues = [...codeIssues, ...modelIssues];

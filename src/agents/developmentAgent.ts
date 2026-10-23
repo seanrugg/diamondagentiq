@@ -257,6 +257,8 @@ export async function developmentAgent(
   request: SituationRequest,
   context: ContextOutput,
   mode: DevelopmentMode = "development",
+  /** Ruling mode: what RulesAgent found, so the lesson fits the actual answer. */
+  ruleSummary?: string,
 ): Promise<DevelopmentResult> {
   const [insights, drills, lessons, situations, stories] = await Promise.all([
     fetchInsights(context.sport, context.age),
@@ -299,7 +301,7 @@ Reply with ONLY: {"lesson_ids": ["L001"], "situation_ids": [], "story_id": null,
 
   const user = `Question (${request.role}): ${request.question}
 Sport/age: ${context.sport} / ${context.age} | Topic: ${context.topic}
-${menu}`;
+${ruleSummary ? `Rules answer already found: ${ruleSummary}\n` : ""}${menu}`;
 
   const picked = await askJson("developmentAgent", `pick_${mode}`, "lightning", [
     { role: "system", content: system },

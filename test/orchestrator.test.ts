@@ -183,7 +183,7 @@ describe("runSituation", () => {
     expect(mockedGenerator).toHaveBeenCalledTimes(1 + 2 * (MAX_CRITIC_RETRIES + 1));
   });
 
-  it("adds a lesson to a ruling, run alongside RulesAgent, and requires the life_lesson", async () => {
+  it("adds a lesson to a ruling after RulesAgent, and requires the life_lesson", async () => {
     const lesson = { id: "L004", title: "Winning comes from a winning formula", principle: "Healthy arms and depth.", life_lesson: "Build people.", for_player: null, for_coach: "Build depth.", for_parent: null, for_umpire: null, tags: ["pitch_count"], source_url: "https://github.com/seanrugg/diamondagentiq", verified: false };
     mockedDev.mockResolvedValueOnce({
       ok: true, focus: "Rest and build depth", insights: [], drills: [], lessons: [lesson], situations: [], story: null,
@@ -198,7 +198,8 @@ describe("runSituation", () => {
       .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
 
     const result = await runSituation(request, "2026-10-18");
-    expect(mockedDev).toHaveBeenCalledWith(request, context, "ruling");
+    expect(mockedDev).toHaveBeenCalledWith(request, context, "ruling", expect.stringMatching(/October 22/));
+    expect(mockedRules.mock.invocationCallOrder[0]).toBeLessThan(mockedDev.mock.invocationCallOrder[0] ?? 0);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.answer.review?.drafts).toBe(2);
@@ -223,6 +224,12 @@ describe("runSituation", () => {
     const result = await runSituation(request, "2026-10-18");
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.answer.life_lesson).toBeUndefined();
+  });
+
+  it("turns a thrown error (e.g. a 499 after retries) into a structured error for that stage", async () => {
+    mockedGenerator.mockRejectedValueOnce(Object.assign(new Error("499 The request was aborted before completion."), { status: 499 }));
+    const result = await runSituation(request, "2026-10-18");
+    expect(result).toMatchObject({ ok: false, error: { stage: "callTypeAgent", message: expect.stringMatching(/499/) } });
   });
 
   it("returns a structured error naming the stage that failed", async () => {

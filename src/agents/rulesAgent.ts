@@ -37,7 +37,9 @@ import { parseModelJson } from "./json.js";
 
 export const MAX_TOOL_CALLS = 4;
 const MAX_ANSWER_ATTEMPTS = 2;
-const MAX_MODEL_CALLS = MAX_TOOL_CALLS + MAX_ANSWER_ATTEMPTS + 2;
+/** Waits before retrying a blank reply; also bounds how many blank replies are retried. */
+export const EMPTY_RETRY_DELAYS_MS = [2_000, 5_000];
+const MAX_MODEL_CALLS = MAX_TOOL_CALLS + MAX_ANSWER_ATTEMPTS + EMPTY_RETRY_DELAYS_MS.length + 1;
 const TOOL_RESULT_CHAR_LIMIT = 6000;
 const AGENT = "rulesAgent";
 
@@ -155,10 +157,10 @@ async function askModel(
     trace({
       agent_name: AGENT,
       action: "model_step",
-      input_summary: `step ${step + 1}; tool calls used ${toolCallsUsed}/${MAX_TOOL_CALLS}`,
-      output_summary: result.toolCalls.length
+      input_summary: `step ${step + 1}; tool calls used ${toolCallsUsed}/${MAX_TOOL_CALLS}; requested ${result.requested_model}${result.retries ? `; ${result.retries} retry(ies) after 499` : ""}`,
+      output_summary: `${result.toolCalls.length
         ? `requested ${result.toolCalls.length} tool call(s)`
-        : (result.content ?? "(no content)").slice(0, 300),
+        : (result.content || "(no content)").slice(0, 300)} [finish_reason=${result.finish_reason ?? "none"}${result.receipt ? "" : "; no receipt"}]`,
       model: result.model,
       provider: result.provider,
       reasoning: result.reasoning,
@@ -194,10 +196,12 @@ async function askModel(
     }
 
     // A blank reply (no text, no tool calls) is a provider hiccup, not an
-    // answer: retry the step once without spending an answer attempt.
-    if (!(result.content ?? "").trim() && emptyRetries < 1) {
+    // answer: wait and retry the step without spending an answer attempt.
+    if (!(result.content ?? "").trim() && emptyRetries < EMPTY_RETRY_DELAYS_MS.length) {
+      const delay = EMPTY_RETRY_DELAYS_MS[emptyRetries] ?? 0;
       emptyRetries += 1;
-      trace({ agent_name: AGENT, action: "empty_reply", input_summary: `step ${step + 1}`, output_summary: "blank model reply; retrying the step", status: "error" });
+      trace({ agent_name: AGENT, action: "empty_reply", input_summary: `step ${step + 1}`, output_summary: `blank model reply (finish_reason=${result.finish_reason ?? "none"}); retry ${emptyRetries} in ${delay} ms`, status: "error" });
+      await new Promise((resolve) => setTimeout(resolve, delay));
       continue;
     }
 
