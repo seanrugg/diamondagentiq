@@ -51,6 +51,10 @@ describe("contextAgent", () => {
       expect(result.context.missing_facts).toContain("game date");
     }
     expect(mockedGenerator).toHaveBeenCalledTimes(1);
+    expect(mockedGenerator).toHaveBeenLastCalledWith(
+      expect.anything(),
+      { tier: "super" },
+    );
   });
 
   it("retries once, including the validation error, when the first response is invalid JSON", async () => {

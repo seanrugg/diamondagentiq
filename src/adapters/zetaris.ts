@@ -123,3 +123,71 @@ export async function runSql(sql: string): Promise<unknown> {
 
   throw new Error("Zetaris SQL request failed");
 }
+
+/**
+ * Normalize a Zetaris payload into an array of row objects with string (or
+ * null) values. Zetaris returns values as strings, so nothing is parsed or
+ * converted here — values are passed through as strings.
+ *
+ * Accepts:
+ * - an array of row objects (passed through, values as string | null)
+ * - { columns: string[], rows: unknown[][] } (columns zipped onto each row)
+ * - a single row object (wrapped in an array)
+ * - anything else (empty array)
+ */
+export function toRows(
+  data: unknown,
+): Array<Record<string, string | null>> {
+  if (Array.isArray(data)) {
+    return data.map((row) =>
+      Array.isArray(row) ? toPositionalRow(row) : toRowObject(row),
+    );
+  }
+
+  if (data !== null && typeof data === "object") {
+    const object = data as Record<string, unknown>;
+    if (Array.isArray(object.columns) && Array.isArray(object.rows)) {
+      return object.rows.map((row) =>
+        Object.fromEntries(
+          object.columns.map((column, index) => [
+            String(column),
+            toCellValue((row as unknown[])[index]),
+          ]),
+        ),
+      );
+    }
+    return [toRowObject(object)];
+  }
+
+  return [];
+}
+
+/**
+ * Zetaris returns rows as positional arrays of strings (no column names in
+ * the payload runSql exposes), so key each cell by its zero-based index.
+ */
+function toPositionalRow(row: unknown[]): Record<string, string | null> {
+  return Object.fromEntries(
+    row.map((value, index) => [String(index), toCellValue(value)]),
+  );
+}
+
+function toRowObject(row: unknown): Record<string, string | null> {
+  if (row === null || row === undefined || typeof row !== "object") {
+    return {};
+  }
+  if (Array.isArray(row)) {
+    return {};
+  }
+  const object = row as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => [key, toCellValue(value)]),
+  );
+}
+
+function toCellValue(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return String(value);
+}

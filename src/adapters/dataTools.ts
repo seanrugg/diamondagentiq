@@ -8,7 +8,7 @@
  */
 
 import { normalizeSql } from "./sql.js";
-import { runSql } from "./zetaris.js";
+import { runSql, toRows } from "./zetaris.js";
 import { trace } from "../trace.js";
 import type { TraceStatus } from "../trace.js";
 import type { ChatCompletionTool } from "openai/resources/chat/completions";
@@ -116,6 +116,140 @@ function validateTables(sql: string): void {
   }
 }
 
+// Clause keywords that end a table source list introduced by FROM or JOIN.
+const SOURCE_LIST_END_KEYWORDS = [
+  "WHERE",
+  "ON",
+  "GROUP",
+  "ORDER",
+  "LIMIT",
+  "OFFSET",
+  "HAVING",
+  "FETCH",
+  "FOR",
+  "UNION",
+  "INTERSECT",
+  "EXCEPT",
+  "FROM",
+  "JOIN",
+];
+
+const sourceListEndPattern = new RegExp(
+  `\\b(${SOURCE_LIST_END_KEYWORDS.join("|")})\\b`,
+  "i",
+);
+
+/**
+ * The raw table source text introduced by each FROM or JOIN, in statement
+ * order. Comma-separated lists are kept intact so they can be rejected
+ * explicitly (agents must use explicit JOINs instead).
+ */
+function extractSourceLists(sql: string): string[] {
+  const lists: string[] = [];
+  for (const match of sql.matchAll(/\b(FROM|JOIN)\b/gi)) {
+    const start = match.index! + match[0].length;
+    const rest = sql.slice(start);
+    const endMatch = rest.match(sourceListEndPattern);
+    const end = endMatch ? endMatch.index! : rest.length;
+    lists.push(rest.slice(0, end).trim());
+  }
+  return lists;
+}
+
+function hasTopLevelComma(text: string): boolean {
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (escape) {
+      escape = false;
+    } else if (inString) {
+      if (ch === "\\") {
+        escape = true;
+      } else if (ch === "'") {
+        inString = false;
+      }
+    } else if (ch === "'") {
+      inString = true;
+    } else if (ch === "(") {
+      depth += 1;
+    } else if (ch === ")") {
+      if (depth > 0) depth -= 1;
+    } else if (ch === "," && depth === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Reject comma-separated table lists in FROM/JOIN source lists. Agents must
+ * reference each table with its own FROM/JOIN (explicit JOIN) so every table
+ * is individually checked against the allowlist.
+ */
+function rejectCommaSeparatedSources(sql: string): void {
+  for (const sourceList of extractSourceLists(sql)) {
+    if (hasTopLevelComma(sourceList)) {
+      throw new Error(
+        "Comma-separated table lists are not allowed; use an explicit JOIN",
+      );
+    }
+  }
+}
+
+/**
+ * Table aliases declared in FROM/JOIN sources (e.g. "diq_pg.rules_facts r"
+ * declares alias "r"), so that alias.column references in SELECT/WHERE are
+ * not mistaken for schema-qualified table references.
+ */
+function extractTableAliases(sql: string): Set<string> {
+  const aliases = new Set<string>();
+  for (const sourceList of extractSourceLists(sql)) {
+    for (const source of sourceList.split(",")) {
+      const trimmed = source.trim();
+      if (!trimmed || trimmed.startsWith("(")) {
+        continue;
+      }
+      const asMatch = trimmed.match(/\bAS\s+([a-zA-Z_][\w]*)\s*$/i);
+      if (asMatch) {
+        aliases.add(asMatch[1].toLowerCase());
+        continue;
+      }
+      const tokens = trimmed.split(/\s+/);
+      // Only multi-token sources declare an alias (e.g. "diq_pg.rules_facts r");
+      // a bare table name is not an alias.
+      if (tokens.length > 1) {
+        const last = tokens[tokens.length - 1];
+        if (/^[a-zA-Z_][\w]*$/.test(last)) {
+          aliases.add(last.toLowerCase());
+        }
+      }
+    }
+  }
+  return aliases;
+}
+
+const schemaQualifiedPattern = /\b([a-zA-Z_][\w]*)\.([a-zA-Z_][\w]*)/gi;
+
+/**
+ * Reject any schema-qualified reference (schema.table) anywhere in the
+ * statement whose schema is not diq_pg, not just references after FROM/JOIN.
+ * Table aliases (alias.column) are not treated as schema-qualified.
+ */
+function rejectNonDiqPgSchemas(sql: string): void {
+  const stripped = stripStringLiterals(sql);
+  const aliases = extractTableAliases(sql);
+  for (const match of stripped.matchAll(schemaQualifiedPattern)) {
+    const schema = match[1].toLowerCase();
+    if (schema !== "diq_pg" && !aliases.has(schema)) {
+      throw new Error(
+        `Only the diq_pg schema is allowed; referenced schema "${match[1]}"`,
+      );
+    }
+  }
+}
+
 function enforceLimit(sql: string): string {
   const limitMatch = sql.match(/LIMIT\s+(\d+)/i);
   if (!limitMatch) {
@@ -145,7 +279,9 @@ export function prepareSql(sql: string): string {
     throw new Error("Write statements are not allowed");
   }
 
+  rejectCommaSeparatedSources(statement);
   validateTables(statement);
+  rejectNonDiqPgSchemas(statement);
 
   return enforceLimit(statement);
 }
@@ -188,4 +324,16 @@ export async function runAgentSql(sql: string): Promise<unknown> {
     });
     throw error;
   }
+}
+
+/**
+ * Like runAgentSql, but normalizes the Zetaris result into an array of
+ * row objects with string (or null) values via toRows.
+ */
+export async function runAgentRows(
+  sql: string,
+): Promise<Array<Record<string, string | null>>> {
+  const finalSql = prepareSql(sql);
+  const result = await runSql(finalSql);
+  return toRows(result);
 }

@@ -1,9 +1,12 @@
 import { describe, expect, it, afterEach, vi } from "vitest";
-import { prepareSql, runAgentSql, run_sql } from "../src/adapters/dataTools.js";
+import { prepareSql, runAgentRows, runAgentSql, run_sql } from "../src/adapters/dataTools.js";
 import { runSql } from "../src/adapters/zetaris.js";
 
 vi.mock("../src/adapters/zetaris.js", () => ({
   runSql: vi.fn(),
+  // toRows is exercised directly in test/zetaris.test.ts; here it just
+  // passes the Zetaris result through so runAgentRows can normalize it.
+  toRows: vi.fn((data: unknown) => data),
 }));
 
 const mockedRunSql = runSql as unknown as ReturnType<typeof vi.fn>;
@@ -76,6 +79,56 @@ describe("prepareSql: table allowlist (diq_pg schema)", () => {
   });
 });
 
+describe("prepareSql: comma-separated table lists", () => {
+  it("rejects a comma-separated FROM list", () => {
+    expect(() =>
+      prepareSql("SELECT * FROM diq_pg.rules_facts, other.secret"),
+    ).toThrow(/use an explicit JOIN/);
+  });
+
+  it("rejects comma-separated allowlisted tables too", () => {
+    expect(() =>
+      prepareSql("SELECT * FROM rules_facts, house_rules"),
+    ).toThrow(/use an explicit JOIN/);
+  });
+
+  it("does not reject commas inside string literals or subqueries", () => {
+    const result = prepareSql(
+      "SELECT * FROM diq_pg.rules_facts WHERE note = 'a, b'",
+    );
+    expect(result).toContain("LIMIT 200");
+  });
+});
+
+describe("prepareSql: schema-qualified references anywhere", () => {
+  it("rejects a non-diq_pg schema after FROM", () => {
+    expect(() =>
+      prepareSql("SELECT * FROM other_schema.pitch_rest_rules"),
+    ).toThrow(/Only the diq_pg schema is allowed/);
+  });
+
+  it("rejects a non-diq_pg schema in a subquery", () => {
+    expect(() =>
+      prepareSql(
+        "SELECT * FROM diq_pg.rules_facts WHERE id IN (SELECT id FROM other.secret)",
+      ),
+    ).toThrow(/Only the diq_pg schema is allowed/);
+  });
+
+  it("rejects a non-diq_pg schema-qualified reference in SELECT", () => {
+    expect(() =>
+      prepareSql("SELECT other.secret.col FROM diq_pg.rules_facts"),
+    ).toThrow(/Only the diq_pg schema is allowed/);
+  });
+
+  it("still allows diq_pg-qualified tables and aliased columns", () => {
+    const sql = prepareSql(
+      "SELECT r.*, h.* FROM diq_pg.rules_facts r JOIN diq_pg.house_rules h ON r.id = h.rule_id",
+    );
+    expect(sql).toContain("LIMIT 200");
+  });
+});
+
 describe("prepareSql: LIMIT handling", () => {
   it("adds LIMIT 200 when missing", () => {
     expect(prepareSql("SELECT * FROM diq_pg.games")).toBe(
@@ -125,5 +178,14 @@ describe("runAgentSql", () => {
       /Only SELECT statements are allowed/,
     );
     expect(mockedRunSql).not.toHaveBeenCalled();
+  });
+
+  it("runAgentRows returns normalized rows", async () => {
+    mockedRunSql.mockResolvedValue([{ id: "1", name: "diq" }]);
+    const rows = await runAgentRows("SELECT * FROM diq_pg.games");
+    expect(mockedRunSql).toHaveBeenCalledWith(
+      "SELECT * FROM diq_pg.games LIMIT 200",
+    );
+    expect(rows).toEqual([{ id: "1", name: "diq" }]);
   });
 });

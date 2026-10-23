@@ -4,7 +4,7 @@ import type {
   ChatCompletionMessageParam,
   ChatCompletionTool,
 } from "openai/resources/chat/completions";
-import { config } from "../config.js";
+import { config, meterlessModelForTier } from "../config.js";
 
 const REQUEST_TIMEOUT_MS = 120_000;
 
@@ -12,6 +12,7 @@ export type GeneratorOpts = {
   tools?: ChatCompletionTool[];
   model?: string;
   temperature?: number;
+  tier?: "super" | "lightning";
 };
 
 export type MeterlessReceipt = {
@@ -110,7 +111,9 @@ export async function generator(
   const provider = config.LLM_PROVIDER;
   const model =
     opts?.model ??
-    (provider === "meterless" ? config.METERLESS_MODEL : config.OLLAMA_MODEL);
+    (provider === "meterless"
+      ? meterlessModelForTier(opts?.tier)
+      : config.OLLAMA_MODEL);
   const client = createClient();
 
   const completion = await client.chat.completions.create(

@@ -12,16 +12,26 @@ function clearFixture(): void {
   delete (globalThis as Record<string, unknown>)[FIXTURE_KEY];
 }
 
+// Captures the options passed to chat.completions.create so tests can assert
+// which model the generator actually requested.
+let lastCreateOptions: unknown = null;
+
 vi.mock("openai", () => ({
   default: vi.fn(function OpenAIMock(this: any) {
     this.chat = {
       completions: {
-        create: async () =>
-          (globalThis as Record<string, unknown>)[FIXTURE_KEY],
+        create: async (options: unknown) => {
+          lastCreateOptions = options;
+          return (globalThis as Record<string, unknown>)[FIXTURE_KEY];
+        },
       },
     };
   }),
 }));
+
+function lastModel(): string | undefined {
+  return (lastCreateOptions as { model?: string } | null)?.model;
+}
 
 const baseEnv: Record<string, string> = {
   ZETARIS_REST_URL: "http://localhost:8888/api/v1.0",
@@ -58,6 +68,7 @@ function setEnv(overrides: Record<string, string | undefined> = {}) {
 }
 
 afterEach(() => {
+  lastCreateOptions = null;
   clearFixture();
   for (const key of touched) {
     const previous = originalEnv[key];
@@ -193,5 +204,71 @@ describe("generator meterless receipt", () => {
 
     expect(result.provider).toBe("ollama");
     expect(result.receipt).toBeUndefined();
+  });
+});
+
+describe("generator model selection (tier pinning)", () => {
+  it("meterless tier super uses METERLESS_MODEL_SUPER", async () => {
+    setFixture(meterlessResponse);
+    setEnv({
+      METERLESS_MODEL_SUPER: "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    });
+    const { generator } = await loadGenerator();
+    await generator([{ role: "user", content: "Say hello." }], {
+      tier: "super",
+    });
+
+    expect(lastModel()).toBe("nvidia/nemotron-3.5-super-vl-120b-a12b");
+  });
+
+  it("meterless tier lightning uses METERLESS_MODEL_LIGHTNING", async () => {
+    setFixture(meterlessResponse);
+    setEnv({
+      METERLESS_MODEL_LIGHTNING: "nvidia/nemotron-3.5-lightning-30b-a3b",
+    });
+    const { generator } = await loadGenerator();
+    await generator([{ role: "user", content: "Say hello." }], {
+      tier: "lightning",
+    });
+
+    expect(lastModel()).toBe("nvidia/nemotron-3.5-lightning-30b-a3b");
+  });
+
+  it("meterless tier falls back to METERLESS_MODEL when the tier var is unset", async () => {
+    setFixture(meterlessResponse);
+    setEnv({});
+    const { generator } = await loadGenerator();
+    await generator([{ role: "user", content: "Say hello." }], {
+      tier: "super",
+    });
+
+    expect(lastModel()).toBe("meterless/auto");
+  });
+
+  it("explicit opts.model wins over the tier", async () => {
+    setFixture(meterlessResponse);
+    setEnv({
+      METERLESS_MODEL_SUPER: "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    });
+    const { generator } = await loadGenerator();
+    await generator([{ role: "user", content: "Say hello." }], {
+      model: "explicit-pinned-model",
+      tier: "super",
+    });
+
+    expect(lastModel()).toBe("explicit-pinned-model");
+  });
+
+  it("ollama always uses OLLAMA_MODEL regardless of tier", async () => {
+    setFixture(meterlessResponse);
+    const { generator } = await loadGenerator({
+      LLM_PROVIDER: "ollama",
+      METERLESS_MODEL_SUPER: "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    });
+    await generator([{ role: "user", content: "Say hello." }], {
+      tier: "super",
+    });
+
+    expect(lastModel()).toBe("nemotron-3.5-super");
   });
 });

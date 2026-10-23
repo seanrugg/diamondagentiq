@@ -76,4 +76,23 @@ describe("config env trimming", () => {
       /Invalid environment configuration/,
     );
   });
+
+  it("trims optional meterless tier models and treats whitespace-only as unset", async () => {
+    setEnv({
+      METERLESS_MODEL_SUPER: "  nvidia/nemotron-3.5-super-vl-120b-a12b  ",
+      METERLESS_MODEL_LIGHTNING: "   ",
+    });
+    const { config, meterlessModelForTier } = await loadConfig();
+    expect(config.METERLESS_MODEL_SUPER).toBe(
+      "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    );
+    expect(config.METERLESS_MODEL_LIGHTNING).toBeUndefined();
+
+    expect(meterlessModelForTier("super")).toBe(
+      "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    );
+    // Lightning is unset, so it falls back to METERLESS_MODEL from baseEnv.
+    expect(meterlessModelForTier("lightning")).toBe("meterless/auto");
+    expect(meterlessModelForTier(undefined)).toBe("meterless/auto");
+  });
 });

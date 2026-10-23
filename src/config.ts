@@ -40,6 +40,8 @@ const envSchema = z
     METERLESS_BASE_URL: z.string().url(),
     METERLESS_RUNTIME_TOKEN: z.string().min(1),
     METERLESS_MODEL: z.string().min(1),
+    METERLESS_MODEL_SUPER: optionalString,
+    METERLESS_MODEL_LIGHTNING: optionalString,
     SAMPLE_MODE: z
       .enum(["true", "false"])
       .default("false")
@@ -92,3 +94,22 @@ if (!parsed.success) {
 
 export const config = parsed.data;
 export type AppConfig = typeof config;
+
+/**
+ * Resolve the meterless model for a given agent tier.
+ *
+ * The tier-specific env var (METERLESS_MODEL_SUPER / METERLESS_MODEL_LIGHTNING)
+ * wins when set; otherwise fall back to METERLESS_MODEL so the NVIDIA lane is
+ * pinned by model ID instead of being left to meterless/auto routing.
+ */
+export function meterlessModelForTier(
+  tier?: "super" | "lightning",
+): string {
+  if (tier === "super") {
+    return config.METERLESS_MODEL_SUPER ?? config.METERLESS_MODEL;
+  }
+  if (tier === "lightning") {
+    return config.METERLESS_MODEL_LIGHTNING ?? config.METERLESS_MODEL;
+  }
+  return config.METERLESS_MODEL;
+}

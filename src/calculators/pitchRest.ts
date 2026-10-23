@@ -80,6 +80,8 @@ export function restDaysRequired(
   return { kind: "no_match", rest_days: null, tier: null };
 }
 
+const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+
 /**
  * The first date a pitcher is eligible to pitch again.
  *
@@ -87,14 +89,51 @@ export function restDaysRequired(
  * after the last pitched date as day one of rest. So a pitcher who last threw
  * on Friday with 2 days of rest is off Saturday and Sunday and is eligible
  * again on Monday.
+ *
+ * All arithmetic is done in UTC so the result is deterministic regardless of
+ * the process timezone (e.g. across US DST changes). Only strict YYYY-MM-DD
+ * input is accepted; anything else throws a clear error.
  */
 export function earliestEligibleDate(
   lastPitchedDate: string,
   restDays: number,
 ): string {
-  const d = new Date(lastPitchedDate);
-  d.setDate(d.getDate() + restDays + 1);
-  return d.toISOString().slice(0, 10);
+  const match = ISO_DATE_PATTERN.exec(lastPitchedDate);
+  if (!match) {
+    throw new Error(
+      `Invalid date "${lastPitchedDate}": expected YYYY-MM-DD`,
+    );
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  const ms = Date.UTC(year, month - 1, day);
+  if (Number.isNaN(ms)) {
+    throw new Error(`Invalid date "${lastPitchedDate}": expected YYYY-MM-DD`);
+  }
+
+  const d = new Date(ms);
+  // Round-trip check: reject out-of-range components (e.g. 2026-13-45) that
+  // Date.UTC would otherwise roll over into a different date.
+  if (
+    d.getUTCFullYear() !== year ||
+    d.getUTCMonth() + 1 !== month ||
+    d.getUTCDate() !== day
+  ) {
+    throw new Error(`Invalid date "${lastPitchedDate}": expected YYYY-MM-DD`);
+  }
+
+  d.setUTCDate(d.getUTCDate() + restDays + 1);
+  return formatUtcDate(d);
+}
+
+function formatUtcDate(d: Date): string {
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const date = String(d.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${date}`;
 }
 
 /**

@@ -11,6 +11,7 @@
 
 import { z } from "zod";
 import { generator } from "../adapters/llm.js";
+import { parseModelJson } from "./json.js";
 import type { SituationRequest } from "../schemas/situation.js";
 import { trace } from "../trace.js";
 
@@ -95,7 +96,9 @@ export async function contextAgent(
       ? `${prompt}\n\nThe previous response was invalid: ${validationIssue}. Please fix the JSON and output only the corrected JSON object.`
       : prompt;
 
-    result = await generator([{ role: "user", content: attemptPrompt }]);
+    result = await generator([{ role: "user", content: attemptPrompt }], {
+      tier: "super",
+    });
     lastInput = result.content ?? null;
 
     if (lastInput === null) {
@@ -103,13 +106,12 @@ export async function contextAgent(
       continue;
     }
 
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(lastInput);
-    } catch (error) {
-      validationIssue = `Invalid JSON: ${error instanceof Error ? error.message : String(error)}`;
+    const parsedJson = parseModelJson(lastInput);
+    if (!parsedJson.ok) {
+      validationIssue = `Invalid JSON: ${parsedJson.error}`;
       continue;
     }
+    const parsed = parsedJson.value;
 
     const validation = ContextOutputSchema.safeParse(parsed);
     if (!validation.success) {

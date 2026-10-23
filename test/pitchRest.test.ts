@@ -81,6 +81,32 @@ describe("earliestEligibleDate", () => {
   });
 });
 
+describe("earliestEligibleDate: UTC determinism across DST", () => {
+  it("crosses the US spring-forward change (2026-03-08)", () => {
+    // Pitched Friday 2026-03-06, four full days off, eligible 2026-03-11.
+    expect(earliestEligibleDate("2026-03-06", 4)).toBe("2026-03-11");
+  });
+
+  it("crosses the US fall-back change (2026-11-01)", () => {
+    // Pitched Friday 2026-10-30, four full days off, eligible 2026-11-04.
+    expect(earliestEligibleDate("2026-10-30", 4)).toBe("2026-11-04");
+  });
+
+  it.each([
+    "not-a-date",
+    "2026-3-6",
+    "2026-13-01",
+    "2026-02-30",
+    "",
+    "2026/03/06",
+    "2026-03-06T00:00:00",
+  ])("rejects %s with a clear error", (input) => {
+    expect(() => earliestEligibleDate(input, 0)).toThrow(
+      /expected YYYY-MM-DD/,
+    );
+  });
+});
+
 describe("applyHouseRule", () => {
   it("uses the sanction when there is no house rule", () => {
     expect(applyHouseRule(2)).toEqual({
