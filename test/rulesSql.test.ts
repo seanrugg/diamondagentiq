@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { parseCsv, parseCsvRecords } from "../src/data/csv.js";
 import { buildRulesSql, sqlLiteral } from "../src/data/rulesSql.js";
+import { buildCoachingDocs } from "../src/data/coachingDocs.js";
+import { LEARNING_PHILOSOPHY } from "../src/agents/philosophy.js";
 
 const read = (path: string) => readFileSync(new URL(`../data/${path}`, import.meta.url), "utf8");
 
@@ -133,5 +135,23 @@ describe("buildRulesSql", () => {
       stories: read("coaching/stories.csv"),
     });
     expect(read("rules.sql")).toBe(sql); // run `npm run rules:build` if this fails
+  });
+});
+
+describe("docs/coaching", () => {
+  it("keeps the committed Markdown pages in sync with the CSVs", () => {
+    const docs = buildCoachingDocs({
+      philosophy: LEARNING_PHILOSOPHY,
+      lessons: read("coaching/lessons.csv"),
+      situations: read("coaching/situations.csv"),
+      stories: read("coaching/stories.csv"),
+      insights: read("coaching/insights.csv"),
+      rulesFacts: read("rules/rules_facts.csv"),
+    });
+    for (const [path, content] of Object.entries(docs)) {
+      expect(readFileSync(new URL(`../${path}`, import.meta.url), "utf8"), path).toBe(content); // run `npm run rules:build`
+    }
+    expect(docs["docs/coaching/lessons.md"]).toContain('<a id="l001"></a>');
+    expect(docs["docs/coaching/situations.md"]).toContain("F034 (usssa)");
   });
 });

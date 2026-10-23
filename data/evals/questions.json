@@ -3,50 +3,332 @@
   "questions": [
     {
       "id": "pitch-rest-house-rule",
-      "request": { "role": "coach", "sport": "baseball", "sanction": "little_league", "age": 12, "event_name": "Fall Classic 12U", "question": "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?" },
+      "request": {
+        "role": "coach",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 12,
+        "event_name": "Fall Classic 12U",
+        "question": "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?"
+      },
       "today": "2026-10-18",
-      "checks": { "intent": "ruling", "computation": { "earliest_eligible_date": "2026-10-22", "eligible_on_game_date": false }, "cites": ["rules_facts", "coaching_lessons"], "mentions_any": [["arm care", "arm", "rest"], ["confidence", "depth", "other pitchers", "another pitcher"]] }
+      "checks": {
+        "intent": "ruling",
+        "computation": {
+          "earliest_eligible_date": "2026-10-22",
+          "eligible_on_game_date": false
+        },
+        "cites": [
+          "rules_facts",
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "arm care",
+            "arm",
+            "rest"
+          ],
+          [
+            "confidence",
+            "depth",
+            "other pitchers",
+            "another pitcher"
+          ]
+        ]
+      }
     },
     {
       "id": "pitch-rest-65",
-      "request": { "role": "parent", "sport": "baseball", "sanction": "little_league", "age": 11, "question": "My son threw 65 pitches yesterday. Is he allowed to pitch tomorrow?" },
+      "request": {
+        "role": "parent",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 11,
+        "question": "My son threw 65 pitches yesterday. Is he allowed to pitch tomorrow?"
+      },
       "today": "2026-10-23",
-      "checks": { "intent": "ruling", "cites": ["rules_facts", "coaching_lessons"], "mentions_any": [["arm care", "arm", "rest", "recovery"]], "avoid": ["must win", "win at all costs"] }
+      "checks": {
+        "intent": "ruling",
+        "cites": [
+          "rules_facts",
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "arm care",
+            "arm",
+            "rest",
+            "recovery"
+          ]
+        ],
+        "avoid": [
+          "must win",
+          "win at all costs"
+        ]
+      }
     },
     {
       "id": "strikeout-game-over",
-      "request": { "role": "parent", "sport": "baseball", "sanction": "little_league", "age": 10, "question": "My son struck out to end the game. 3 straight pitches. They were probably outside. What can I do to help him overcome that failure?" },
-      "checks": { "intent": "development", "call_type": "judgment", "cites": ["coaching_lessons"], "mentions_any": [["umpire"], ["closer to the plate", "crowd the plate", "plate coverage", "outer"], ["talk first", "speak first", "love watching"]], "avoid": ["bad call", "umpire was wrong", "umpire missed", "those were balls"] }
+      "request": {
+        "role": "parent",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 10,
+        "question": "My son struck out to end the game. 3 straight pitches. They were probably outside. What can I do to help him overcome that failure?"
+      },
+      "checks": {
+        "intent": "development",
+        "call_type": "judgment",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "umpire"
+          ],
+          [
+            "closer to the plate",
+            "crowd the plate",
+            "plate coverage",
+            "outer"
+          ],
+          [
+            "talk first",
+            "speak first",
+            "love watching"
+          ]
+        ],
+        "avoid": [
+          "bad call",
+          "umpire was wrong",
+          "umpire missed",
+          "those were balls"
+        ]
+      }
     },
     {
       "id": "scared-hitter",
-      "request": { "role": "coach", "sport": "baseball", "sanction": "little_league", "age": 11, "question": "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?" },
-      "checks": { "intent": "development", "cites": ["coaching_lessons"], "mentions_any": [["believe", "confidence"]], "avoid": ["bench him", "sit him"] }
+      "request": {
+        "role": "coach",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 11,
+        "question": "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?"
+      },
+      "checks": {
+        "intent": "development",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "believe",
+            "confidence"
+          ]
+        ],
+        "avoid": [
+          "bench him",
+          "sit him"
+        ]
+      }
     },
     {
       "id": "error-lost-game",
-      "request": { "role": "parent", "sport": "softball", "sanction": "usssa", "age": 12, "question": "My daughter made an error in the last inning and we lost. She is blaming herself and some parents were blaming her too. What do I say?" },
-      "checks": { "intent": "development", "cites": ["coaching_lessons"], "mentions_any": [["team"], ["mistake", "learn"]], "avoid": ["her fault", "cost the game", "cost you the game"] }
+      "request": {
+        "role": "parent",
+        "sport": "softball",
+        "sanction": "usssa",
+        "age": 12,
+        "question": "My daughter made an error in the last inning and we lost. She is blaming herself and some parents were blaming her too. What do I say?"
+      },
+      "checks": {
+        "intent": "development",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "team"
+          ],
+          [
+            "mistake",
+            "learn"
+          ]
+        ],
+        "avoid": [
+          "her fault",
+          "cost the game",
+          "cost you the game"
+        ]
+      }
     },
     {
       "id": "d3k-runner-on-third",
-      "request": { "role": "coach", "sport": "softball", "sanction": "usssa", "age": 12, "question": "Dropped third strike with a runner on third and one out. What should my batter and my runner on third do?" },
-      "checks": { "cites": ["coaching_situations"], "mentions_any": [["run", "sprint"], ["first base", "first"], ["home", "third"]] }
+      "request": {
+        "role": "coach",
+        "sport": "softball",
+        "sanction": "usssa",
+        "age": 12,
+        "question": "Dropped third strike with a runner on third and one out. What should my batter and my runner on third do?"
+      },
+      "checks": {
+        "cites": [
+          "coaching_situations"
+        ],
+        "mentions_any": [
+          [
+            "run",
+            "sprint"
+          ],
+          [
+            "first base",
+            "first"
+          ],
+          [
+            "home",
+            "third"
+          ]
+        ]
+      }
     },
     {
       "id": "d3k-runner-on-first",
-      "request": { "role": "player", "sport": "softball", "sanction": "usssa", "age": 14, "question": "Runner on first, one out, the catcher dropped strike three and I ran to first. The umpire called me out. Why?" },
-      "checks": { "cites": ["rules_facts"], "mentions_any": [["first base", "occupied", "first was taken"], ["out"]], "avoid": ["umpire was wrong"] }
+      "request": {
+        "role": "player",
+        "sport": "softball",
+        "sanction": "usssa",
+        "age": 14,
+        "question": "Runner on first, one out, the catcher dropped strike three and I ran to first. The umpire called me out. Why?"
+      },
+      "checks": {
+        "cites": [
+          "rules_facts"
+        ],
+        "mentions_any": [
+          [
+            "first base",
+            "occupied",
+            "first was taken"
+          ],
+          [
+            "out"
+          ]
+        ],
+        "avoid": [
+          "umpire was wrong"
+        ]
+      }
     },
     {
       "id": "bat-choice",
-      "request": { "role": "parent", "sport": "baseball", "sanction": "little_league", "age": 9, "question": "What kind of bat should my 9-year-old use, and how do I know if it's too heavy?" },
-      "checks": { "intent": "equipment", "cites": ["coaching_insights"], "mentions_any": [["legal", "league", "USA Baseball", "USABat"], ["arm out", "straight out", "hold", "too heavy"]] }
+      "request": {
+        "role": "parent",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 9,
+        "question": "What kind of bat should my 9-year-old use, and how do I know if it's too heavy?"
+      },
+      "checks": {
+        "intent": "equipment",
+        "cites": [
+          "coaching_insights"
+        ],
+        "mentions_any": [
+          [
+            "legal",
+            "league",
+            "USA Baseball",
+            "USABat"
+          ],
+          [
+            "arm out",
+            "straight out",
+            "hold",
+            "too heavy"
+          ]
+        ]
+      }
     },
     {
       "id": "umpire-missed-call",
-      "request": { "role": "umpire", "sport": "baseball", "sanction": "little_league", "age": 10, "question": "I'm a youth umpire. I missed a call at second base and parents yelled at me for an inning. How do I handle that next time?" },
-      "checks": { "intent": "development", "cites": ["coaching_lessons"], "mentions_any": [["human", "mistake"]], "avoid": ["ignore the rules"] }
+      "request": {
+        "role": "umpire",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 10,
+        "question": "I'm a youth umpire. I missed a call at second base and parents yelled at me for an inning. How do I handle that next time?"
+      },
+      "checks": {
+        "intent": "development",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "human",
+            "mistake"
+          ]
+        ],
+        "avoid": [
+          "ignore the rules"
+        ]
+      }
+    },
+    {
+      "id": "handshake-line",
+      "request": {
+        "role": "coach",
+        "sport": "softball",
+        "sanction": "usssa",
+        "age": 12,
+        "question": "We lost a close game to our rivals and my players didn't want to shake hands afterward. How should I handle it?"
+      },
+      "checks": {
+        "intent": "development",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "teammates",
+            "respect",
+            "opponent"
+          ]
+        ],
+        "avoid": [
+          "skip the handshake"
+        ]
+      }
+    },
+    {
+      "id": "oh-for-four",
+      "request": {
+        "role": "parent",
+        "sport": "baseball",
+        "sanction": "little_league",
+        "age": 12,
+        "question": "My son went 0 for 4 and says he's the worst player on the team. What do I tell him?"
+      },
+      "checks": {
+        "intent": "development",
+        "cites": [
+          "coaching_lessons"
+        ],
+        "mentions_any": [
+          [
+            "fail",
+            "failure"
+          ],
+          [
+            "value",
+            "who you are",
+            "worth"
+          ]
+        ],
+        "avoid": [
+          "worst player"
+        ]
+      }
     }
   ]
 }
