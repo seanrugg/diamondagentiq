@@ -123,4 +123,18 @@ describe("runGameReview", () => {
     expect(result).toMatchObject({ ok: false, error: { stage: "playByPlay", message: expect.stringMatching(/Wrenmoor Wolves \(WRN\) or Tallowmere Tigers \(TAL\)/) } });
     expect(mockedGenerator).not.toHaveBeenCalled();
   });
+
+  it("recalls the team's earlier game on the next review", async () => {
+    const pbp = (g: string) => readFileSync(new globalThis.URL(`../data/samples/season/play_by_play/${g}_play_by_play.txt`, import.meta.url), "utf8");
+    const req = (g: string) => ({ text: pbp(g), role: "coach" as const, sport: "baseball" as const, sanction: "pitch_smart", age: 16, team: "Wrenmoor Wolves" });
+    mockedGenerator.mockImplementation(async (_m: unknown, opts: { agent?: string }) => reply(opts?.agent === "criticAgent" ? { pass: true, issues: [] } : draft));
+    const hmem = openMemory({ clock: () => 1_790_000_000_000 });
+    const first = await runGameReview(req("G03"), "2026-10-23", { memory: hmem });
+    expect(first.ok && first.answer.memory?.recalled).toEqual([]);
+    const second = await runGameReview(req("G04"), "2026-10-24", { memory: hmem });
+    expect(second.ok && second.answer.memory?.recalled.map((m) => m.content)).toEqual([expect.stringMatching(/loss 2-12 vs Tallowmere Tigers/)]);
+    // Another team's review doesn't see the Wolves' games.
+    const other = await runGameReview({ ...req("G07"), team: "Saltreach Sparrows" }, "2026-10-25", { memory: hmem });
+    expect(other.ok && other.answer.memory?.recalled).toEqual([]);
+  });
 });

@@ -29,6 +29,9 @@ function fail(stage: string, message: string): GameReviewResult {
   return { ok: false, error: { stage, message, trace_id: getRunId() } };
 }
 
+/** Recall cutoff for earlier games of the same team (H-MEM relevance, 0-1). */
+export const REVIEW_RECALL_THRESHOLD = 0.05;
+
 const teamKey = (request: GameReviewRequest) => `team:${(request.team ?? "default").trim().toLowerCase() || "default"}`;
 
 export async function pitcherRest(boxScore: BoxScore, request: GameReviewRequest, gameDate: string): Promise<PitcherRest[]> {
@@ -140,8 +143,10 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
   let recalled: RecalledMemory[] = [];
   if (hmem) {
     track.stage = "memoryAgent";
-    const q = `post-game review ${game.our_team} strikeouts walks errors practice priorities`;
-    recalled = hmem.query(q, { topN: 3, threshold: 0.15, chatId: teamKey(request) }).memories.map(({ memory, relevance }) => ({ id: memory.id, content: memory.content, relevance: Number(relevance.toFixed(3)), confidence: Number(memory.confidence.toFixed(3)) }));
+    // Memories are already scoped to this team (chatId), so any earlier game is
+    // relevant: a low threshold, and the same words the saved game notes use.
+    const q = `${game.our_team} game: struck out, plate appearances, errors, walks allowed, practice priorities`;
+    recalled = hmem.query(q, { topN: 3, threshold: REVIEW_RECALL_THRESHOLD, chatId: teamKey(request) }).memories.map(({ memory, relevance }) => ({ id: memory.id, content: memory.content, relevance: Number(relevance.toFixed(3)), confidence: Number(memory.confidence.toFixed(3)) }));
     trace({ agent_name: "memoryAgent", action: "recall", input_summary: `${teamKey(request)}: ${q}`, output_summary: recalled.length ? recalled.map((m) => `${m.id} (${m.relevance}): ${m.content.slice(0, 80)}`).join(" | ") : "nothing relevant yet", status: "ok" });
   }
 

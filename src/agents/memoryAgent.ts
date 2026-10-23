@@ -21,8 +21,10 @@ import type { ContextOutput } from "./contextAgent.js";
 import { callModel } from "./modelJson.js";
 
 export const RECALL_TOP_N = 3;
-/** The mock embedder scores paraphrases low, so recall uses a lower bar than H-MEM's 0.35 default. */
-export const RECALL_THRESHOLD = 0.15;
+/** H-MEM's reference scorer separates related and unrelated questions poorly, so recall offers the
+ * top few at a low bar (memories are already scoped to the team) and the CoachingAgent picks what
+ * actually helps (memory_used). Feedback then raises or lowers those memories' confidence. */
+export const RECALL_THRESHOLD = 0.12;
 const AGENT = "memoryAgent";
 
 export type RecalledMemory = { id: string; content: string; relevance: number; confidence: number };
