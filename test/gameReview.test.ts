@@ -77,6 +77,12 @@ describe("runGameReview", () => {
     expect(mockedGenerator.mock.calls[3]?.[1]).toMatchObject({ tier: "judge" });
   });
 
+  it("explains what to do when Nightshift has no vision lane", async () => {
+    mockedGenerator.mockRejectedValueOnce(Object.assign(new Error("400 this box cannot serve vision: no lane carries the vision capability"), { status: 400 }));
+    const result = await runGameReview(request, "2026-10-23");
+    expect(result).toMatchObject({ ok: false, error: { stage: "scorebookAgent", message: expect.stringMatching(/Paste the box score as text/) } });
+  });
+
   it("sends a draft back when it cites a drill that isn't on the menu", async () => {
     mockedGenerator
       .mockResolvedValueOnce(reply(demo))

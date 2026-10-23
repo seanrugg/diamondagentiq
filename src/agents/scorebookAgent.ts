@@ -46,7 +46,16 @@ export async function scorebookAgent(request: GameReviewRequest): Promise<Scoreb
   let reads = 0;
 
   for (let read = 0; read <= MAX_REREADS; read += 1) {
-    const result = await askJson(AGENT, read === 0 ? "read_box_score" : "reread_box_score", "super", messages, BoxScoreSchema);
+    let result;
+    try {
+      result = await askJson(AGENT, read === 0 ? "read_box_score" : "reread_box_score", "super", messages, BoxScoreSchema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (request.image && /cannot serve vision/i.test(message)) {
+        return { ok: false, error: { message: "Nightshift has no lane that can read images yet. Paste the box score as text instead (in GameChanger, copy the box score or export the stats)", attempts: read + 1 } };
+      }
+      throw error;
+    }
     if (!result.ok) return best ? { ok: true, ...best, reads } : { ok: false, error: result.error };
     reads += 1;
     const issues = checkBoxScore(result.value);

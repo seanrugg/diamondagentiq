@@ -147,6 +147,10 @@ export const server = createServer((req, res) => {
       res.writeHead(200, { "content-type": "image/png" });
       return res.end(readFileSync(new URL("../data/samples/box-score-demo.png", import.meta.url)));
     }
+    if (route === "GET /samples/box-score-demo.txt") {
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
+      return res.end(readFileSync(new URL("../data/samples/box-score-demo.txt", import.meta.url)));
+    }
     if (route === "POST /review/stream") return handleReview(req, res);
     if (route === "POST /run") return handleRun(req, res, false);
     if (route === "POST /run/stream") return handleRun(req, res, true);

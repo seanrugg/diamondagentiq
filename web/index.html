@@ -304,7 +304,7 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
       <label>Box score screenshot
         <input name="file" type="file" accept="image/png,image/jpeg,image/webp">
       </label>
-      <div class="examples"><button type="button" id="use-sample">Use the sample box score</button></div>
+      <div class="examples"><button type="button" id="use-sample">Use the sample box score</button><button type="button" id="use-sample-text">Paste the sample as text</button></div>
       <img id="preview" alt="" hidden>
       <p class="or">Or paste the box score as text:</p>
       <textarea name="text" placeholder="Paste the batting and pitching lines here"></textarea>
@@ -579,6 +579,12 @@ $("#tab-review").addEventListener("click", () => showTab("review"));
 let reviewImage = null;
 const readAsDataUrl = (blob) => new Promise((resolve, reject) => { const fr = new FileReader(); fr.onload = () => resolve(fr.result); fr.onerror = reject; fr.readAsDataURL(blob); });
 function setImage(url) { reviewImage = url; const img = $("#preview"); img.src = url; img.alt = "Box score to review"; img.hidden = false; }
+$("#use-sample-text").addEventListener("click", async () => {
+  const f = $("#review");
+  f.text.value = await (await fetch("/samples/box-score-demo.txt")).text();
+  reviewImage = null; $("#preview").hidden = true; f.file.value = "";
+  f.sport.value = "baseball"; f.sanction.value = "little_league"; f.age.value = 12; f.team.value = "Demo Hawks";
+});
 $("#review").file.addEventListener("change", async (e) => { const f = e.target.files[0]; if (f) setImage(await readAsDataUrl(f)); });
 $("#use-sample").addEventListener("click", async () => {
   const blob = await (await fetch("/samples/box-score-demo.png")).blob();
