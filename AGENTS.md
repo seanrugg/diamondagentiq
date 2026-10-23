@@ -103,6 +103,18 @@ Model routing (pin by model ID, through Meterless Nightshift):
 - **Zetaris REST returns values as strings.** Convert before comparing.
 - Postgres is on **5433** on the host; inside Docker, Zetaris reaches it as `diq-postgres:5432`.
 
+## If you are a local model (Nemo via Ollama/MLX)
+
+The Mac's GPU memory is the limit. A long context crashes the runner ("METAL Command buffer execution failed"). Work like this:
+
+- **Do one task per session.** If the prompt has several tasks, do the first and stop.
+- **Read only the files the prompt names**, plus this file. No repo-wide exploration, no reading `node_modules`, `vendor/` or large data files in full (use `head -20`).
+- **No plan mode.** Make a short plan in a single message, then edit.
+- **Edit; don't rewrite whole large files.** Prefer small, targeted edits.
+- **Run only the test file for your change** while working (`npx vitest run test/<file>.test.ts`). Run `npm test` once before committing.
+- **Stop and report, don't work around**, if `git pull` fails, a test you didn't touch fails, or the same error happens twice. Never recreate files a pull should have brought in.
+- **When done:** commit, push, and print `git log --oneline -1` and the test summary.
+
 ## Commits
 
 - Small, descriptive messages (e.g., `RulesAgent: fetch house rules and detect conflicts`).
