@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * npm start: the DiamondAgentIQ web page plus a small JSON API, on 127.0.0.1.
+ * The DiamondAgentIQ web page plus a small JSON API, on 127.0.0.1.
  *
  *   GET  /              the page (web/index.html)
  *   GET  /healthz       provider, models and memory status (no secrets)
@@ -125,8 +125,9 @@ export const server = createServer((req, res) => {
   });
 });
 
-if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop() ?? "")) {
-  server.listen(config.DIQ_PORT, "127.0.0.1", () => {
-    console.log(`DiamondAgentIQ: http://127.0.0.1:${config.DIQ_PORT}`);
+/** Listen on 127.0.0.1 (see src/scripts/start.ts). */
+export function startServer(port = config.DIQ_PORT): void {
+  server.listen(port, "127.0.0.1", () => {
+    console.log(`DiamondAgentIQ is running: open http://127.0.0.1:${port} (Ctrl+C to stop)`);
   });
 }
