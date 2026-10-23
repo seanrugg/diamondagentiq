@@ -1,0 +1,81 @@
+G07 — Wrenmoor Wolves (WRN, away) at Saltreach Sparrows (SAL, home)
+Format: [half-inning] Event type | Pitch sequence | Description | Outs after play | Score (away–home)
+
+TOP 1 — Wrenmoor Wolves batting
+[T1] Pop Out | Ball 1, Ball 2, Ball 3, In play. | #17 Rhys Delacroix pops out to pitcher #12 Kwame Delgado. | Outs: 1 | WRN 0 – SAL 0
+[T1] Walk | Ball 1, Foul, Ball 2, Ball 3, Ball 4. | #16 Callum Ferreira walks, #12 Kwame Delgado pitching. | Outs: 1 | WRN 0 – SAL 0
+[T1] Strikeout | Strike 1 looking, #16 Callum Ferreira steals 2nd, Ball 1, Strike 2 looking, #16 Callum Ferreira steals 3rd, Strike 3 swinging. | #23 Felipe Szabo strikes out swinging, #12 Kwame Delgado pitching, #16 Callum Ferreira remains at 3rd. | Outs: 2 | WRN 0 – SAL 0
+[T1] Double | Strike 1 looking, Ball 1, Strike 2 swinging, Ball 2, Foul, In play. | #15 Kenji Waverly doubles on a fly ball to center fielder #3 Elias Montague, #16 Callum Ferreira scores. | Outs: 2 | WRN 1 – SAL 0
+[T1] Double | Ball 1, Strike 1 swinging, Strike 2 swinging, #15 Kenji Waverly steals 3rd, #15 Kenji Waverly scores on error by catcher #14 Amari Rasmussen, In play. | #44 Dashiell Kowalczyk doubles on a fly ball to right fielder #10 Bjorn Calloway. | Outs: 2 | WRN 2 – SAL 0
+[T1] Strikeout | Strike 1 swinging, Strike 2 looking, Foul, Strike 3 looking. | #31 Idris Thornbury strikes out looking, #12 Kwame Delgado pitching. | Outs: 3 | WRN 2 – SAL 0
+
+BOTTOM 1 — Saltreach Sparrows batting
+[B1] Fly Out | Strike 1 swinging, Ball 1, Strike 2 swinging, In play. | #5 Ronan Fitzwilliam flies out to right fielder #17 Rhys Delacroix. | Outs: 1 | WRN 2 – SAL 0
+[B1] Ground Out | Strike 1 looking, Strike 2 swinging, Ball 1, In play. | #12 Kwame Delgado grounds out, shortstop #15 Kenji Waverly to first baseman #16 Callum Ferreira. | Outs: 2 | WRN 2 – SAL 0
+[B1] Walk | Ball 1, Strike 1 swinging, Ball 2, Foul, Ball 3, Ball 4. | #8 Javier Noonan walks, #31 Idris Thornbury pitching. | Outs: 2 | WRN 2 – SAL 0
+[B1] Double | Ball 1, Pickoff attempt at 1st, Strike 1 looking, Strike 2 swinging, Ball 2, Ball 3, In play. | #3 Elias Montague doubles on a fly ball to center fielder #24 Soren Adeyemi, #8 Javier Noonan scores on the throw. | Outs: 2 | WRN 2 – SAL 1
+[B1] Dropped 3rd Strike | Strike 1 looking, Foul, Foul, Ball 1, Strike 3 swinging. | #10 Bjorn Calloway out at first on dropped 3rd strike. | Outs: 3 | WRN 2 – SAL 1
+
+TOP 2 — Wrenmoor Wolves batting
+[T2] Single | Ball 1, Foul, In play. | #24 Soren Adeyemi singles on a hard ground ball to center fielder #3 Elias Montague. | Outs: 0 | WRN 2 – SAL 1
+[T2] Pop Out | Ball 1, In play. | #40 Wesley Marchetti pops out in foul territory to catcher #14 Amari Rasmussen, #24 Soren Adeyemi remains at 1st. | Outs: 1 | WRN 2 – SAL 1
+[T2] Strikeout | Ball 1, Ball 2, Strike 1 swinging, Ball 3, Strike 2 looking, Strike 3 looking. | #25 Ezra Vandermeer strikes out looking, #12 Kwame Delgado pitching, #24 Soren Adeyemi remains at 1st. | Outs: 2 | WRN 2 – SAL 1
+[T2] Walk | Ball 1, Strike 1 looking, Foul, Ball 2, Ball 3, Ball 4. | #17 Rhys Delacroix walks, #12 Kwame Delgado pitching, #24 Soren Adeyemi advances to 2nd. | Outs: 2 | WRN 2 – SAL 1
+[T2] Double | Ball 1, In play. | #16 Callum Ferreira doubles on a hard ground ball to left fielder Pool Player 1, #24 Soren Adeyemi scores, #17 Rhys Delacroix advances to 3rd. | Outs: 2 | WRN 3 – SAL 1
+[T2] Single | Ball 1, Foul, Ball 2, Strike 2 swinging, In play. | #23 Felipe Szabo singles on a fly ball to center fielder #3 Elias Montague, #16 Callum Ferreira scores, #17 Rhys Delacroix scores. | Outs: 2 | WRN 5 – SAL 1
+[T2] Single | Ball 1, Ball 2, Strike 1 swinging, Ball 3, #23 Felipe Szabo steals 2nd, In play. | #15 Kenji Waverly singles on a ground ball to shortstop #6 Hugo Sandoval-Reid, #23 Felipe Szabo advances to 3rd. | Outs: 2 | WRN 5 – SAL 1
+[T2] Double | #15 Kenji Waverly advances to 2nd on defensive indifference, Ball 1, Foul, In play. | #44 Dashiell Kowalczyk doubles on a fly ball to left fielder Pool Player 1, #23 Felipe Szabo scores, #15 Kenji Waverly scores. | Outs: 2 | WRN 7 – SAL 1
+[T2] Inning Ended | — | Half-inning ended by scorekeeper. | Outs: 3 | WRN 7 – SAL 1
+
+BOTTOM 2 — Saltreach Sparrows batting
+[B2] Line Out | Ball 1, Ball 2, Ball 3, Strike 1 looking, In play. | #6 Hugo Sandoval-Reid lines out to first baseman #16 Callum Ferreira. | Outs: 1 | WRN 7 – SAL 1
+[B2] Strikeout | Strike 1 swinging, Strike 2 looking, Ball 1, Ball 2, Ball 3, Strike 3 looking. | #14 Amari Rasmussen strikes out looking, #31 Idris Thornbury pitching. | Outs: 2 | WRN 7 – SAL 1
+[B2] Error | In play. | #9 Tomas Kincaid hits a pop fly and reaches on an error by second baseman #40 Wesley Marchetti. | Outs: 2 | WRN 7 – SAL 1
+[B2] Strikeout | Ball 1, Strike 1 looking, Strike 2 looking, Strike 3 looking. | #2 Luca Abernathy strikes out looking, #31 Idris Thornbury pitching. | Outs: 3 | WRN 7 – SAL 1
+
+TOP 3 — Wrenmoor Wolves batting
+[T3] Walk | Ball 1, Ball 2, Foul, Ball 3, Foul, Ball 4. | #31 Idris Thornbury walks, #12 Kwame Delgado pitching. | Outs: 0 | WRN 7 – SAL 1
+[T3] Pop Out | In play. | #24 Soren Adeyemi pops out in foul territory to third baseman #8 Javier Noonan, #31 Idris Thornbury remains at 1st. | Outs: 1 | WRN 7 – SAL 1
+[T3] Strikeout | Foul, Ball 1, Ball 2, #31 Idris Thornbury steals 2nd, Strike 2 looking, #31 Idris Thornbury steals 3rd, Strike 3 swinging. | #40 Wesley Marchetti strikes out swinging, #12 Kwame Delgado pitching, #31 Idris Thornbury remains at 3rd. | Outs: 2 | WRN 7 – SAL 1
+[T3] Walk | Ball 1, Ball 2, Ball 3, Strike 1 looking, Ball 4. | #25 Ezra Vandermeer walks, #12 Kwame Delgado pitching, #31 Idris Thornbury remains at 3rd. | Outs: 2 | WRN 7 – SAL 1
+[T3] Fly Out | Strike 1 looking, In play. | #17 Rhys Delacroix flies out to center fielder #3 Elias Montague. | Outs: 3 | WRN 7 – SAL 1
+
+BOTTOM 3 — Saltreach Sparrows batting
+[B3] Ground Out | Strike 1 swinging, Strike 2 looking, Ball 1, Ball 2, Foul, Ball 3, In play. | Pool Player 1 grounds out, shortstop #15 Kenji Waverly to first baseman #16 Callum Ferreira. | Outs: 1 | WRN 7 – SAL 1
+[B3] Walk | Ball 1, Ball 2, Strike 1 swinging, Ball 3, Ball 4. | Pool Player 2 walks, #31 Idris Thornbury pitching. | Outs: 1 | WRN 7 – SAL 1
+[B3] Double | Strike 1 looking, Pool Player 2 caught stealing 2nd, catcher #23 Felipe Szabo to first baseman #16 Callum Ferreira to shortstop #15 Kenji Waverly, In play. | #5 Ronan Fitzwilliam doubles on a hard ground ball to center fielder #24 Soren Adeyemi. | Outs: 2 | WRN 7 – SAL 1
+[B3] Ground Out | In play. | #12 Kwame Delgado grounds out, shortstop #15 Kenji Waverly to first baseman #16 Callum Ferreira. | Outs: 3 | WRN 7 – SAL 1
+
+TOP 4 — Wrenmoor Wolves batting
+[T4] Single | Ball 1, Foul, Foul, Ball 2, Ball 3, In play. | #16 Callum Ferreira singles on a ground ball to pitcher #6 Hugo Sandoval-Reid. | Outs: 0 | WRN 7 – SAL 1
+[T4] Hit By Pitch | Courtesy runner #17 Rhys Delacroix in for #16 Callum Ferreira, Ball 1. | #23 Felipe Szabo is hit by pitch, #6 Hugo Sandoval-Reid pitching, #17 Rhys Delacroix advances to 2nd. | Outs: 0 | WRN 7 – SAL 1
+[T4] Single | Ball 1, #17 Rhys Delacroix advances to 3rd on wild pitch, #23 Felipe Szabo advances to 2nd on the same pitch, Ball 2, #17 Rhys Delacroix scores on passed ball, #23 Felipe Szabo advances to 3rd on the same pitch, In play. | #15 Kenji Waverly singles on a line drive to left fielder Pool Player 1, #23 Felipe Szabo scores. | Outs: 0 | WRN 9 – SAL 1
+[T4] Single | Ball 1, #15 Kenji Waverly steals 2nd, Ball 2, Foul, In play. | #44 Dashiell Kowalczyk singles on a ground ball to pitcher #6 Hugo Sandoval-Reid, #15 Kenji Waverly advances to 3rd. | Outs: 0 | WRN 9 – SAL 1
+[T4] Strikeout | Strike 1 looking, Strike 2 swinging, #44 Dashiell Kowalczyk advances to 2nd on defensive indifference, Foul, Strike 3 swinging. | #31 Idris Thornbury strikes out swinging, #6 Hugo Sandoval-Reid pitching, #15 Kenji Waverly remains at 3rd, #44 Dashiell Kowalczyk remains at 2nd. | Outs: 1 | WRN 9 – SAL 1
+[T4] Single | In play. | #24 Soren Adeyemi singles on a fly ball to left fielder Pool Player 1, #15 Kenji Waverly scores, #44 Dashiell Kowalczyk advances to 3rd. | Outs: 1 | WRN 10 – SAL 1
+[T4] Single | Strike 1 swinging, Strike 2 looking, #24 Soren Adeyemi advances to 2nd on defensive indifference, Ball 1, #44 Dashiell Kowalczyk scores on wild pitch, #24 Soren Adeyemi advances to 3rd on the same pitch, Ball 2, In play. | #40 Wesley Marchetti singles on a ground ball to shortstop #12 Kwame Delgado, #24 Soren Adeyemi scores. | Outs: 1 | WRN 12 – SAL 1
+[T4] Inning Ended | — | Half-inning ended by scorekeeper. | Outs: 3 | WRN 12 – SAL 1
+
+BOTTOM 4 — Saltreach Sparrows batting
+[B4] Single | Foul, In play. | #8 Javier Noonan singles on a hard ground ball to center fielder #24 Soren Adeyemi. | Outs: 0 | WRN 12 – SAL 1
+[B4] Fly Out | Ball 1, #8 Javier Noonan advances to 2nd on error by pitcher #31 Idris Thornbury, Foul, Ball 2, In play. | #3 Elias Montague flies out to right fielder #17 Rhys Delacroix, #8 Javier Noonan remains at 2nd. | Outs: 1 | WRN 12 – SAL 1
+[B4] Ground Out | Ball 1, Strike 1 swinging, Strike 2 looking, Ball 2, #8 Javier Noonan steals 3rd, In play. | #10 Bjorn Calloway grounds out, second baseman #40 Wesley Marchetti to first baseman #16 Callum Ferreira, #8 Javier Noonan scores. | Outs: 2 | WRN 12 – SAL 2
+[B4] Fly Out | In play. | #6 Hugo Sandoval-Reid flies out to center fielder #24 Soren Adeyemi. | Outs: 3 | WRN 12 – SAL 2
+
+TOP 5 — Wrenmoor Wolves batting
+[T5] Fly Out | Foul, In play. | #25 Ezra Vandermeer flies out to second baseman #9 Tomas Kincaid. | Outs: 1 | WRN 12 – SAL 2
+[T5] Error | Ball 1, In play. | #17 Rhys Delacroix hits a ground ball and reaches on an error by second baseman #9 Tomas Kincaid. | Outs: 1 | WRN 12 – SAL 2
+[T5] Walk | Pickoff attempt at 1st, Ball 1, #17 Rhys Delacroix steals 2nd, Ball 2, Ball 3, Ball 4. | #16 Callum Ferreira walks, #6 Hugo Sandoval-Reid pitching, #17 Rhys Delacroix remains at 2nd. | Outs: 1 | WRN 12 – SAL 2
+[T5] Pop Out | In play. | #23 Felipe Szabo pops out to shortstop #12 Kwame Delgado, #17 Rhys Delacroix remains at 2nd, #16 Callum Ferreira remains at 1st. | Outs: 2 | WRN 12 – SAL 2
+[T5] Fielder's Choice | In play. | #15 Kenji Waverly grounds into fielder's choice to second baseman #9 Tomas Kincaid, #16 Callum Ferreira out advancing to 2nd, #17 Rhys Delacroix advances to 3rd. | Outs: 3 | WRN 12 – SAL 2
+
+BOTTOM 5 — Saltreach Sparrows batting
+[B5] Ground Out | In play. | #14 Amari Rasmussen grounds out, second baseman #40 Wesley Marchetti to first baseman #16 Callum Ferreira. | Outs: 1 | WRN 12 – SAL 2
+[B5] Ground Out | Strike 1 swinging, Strike 2 looking, In play. | #9 Tomas Kincaid grounds out, third baseman #44 Dashiell Kowalczyk to first baseman #16 Callum Ferreira. | Outs: 2 | WRN 12 – SAL 2
+[B5] Strikeout | Ball 1, Strike 1 swinging, Strike 2 looking, Ball 2, Strike 3 looking. | #2 Luca Abernathy strikes out looking, #31 Idris Thornbury pitching. | Outs: 3 | WRN 12 – SAL 2
+
+FINAL: Wrenmoor Wolves 12, Saltreach Sparrows 2
+LINE SCORE
+Team | 1 | 2 | 3 | 4 | 5 | R
+WRN | 2 | 5 | 0 | 5 | 0 | 12
+SAL | 1 | 0 | 0 | 1 | 0 | 2

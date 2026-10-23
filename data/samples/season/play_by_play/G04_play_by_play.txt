@@ -1,0 +1,102 @@
+G04 — Tallowmere Tigers (TAL, away) at Wrenmoor Wolves (WRN, home)
+Format: [half-inning] Event type | Pitch sequence | Description | Outs after play | Score (away–home)
+
+TOP 1 — Tallowmere Tigers batting
+[T1] Single | Strike 1 looking, Ball 1, Ball 2, In play. | #19 Arjun Pemberton singles on a pop fly to center fielder #22 Mateo Okafor. | Outs: 0 | TAL 0 – WRN 0
+[T1] Single | Strike 1 looking, In play. | #7 Lucien Okonjo singles on a hard ground ball to left fielder #1 Oskar Halloran, #19 Arjun Pemberton advances to 3rd. | Outs: 0 | TAL 0 – WRN 0
+[T1] Single | Ball 1, #7 Lucien Okonjo steals 2nd, Ball 2, Ball 3, Strike 1 looking, In play. | #21 Bram Halvorsen singles on a line drive to center fielder #22 Mateo Okafor, #7 Lucien Okonjo scores, #21 Bram Halvorsen advances to 2nd on the throw, #19 Arjun Pemberton scores. | Outs: 0 | TAL 2 – WRN 0
+[T1] Ground Out | Ball 1, Foul, Foul, Ball 2, In play. | #2 Corwin Tanaka grounds out, shortstop #15 Kenji Waverly to first baseman #16 Callum Ferreira, #21 Bram Halvorsen advances to 3rd. | Outs: 1 | TAL 2 – WRN 0
+[T1] Sacrifice Fly | In play. | #26 Malik Esterhazy out on sacrifice fly to first baseman #16 Callum Ferreira, #21 Bram Halvorsen scores. | Outs: 2 | TAL 3 – WRN 0
+[T1] Hit By Pitch | Foul, Ball 1. | #15 Pierce Ulloa is hit by pitch, #44 Dashiell Kowalczyk pitching. | Outs: 2 | TAL 3 – WRN 0
+[T1] Strikeout | Strike 1 looking, Foul, Strike 3 swinging. | #18 Henrik Castellano strikes out swinging, #44 Dashiell Kowalczyk pitching. | Outs: 3 | TAL 3 – WRN 0
+
+BOTTOM 1 — Wrenmoor Wolves batting
+[B1] Pop Out | Ball 1, In play. | #16 Callum Ferreira pops out to center fielder #7 Lucien Okonjo. | Outs: 1 | TAL 3 – WRN 0
+[B1] Walk | Ball 1, Strike 1 swinging, Ball 2, Ball 3, Strike 2 looking, Ball 4. | #17 Rhys Delacroix walks, #21 Bram Halvorsen pitching. | Outs: 1 | TAL 3 – WRN 0
+[B1] Pop Out | Foul, Ball 1, #17 Rhys Delacroix steals 2nd, #17 Rhys Delacroix advances to 3rd on error by second baseman #18 Henrik Castellano, Foul, In play. | #15 Kenji Waverly pops out to shortstop #19 Arjun Pemberton, #17 Rhys Delacroix remains at 3rd. | Outs: 2 | TAL 3 – WRN 0
+[B1] Strikeout | Foul, Ball 1, Foul, Foul, Ball 2, Strike 3 swinging. | #44 Dashiell Kowalczyk strikes out swinging, #21 Bram Halvorsen pitching. | Outs: 3 | TAL 3 – WRN 0
+
+TOP 2 — Tallowmere Tigers batting
+[T2] Strikeout | Strike 1 looking, Ball 1, Ball 2, Ball 3, Strike 2 looking, Strike 3 looking. | #22 Silas Mwangi strikes out looking, #44 Dashiell Kowalczyk pitching. | Outs: 1 | TAL 3 – WRN 0
+[T2] Single | Ball 1, Strike 1 swinging, Ball 2, Ball 3, In play. | #24 Rafael Lindgren singles on a line drive to center fielder #22 Mateo Okafor. | Outs: 1 | TAL 3 – WRN 0
+[T2] Double Play | Ball 1, Strike 1 looking, In play. | #19 Arjun Pemberton grounds into a double play, second baseman #40 Wesley Marchetti to first baseman #16 Callum Ferreira, #24 Rafael Lindgren out advancing to 2nd. | Outs: 3 | TAL 3 – WRN 0
+
+BOTTOM 2 — Wrenmoor Wolves batting
+[B2] Walk | Strike 1 looking, Ball 1, Ball 2, Strike 2 looking, Ball 3, Ball 4. | #23 Felipe Szabo walks, #21 Bram Halvorsen pitching. | Outs: 0 | TAL 3 – WRN 0
+[B2] Strikeout | Strike 1 looking, Strike 2 looking, Strike 3 looking. | #24 Soren Adeyemi strikes out looking, #21 Bram Halvorsen pitching, #23 Felipe Szabo remains at 1st. | Outs: 1 | TAL 3 – WRN 0
+[B2] Strikeout | Strike 1 swinging, Strike 2 looking, Strike 3 looking. | #40 Wesley Marchetti strikes out looking, #21 Bram Halvorsen pitching, #23 Felipe Szabo remains at 1st. | Outs: 2 | TAL 3 – WRN 0
+[B2] Strikeout | Strike 1 swinging, Strike 2 swinging, Strike 3 swinging. | #25 Ezra Vandermeer strikes out swinging, #21 Bram Halvorsen pitching. | Outs: 3 | TAL 3 – WRN 0
+
+TOP 3 — Tallowmere Tigers batting
+[T3] Double | Strike 1 looking, Ball 1, Ball 2, In play. | #7 Lucien Okonjo doubles on a fly ball to center fielder #22 Mateo Okafor. | Outs: 0 | TAL 3 – WRN 0
+[T3] Pop Out | In play. | #21 Bram Halvorsen pops out to pitcher #44 Dashiell Kowalczyk, #7 Lucien Okonjo remains at 2nd. | Outs: 1 | TAL 3 – WRN 0
+[T3] Walk | Ball 1, Strike 1 looking, Ball 2, Ball 3, Foul, Ball 4. | #2 Corwin Tanaka walks, #44 Dashiell Kowalczyk pitching, #7 Lucien Okonjo remains at 2nd. | Outs: 1 | TAL 3 – WRN 0
+[T3] Fielder's Choice | Ball 1, Ball 2, #7 Lucien Okonjo advances to 3rd on wild pitch, #2 Corwin Tanaka advances to 2nd on the same pitch, Ball 3, Strike 1 looking, In play. | #26 Malik Esterhazy grounds into fielder's choice, third baseman #44 Dashiell Kowalczyk to catcher #23 Felipe Szabo, #7 Lucien Okonjo out advancing to home, #2 Corwin Tanaka advances to 3rd. | Outs: 2 | TAL 3 – WRN 0
+[T3] Strikeout | Strike 1 swinging, #26 Malik Esterhazy steals 2nd, Strike 2 swinging, Ball 1, Ball 2, #2 Corwin Tanaka scores on passed ball, #26 Malik Esterhazy advances to 3rd on the same pitch, Strike 3 swinging. | #15 Pierce Ulloa strikes out swinging, #24 Soren Adeyemi pitching. | Outs: 3 | TAL 4 – WRN 0
+
+BOTTOM 3 — Wrenmoor Wolves batting
+[B3] Strikeout | Strike 1 looking, Strike 2 looking, Strike 3 looking. | #22 Mateo Okafor strikes out looking, #21 Bram Halvorsen pitching. | Outs: 1 | TAL 4 – WRN 0
+[B3] Strikeout | Strike 1 swinging, Ball 1, Strike 2 swinging, Strike 3 looking. | #1 Oskar Halloran strikes out looking, #21 Bram Halvorsen pitching. | Outs: 2 | TAL 4 – WRN 0
+[B3] Double | In play. | #16 Callum Ferreira doubles on a fly ball to left fielder #26 Malik Esterhazy. | Outs: 2 | TAL 4 – WRN 0
+[B3] Walk | Ball 1, Ball 2, Ball 3, Strike 1 swinging, Ball 4. | #17 Rhys Delacroix walks, #21 Bram Halvorsen pitching, #16 Callum Ferreira remains at 2nd. | Outs: 2 | TAL 4 – WRN 0
+[B3] Line Out | Strike 1 looking, In play. | #15 Kenji Waverly lines out to left fielder #26 Malik Esterhazy. | Outs: 3 | TAL 4 – WRN 0
+
+TOP 4 — Tallowmere Tigers batting
+[T4] Strikeout | Ball 1, Strike 1 looking, Strike 2 looking, Ball 2, Strike 3 looking. | #18 Henrik Castellano strikes out looking, #24 Soren Adeyemi pitching. | Outs: 1 | TAL 4 – WRN 0
+[T4] Strikeout | Strike 1 swinging, Ball 1, Strike 2 swinging, Ball 2, Ball 3, Strike 3 looking. | #22 Silas Mwangi strikes out looking, #24 Soren Adeyemi pitching. | Outs: 2 | TAL 4 – WRN 0
+[T4] Strikeout | Strike 1 swinging, Strike 2 looking, Ball 1, Strike 3 swinging. | #24 Rafael Lindgren strikes out swinging, #24 Soren Adeyemi pitching. | Outs: 3 | TAL 4 – WRN 0
+
+BOTTOM 4 — Wrenmoor Wolves batting
+[B4] Single | In play. | #44 Dashiell Kowalczyk singles on a fly ball to center fielder #7 Lucien Okonjo. | Outs: 0 | TAL 4 – WRN 0
+[B4] Walk | Ball 1, Ball 2, Ball 3, Ball 4. | #23 Felipe Szabo walks, #21 Bram Halvorsen pitching, #44 Dashiell Kowalczyk advances to 2nd. | Outs: 0 | TAL 4 – WRN 0
+[B4] Strikeout | Courtesy runner #15 Kenji Waverly in for #23 Felipe Szabo, Strike 1 looking, Ball 1, Foul, Ball 2, Strike 3 looking. | #24 Soren Adeyemi strikes out looking, #21 Bram Halvorsen pitching, #44 Dashiell Kowalczyk remains at 2nd, #15 Kenji Waverly remains at 1st. | Outs: 1 | TAL 4 – WRN 0
+[B4] Strikeout | Strike 1 swinging, Strike 2 swinging, Strike 3 swinging. | #40 Wesley Marchetti strikes out swinging, #21 Bram Halvorsen pitching, #44 Dashiell Kowalczyk remains at 2nd, #15 Kenji Waverly remains at 1st. | Outs: 2 | TAL 4 – WRN 0
+[B4] Strikeout | Strike 1 swinging, Ball 1, Ball 2, Foul, Strike 3 looking. | #25 Ezra Vandermeer strikes out looking, #21 Bram Halvorsen pitching. | Outs: 3 | TAL 4 – WRN 0
+
+TOP 5 — Tallowmere Tigers batting
+[T5] Double | In play. | #19 Arjun Pemberton doubles on a fly ball to left fielder #40 Wesley Marchetti. | Outs: 0 | TAL 4 – WRN 0
+[T5] Sacrifice Fly | Ball 1, Strike 1 looking, Ball 2, #19 Arjun Pemberton steals 3rd, Ball 3, In play. | #7 Lucien Okonjo out on sacrifice fly to center fielder #17 Rhys Delacroix, #19 Arjun Pemberton scores. | Outs: 1 | TAL 5 – WRN 0
+[T5] Fly Out | Ball 1, Strike 1 looking, Strike 2 looking, In play. | #21 Bram Halvorsen flies out to left fielder #40 Wesley Marchetti. | Outs: 2 | TAL 5 – WRN 0
+[T5] Single | Ball 1, Ball 2, Ball 3, In play. | #2 Corwin Tanaka singles on a line drive to center fielder #17 Rhys Delacroix. | Outs: 2 | TAL 5 – WRN 0
+[T5] Single | In play. | #26 Malik Esterhazy singles on a pop fly to right fielder #25 Ezra Vandermeer, #2 Corwin Tanaka advances to 3rd. | Outs: 2 | TAL 5 – WRN 0
+[T5] Runner Out | Strike 1 swinging, #2 Corwin Tanaka picked off at 3rd, catcher #23 Felipe Szabo to pitcher #24 Soren Adeyemi to third baseman #44 Dashiell Kowalczyk. | Half-inning ended by out on the base paths. | Outs: 3 | TAL 5 – WRN 0
+
+BOTTOM 5 — Wrenmoor Wolves batting
+[B5] Strikeout | Ball 1, Strike 1 swinging, Ball 2, Strike 2 swinging, Strike 3 swinging. | #1 Oskar Halloran strikes out swinging, #21 Bram Halvorsen pitching. | Outs: 1 | TAL 5 – WRN 0
+[B5] Fly Out | Strike 1 swinging, Ball 1, Ball 2, Ball 3, In play. | #16 Callum Ferreira flies out to left fielder #26 Malik Esterhazy. | Outs: 2 | TAL 5 – WRN 0
+[B5] Strikeout | Strike 1 looking, Strike 2 swinging, Ball 1, Ball 2, Ball 3, Strike 3 swinging. | #17 Rhys Delacroix strikes out swinging, #21 Bram Halvorsen pitching. | Outs: 3 | TAL 5 – WRN 0
+
+TOP 6 — Tallowmere Tigers batting
+[T6] Error | Strike 1 swinging, Ball 1, Ball 2, In play. | #15 Pierce Ulloa hits a hard ground ball and reaches on an error by shortstop #15 Kenji Waverly, #15 Pierce Ulloa advances to 2nd on the same error. | Outs: 0 | TAL 5 – WRN 0
+[T6] Sacrifice Bunt | In play. | #18 Henrik Castellano sacrifices, pitcher #24 Soren Adeyemi to first baseman #16 Callum Ferreira, #18 Henrik Castellano out advancing to 1st, #15 Pierce Ulloa advances to 3rd. | Outs: 1 | TAL 5 – WRN 0
+[T6] Error | In play. | #22 Silas Mwangi hits a ground ball and reaches on an error by shortstop #15 Kenji Waverly, #15 Pierce Ulloa scores. | Outs: 1 | TAL 6 – WRN 0
+[T6] Dropped 3rd Strike | Ball 1, Ball 2, #22 Silas Mwangi advances to 2nd on wild pitch, Ball 3, Strike 1 looking, Strike 2 looking, Strike 3 swinging. | #24 Rafael Lindgren out at first on dropped 3rd strike, #22 Silas Mwangi advances to 3rd. | Outs: 2 | TAL 6 – WRN 0
+[T6] Walk | Ball 1, Ball 2, Ball 3, Ball 4. | #19 Arjun Pemberton walks, #24 Soren Adeyemi pitching, #22 Silas Mwangi remains at 3rd. | Outs: 2 | TAL 6 – WRN 0
+[T6] Double | Ball 1, #19 Arjun Pemberton steals 2nd, Strike 1 looking, Ball 2, In play. | #7 Lucien Okonjo doubles on a fly ball to right fielder #25 Ezra Vandermeer, #22 Silas Mwangi scores, #19 Arjun Pemberton scores. | Outs: 2 | TAL 8 – WRN 0
+[T6] Single | Ball 1, Ball 2, #7 Lucien Okonjo advances to 3rd on wild pitch, Ball 3, Strike 1 looking, Strike 2 swinging, In play. | #21 Bram Halvorsen singles on a hard ground ball to right fielder #25 Ezra Vandermeer, #21 Bram Halvorsen advances to 2nd on the throw, #7 Lucien Okonjo scores. | Outs: 2 | TAL 9 – WRN 0
+[T6] Fly Out | Ball 1, Strike 1 looking, Ball 2, Foul, Ball 3, #21 Bram Halvorsen steals 3rd, In play. | #2 Corwin Tanaka flies out to center fielder #17 Rhys Delacroix. | Outs: 3 | TAL 9 – WRN 0
+
+BOTTOM 6 — Wrenmoor Wolves batting
+[B6] Double | In play. | #15 Kenji Waverly doubles on a fly ball to left fielder #26 Malik Esterhazy. | Outs: 0 | TAL 9 – WRN 0
+[B6] Strikeout | Ball 1, Foul, Strike 2 swinging, Strike 3 looking. | #44 Dashiell Kowalczyk strikes out looking, #21 Bram Halvorsen pitching, #15 Kenji Waverly remains at 2nd. | Outs: 1 | TAL 9 – WRN 0
+[B6] Strikeout | Ball 1, Strike 1 looking, Foul, Ball 2, Foul, Foul, Ball 3, Strike 3 swinging. | #23 Felipe Szabo strikes out swinging, #21 Bram Halvorsen pitching, #15 Kenji Waverly remains at 2nd. | Outs: 2 | TAL 9 – WRN 0
+[B6] Single | Strike 1 looking, Strike 2 looking, In play. | #24 Soren Adeyemi singles on a fly ball to center fielder #7 Lucien Okonjo, #15 Kenji Waverly scores. | Outs: 2 | TAL 9 – WRN 1
+[B6] Strikeout | Ball 1, Strike 1 swinging, Strike 2 swinging, Strike 3 swinging. | #40 Wesley Marchetti strikes out swinging, #21 Bram Halvorsen pitching. | Outs: 3 | TAL 9 – WRN 1
+
+TOP 7 — Tallowmere Tigers batting
+[T7] Strikeout | Foul, Foul, Ball 1, Ball 2, Ball 3, Strike 3 swinging. | #26 Malik Esterhazy strikes out swinging, #24 Soren Adeyemi pitching. | Outs: 1 | TAL 9 – WRN 1
+[T7] Error | In play. | #15 Pierce Ulloa hits a ground ball and reaches on an error by third baseman #44 Dashiell Kowalczyk. | Outs: 1 | TAL 9 – WRN 1
+[T7] Strikeout | Strike 1 swinging, Strike 2 looking, Strike 3 looking. | #18 Henrik Castellano strikes out looking, #24 Soren Adeyemi pitching, #15 Pierce Ulloa remains at 1st. | Outs: 2 | TAL 9 – WRN 1
+[T7] Strikeout | Foul, Strike 2 looking, Ball 1, #15 Pierce Ulloa steals 2nd, Strike 3 looking. | #22 Silas Mwangi strikes out looking, #24 Soren Adeyemi pitching. | Outs: 3 | TAL 9 – WRN 1
+
+BOTTOM 7 — Wrenmoor Wolves batting
+[B7] Strikeout | Strike 1 looking, Strike 2 swinging, Ball 1, Strike 3 swinging. | #25 Ezra Vandermeer strikes out swinging, #19 Arjun Pemberton pitching. | Outs: 1 | TAL 9 – WRN 1
+[B7] Strikeout | Strike 1 swinging, Ball 1, Strike 2 swinging, Strike 3 looking. | #1 Oskar Halloran strikes out looking, #19 Arjun Pemberton pitching. | Outs: 2 | TAL 9 – WRN 1
+[B7] Single | Strike 1 looking, Ball 1, Ball 2, In play. | #16 Callum Ferreira singles on a ground ball to third baseman #15 Pierce Ulloa. | Outs: 2 | TAL 9 – WRN 1
+[B7] Runner Out | Strike 1 swinging, Foul, Ball 1, #16 Callum Ferreira caught stealing 2nd, pitcher #19 Arjun Pemberton to first baseman #24 Rafael Lindgren to shortstop #21 Bram Halvorsen. | Half-inning ended by out on the base paths. | Outs: 3 | TAL 9 – WRN 1
+
+FINAL: Tallowmere Tigers 9, Wrenmoor Wolves 1
+LINE SCORE
+Team | 1 | 2 | 3 | 4 | 5 | 6 | 7 | R
+TAL | 3 | 0 | 1 | 0 | 1 | 4 | 0 | 9
+WRN | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1

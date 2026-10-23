@@ -1,0 +1,79 @@
+team,number,name,positions_observed,bats,throws
+Wrenmoor Wolves,0,Tadeo Ashworth,2B LF,not in source,not in source
+Wrenmoor Wolves,1,Oskar Halloran,2B LF RF,not in source,not in source
+Wrenmoor Wolves,15,Kenji Waverly,P C 1B 2B SS,not in source,not in source
+Wrenmoor Wolves,16,Callum Ferreira,P 1B 2B SS RF,not in source,not in source
+Wrenmoor Wolves,17,Rhys Delacroix,LF CF RF,not in source,not in source
+Wrenmoor Wolves,20,Bastian Oyelaran,1B 2B SS RF,not in source,not in source
+Wrenmoor Wolves,22,Mateo Okafor,LF CF RF EH,not in source,not in source
+Wrenmoor Wolves,23,Felipe Szabo,P C 1B,not in source,not in source
+Wrenmoor Wolves,24,Soren Adeyemi,P 2B 3B LF CF RF,not in source,not in source
+Wrenmoor Wolves,25,Ezra Vandermeer,LF RF EH,not in source,not in source
+Wrenmoor Wolves,27,Emeka Brannigan,P C 3B SS LF EH,not in source,not in source
+Wrenmoor Wolves,28,Anders Wilkerson,2B RF,not in source,not in source
+Wrenmoor Wolves,31,Idris Thornbury,P 1B SS CF,not in source,not in source
+Wrenmoor Wolves,33,Lorcan,1B,not in source,not in source
+Wrenmoor Wolves,34,Matthias Quintero,LF RF,not in source,not in source
+Wrenmoor Wolves,40,Wesley Marchetti,P 2B 3B LF CF RF EH,not in source,not in source
+Wrenmoor Wolves,44,Dashiell Kowalczyk,P 2B 3B SS,not in source,not in source
+Tallowmere Tigers,2,Corwin Tanaka,C 1B,not in source,not in source
+Tallowmere Tigers,7,Lucien Okonjo,CF,not in source,not in source
+Tallowmere Tigers,15,Pierce Ulloa,P 3B RF,not in source,not in source
+Tallowmere Tigers,16,Theo Brightwater,C 2B SS,not in source,not in source
+Tallowmere Tigers,17,Gideon Varga,1B 3B,not in source,not in source
+Tallowmere Tigers,18,Henrik Castellano,2B EH,not in source,not in source
+Tallowmere Tigers,19,Arjun Pemberton,P SS CF,not in source,not in source
+Tallowmere Tigers,20,Quentin Sorensen,2B,not in source,not in source
+Tallowmere Tigers,21,Bram Halvorsen,P 3B SS,not in source,not in source
+Tallowmere Tigers,22,Silas Mwangi,RF EH,not in source,not in source
+Tallowmere Tigers,23,Ilan Prescott,EH,not in source,not in source
+Tallowmere Tigers,24,Rafael Lindgren,1B EH,not in source,not in source
+Tallowmere Tigers,26,Malik Esterhazy,LF RF,not in source,not in source
+Tallowmere Tigers,27,Dario Whitcombe,P 1B,not in source,not in source
+Tallowmere Tigers,33,Nikolai Fairbanks,CF RF,not in source,not in source
+Saltreach Sparrows,2,Luca Abernathy,,not in source,not in source
+Saltreach Sparrows,3,Elias Montague,CF,not in source,not in source
+Saltreach Sparrows,5,Ronan Fitzwilliam,1B,not in source,not in source
+Saltreach Sparrows,6,Hugo Sandoval-Reid,P SS,not in source,not in source
+Saltreach Sparrows,8,Javier Noonan,2B 3B,not in source,not in source
+Saltreach Sparrows,9,Tomas Kincaid,2B CF,not in source,not in source
+Saltreach Sparrows,10,Bjorn Calloway,RF,not in source,not in source
+Saltreach Sparrows,11,Desmond Yilmaz,3B,not in source,not in source
+Saltreach Sparrows,12,Kwame Delgado,P C SS,not in source,not in source
+Saltreach Sparrows,14,Amari Rasmussen,P C,not in source,not in source
+Brackenfell Bitterns,1,Alden Duquesne,P 1B,not in source,not in source
+Brackenfell Bitterns,2,Nolan Ashby,C,not in source,not in source
+Brackenfell Bitterns,4,Santiago Okoro,1B,not in source,not in source
+Brackenfell Bitterns,5,Fynn Rourke,LF,not in source,not in source
+Brackenfell Bitterns,15,Cyrus Moreau,3B EH,not in source,not in source
+Brackenfell Bitterns,16,Paxton Greaves,LF,not in source,not in source
+Brackenfell Bitterns,18,Kai Westergaard,SS CF,not in source,not in source
+Brackenfell Bitterns,20,Declan Ibarra,2B,not in source,not in source
+Brackenfell Bitterns,21,Victor Ostrowski,RF,not in source,not in source
+Brackenfell Bitterns,22,Ewan Lundberg,CF,not in source,not in source
+Brackenfell Bitterns,24,Rowan Bellamy,P 1B,not in source,not in source
+Quillhaven Cranes,1,Harlan Nwosu,P,not in source,not in source
+Quillhaven Cranes,2,Isaac Fairweather,2B 3B,not in source,not in source
+Quillhaven Cranes,10,Jonah Aldana,C CF EH,not in source,not in source
+Quillhaven Cranes,15,Milo Petrakis,P 3B,not in source,not in source
+Quillhaven Cranes,16,Otto Lindell,2B CF,not in source,not in source
+Quillhaven Cranes,17,Grady Hollis,P 1B,not in source,not in source
+Quillhaven Cranes,20,Ezekiel Sato,SS,not in source,not in source
+Quillhaven Cranes,21,Wyatt Dragomir,RF,not in source,not in source
+Quillhaven Cranes,22,Benedikt Quayle,LF CF,not in source,not in source
+Quillhaven Cranes,23,Thiago Valdivia,1B LF EH,not in source,not in source
+Quillhaven Cranes,24,Ruben Kettering,C,not in source,not in source
+Dunmarrow Drakes,2,Leon Borisov,SS,not in source,not in source
+Dunmarrow Drakes,3,Mason Tervo,2B 3B,not in source,not in source
+Dunmarrow Drakes,4,Aurelio Grant,P C,not in source,not in source
+Dunmarrow Drakes,6,Nash Pellerin,P 3B,not in source,not in source
+Dunmarrow Drakes,9,Caspian Ndiaye,P C 2B,not in source,not in source
+Dunmarrow Drakes,10,Sterling Whitlock,CF,not in source,not in source
+Dunmarrow Drakes,15,Kieran Oduya,1B,not in source,not in source
+Dunmarrow Drakes,16,Jasper Hargrove,LF,not in source,not in source
+Dunmarrow Drakes,17,Tate Sorrell,RF,not in source,not in source
+Saltreach Sparrows,,Pool Player 1,,not in source,not in source
+Saltreach Sparrows,,Pool Player 2,,not in source,not in source
+Saltreach Sparrows,,Unknown Player,,not in source,not in source
+Brackenfell Bitterns,,Pool Player 1,,not in source,not in source
+Brackenfell Bitterns,,Pool Player 2,,not in source,not in source

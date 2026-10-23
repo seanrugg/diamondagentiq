@@ -2,7 +2,8 @@
 # npm run rules:load
 # Rebuilds data/rules.sql from the CSVs, upgrades the schema if needed, and
 # replaces rule_sources, rules_facts, pitch_rest_rules and the coaching tables in one transaction.
-# Other tables (house rules, drills, games, ruling log) are left untouched.
+# Adds the demo league house rules if missing. Other tables (existing house
+# rules, drills, games, ruling log) are left untouched.
 # Admin script: agents never touch Postgres directly; they read via Zetaris.
 set -euo pipefail
 
@@ -25,6 +26,7 @@ npx tsx src/scripts/build-rules-sql.ts
   echo "DELETE FROM pitch_rest_rules;"
   echo "DELETE FROM rule_sources;"
   cat data/rules.sql
+  cat data/migrations/005_summer_league_house_rules.sql
 } | docker exec -i diq-postgres psql -q -v ON_ERROR_STOP=1 --single-transaction -U diq -d diamondagentiq
 
 docker exec diq-postgres psql -At -U diq -d diamondagentiq -c \

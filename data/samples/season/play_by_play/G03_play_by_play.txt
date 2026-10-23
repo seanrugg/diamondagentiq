@@ -1,0 +1,82 @@
+G03 — Wrenmoor Wolves (WRN, away) at Tallowmere Tigers (TAL, home)
+Format: [half-inning] Event type | Pitch sequence | Description | Outs after play | Score (away–home)
+
+TOP 1 — Wrenmoor Wolves batting
+[T1] Strikeout | Ball 1, Strike 1 swinging, Strike 2 swinging, Strike 3 looking. | #17 Rhys Delacroix strikes out looking, #27 Dario Whitcombe pitching. | Outs: 1 | WRN 0 – TAL 0
+[T1] Hit By Pitch | Ball 1, Ball 2, Ball 3. | #15 Kenji Waverly is hit by pitch, #27 Dario Whitcombe pitching. | Outs: 1 | WRN 0 – TAL 0
+[T1] Error | Ball 1, Ball 2, In play. | #44 Dashiell Kowalczyk hits a ground ball and reaches on an error by first baseman #24 Rafael Lindgren, #15 Kenji Waverly advances to 2nd. | Outs: 1 | WRN 0 – TAL 0
+[T1] Single | In play. | #27 Emeka Brannigan singles on a hard ground ball to right fielder #33 Nikolai Fairbanks, #15 Kenji Waverly advances to 3rd, #44 Dashiell Kowalczyk advances to 2nd. | Outs: 1 | WRN 0 – TAL 0
+[T1] Strikeout | Ball 1, Strike 1 looking, Ball 2, Strike 2 swinging, Foul, Ball 3, Strike 3 swinging. | #31 Idris Thornbury strikes out swinging, #27 Dario Whitcombe pitching, #15 Kenji Waverly remains at 3rd, #44 Dashiell Kowalczyk remains at 2nd, #27 Emeka Brannigan remains at 1st. | Outs: 2 | WRN 0 – TAL 0
+[T1] Line Out | Strike 1 swinging, In play. | #24 Soren Adeyemi lines out to second baseman #20 Quentin Sorensen. | Outs: 3 | WRN 0 – TAL 0
+
+BOTTOM 1 — Tallowmere Tigers batting
+[B1] Error | Strike 1 looking, Foul, Foul, Ball 1, Ball 2, Foul, Ball 3, In play. | #19 Arjun Pemberton hits a fly ball and reaches on an error by right fielder #40 Wesley Marchetti. | Outs: 0 | WRN 0 – TAL 0
+[B1] Single | Strike 1 looking, Ball 1, #19 Arjun Pemberton steals 2nd, Ball 2, Ball 3, In play. | #7 Lucien Okonjo singles on a fly ball to center fielder #17 Rhys Delacroix, #19 Arjun Pemberton advances to 3rd. | Outs: 0 | WRN 0 – TAL 0
+[B1] Single | Ball 1, #7 Lucien Okonjo advances to 2nd on defensive indifference, In play. | #33 Nikolai Fairbanks singles on a fly ball to right fielder #40 Wesley Marchetti, #19 Arjun Pemberton scores, #7 Lucien Okonjo advances to 3rd. | Outs: 0 | WRN 0 – TAL 1
+[B1] Single | Ball 1, #33 Nikolai Fairbanks advances to 2nd on defensive indifference, Foul, Foul, In play. | #16 Theo Brightwater singles on a hard ground ball to right fielder #40 Wesley Marchetti, #7 Lucien Okonjo scores, #33 Nikolai Fairbanks advances to 3rd. | Outs: 0 | WRN 0 – TAL 2
+[B1] Error | Ball 1, Ball 2, #16 Theo Brightwater advances to 2nd on defensive indifference, Ball 3, In play. | #2 Corwin Tanaka hits a fly ball and reaches on an error by right fielder #40 Wesley Marchetti, #33 Nikolai Fairbanks scores, #16 Theo Brightwater advances to 3rd. | Outs: 0 | WRN 0 – TAL 3
+[B1] Double | Ball 1, #2 Corwin Tanaka advances to 2nd on defensive indifference, In play. | #27 Dario Whitcombe doubles on a hard ground ball, left fielder #25 Ezra Vandermeer to third baseman #24 Soren Adeyemi, #27 Dario Whitcombe out advancing to 3rd, #16 Theo Brightwater scores, #2 Corwin Tanaka scores. | Outs: 1 | WRN 0 – TAL 5
+[B1] Inning Ended | — | Half-inning ended by scorekeeper. | Outs: 3 | WRN 0 – TAL 5
+
+TOP 2 — Wrenmoor Wolves batting
+[T2] Walk | Strike 1 looking, Ball 1, Strike 2 swinging, Ball 2, Ball 3, Ball 4. | #40 Wesley Marchetti walks, #27 Dario Whitcombe pitching. | Outs: 0 | WRN 0 – TAL 5
+[T2] Hit By Pitch | Pickoff attempt at 1st, Pickoff attempt at 1st, Ball 1, Ball 2, Ball 3, Strike 1 looking, Foul, Ball 4. | #25 Ezra Vandermeer is hit by pitch, #27 Dario Whitcombe pitching, #40 Wesley Marchetti advances to 2nd. | Outs: 0 | WRN 0 – TAL 5
+[T2] Strikeout | Strike 1 swinging, Foul, Strike 3 swinging. | #17 Rhys Delacroix strikes out swinging, #27 Dario Whitcombe pitching, #40 Wesley Marchetti remains at 2nd, #25 Ezra Vandermeer remains at 1st. | Outs: 1 | WRN 0 – TAL 5
+[T2] Ground Out | #40 Wesley Marchetti steals 3rd, #25 Ezra Vandermeer steals 2nd, Ball 1, Ball 2, In play. | #15 Kenji Waverly grounds out, second baseman #20 Quentin Sorensen to first baseman #24 Rafael Lindgren, #40 Wesley Marchetti scores, #25 Ezra Vandermeer advances to 3rd. | Outs: 2 | WRN 1 – TAL 5
+[T2] Walk | Ball 1, Ball 2, Ball 3, Ball 4. | #44 Dashiell Kowalczyk walks, #27 Dario Whitcombe pitching, #25 Ezra Vandermeer remains at 3rd. | Outs: 2 | WRN 1 – TAL 5
+[T2] Ground Out | Courtesy runner #15 Kenji Waverly in for #44 Dashiell Kowalczyk, Ball 1, Ball 2, Foul, In play. | #27 Emeka Brannigan grounds out, second baseman #20 Quentin Sorensen to first baseman #24 Rafael Lindgren. | Outs: 3 | WRN 1 – TAL 5
+
+BOTTOM 2 — Tallowmere Tigers batting
+[B2] Walk | Strike 1 looking, Ball 1, Ball 2, Ball 3, Strike 2 swinging, Ball 4. | #26 Malik Esterhazy walks, #44 Dashiell Kowalczyk pitching. | Outs: 0 | WRN 1 – TAL 5
+[B2] Pop Out | In play. | #20 Quentin Sorensen pops out in foul territory to catcher #27 Emeka Brannigan, #26 Malik Esterhazy remains at 1st. | Outs: 1 | WRN 1 – TAL 5
+[B2] Strikeout | Ball 1, Strike 1 swinging, Strike 2 swinging, #26 Malik Esterhazy caught stealing 2nd, catcher #27 Emeka Brannigan to shortstop #15 Kenji Waverly, Ball 2, Strike 3 swinging. | #17 Gideon Varga strikes out swinging, #44 Dashiell Kowalczyk pitching. | Outs: 3 | WRN 1 – TAL 5
+
+TOP 3 — Wrenmoor Wolves batting
+[T3] Walk | Strike 1 swinging, Strike 2 looking, Ball 1, Ball 2, Foul, Ball 3, Ball 4. | #31 Idris Thornbury walks, #27 Dario Whitcombe pitching. | Outs: 0 | WRN 1 – TAL 5
+[T3] Single | Ball 1, #31 Idris Thornbury out due to offensive interference, Strike 1 swinging, Strike 2 looking, Ball 2, In play. | #24 Soren Adeyemi singles on a ground ball to third baseman #17 Gideon Varga. | Outs: 1 | WRN 1 – TAL 5
+[T3] Strikeout | Strike 1 swinging, Strike 2 swinging, Strike 3 swinging. | #40 Wesley Marchetti strikes out swinging, #27 Dario Whitcombe pitching, #24 Soren Adeyemi remains at 1st. | Outs: 2 | WRN 1 – TAL 5
+[T3] Runner Out | Pickoff attempt at 1st, Ball 1, Strike 1 looking, Strike 2 swinging, #24 Soren Adeyemi caught stealing 2nd, catcher #16 Theo Brightwater to shortstop #19 Arjun Pemberton. | Half-inning ended by out on the base paths. | Outs: 3 | WRN 1 – TAL 5
+
+BOTTOM 3 — Tallowmere Tigers batting
+[B3] Walk | Foul, Ball 1, Ball 2, Ball 3, Strike 2 swinging, Ball 4. | #23 Ilan Prescott walks, #44 Dashiell Kowalczyk pitching. | Outs: 0 | WRN 1 – TAL 5
+[B3] Strikeout | Ball 1, Strike 1 swinging, Strike 2 swinging, Ball 2, #23 Ilan Prescott steals 2nd, Strike 3 swinging. | #24 Rafael Lindgren strikes out swinging, #44 Dashiell Kowalczyk pitching, #23 Ilan Prescott remains at 2nd. | Outs: 1 | WRN 1 – TAL 5
+[B3] Strikeout | Strike 1 swinging, Ball 1, Strike 2 swinging, Strike 3 swinging. | #18 Henrik Castellano strikes out swinging, #44 Dashiell Kowalczyk pitching, #23 Ilan Prescott remains at 2nd. | Outs: 2 | WRN 1 – TAL 5
+[B3] Single | In play. | #19 Arjun Pemberton singles on a ground ball to shortstop #15 Kenji Waverly, #23 Ilan Prescott advances to 3rd. | Outs: 2 | WRN 1 – TAL 5
+[B3] Error | In play. | #7 Lucien Okonjo hits a ground ball and reaches on an error by first baseman #31 Idris Thornbury, #19 Arjun Pemberton advances to 3rd, #7 Lucien Okonjo advances to 2nd on the same error, #23 Ilan Prescott scores. | Outs: 2 | WRN 1 – TAL 6
+[B3] Error | In play. | #33 Nikolai Fairbanks hits a fly ball and reaches on an error by center fielder #17 Rhys Delacroix, #7 Lucien Okonjo scores, #33 Nikolai Fairbanks advances to 2nd on the same error, #19 Arjun Pemberton scores. | Outs: 2 | WRN 1 – TAL 8
+[B3] Line Out | Ball 1, In play. | #16 Theo Brightwater lines out to right fielder #24 Soren Adeyemi. | Outs: 3 | WRN 1 – TAL 8
+
+TOP 4 — Wrenmoor Wolves batting
+[T4] Strikeout | Strike 1 looking, Foul, Ball 1, Strike 3 swinging. | #25 Ezra Vandermeer strikes out swinging, #27 Dario Whitcombe pitching. | Outs: 1 | WRN 1 – TAL 8
+[T4] Strikeout | Ball 1, Strike 1 swinging, Strike 2 swinging, Ball 2, Strike 3 looking. | #17 Rhys Delacroix strikes out looking, #27 Dario Whitcombe pitching. | Outs: 2 | WRN 1 – TAL 8
+[T4] Double | Ball 1, In play. | #15 Kenji Waverly doubles on a fly ball to right fielder #26 Malik Esterhazy. | Outs: 2 | WRN 1 – TAL 8
+[T4] Single | Strike 1 looking, In play. | #44 Dashiell Kowalczyk singles on a fly ball to right fielder #26 Malik Esterhazy, #15 Kenji Waverly scores. | Outs: 2 | WRN 2 – TAL 8
+[T4] Ground Out | Courtesy runner #17 Rhys Delacroix in for #44 Dashiell Kowalczyk, In play. | #27 Emeka Brannigan grounds out to first baseman #2 Corwin Tanaka. | Outs: 3 | WRN 2 – TAL 8
+
+BOTTOM 4 — Tallowmere Tigers batting
+[B4] Walk | Ball 1, Ball 2, Ball 3, Ball 4. | #2 Corwin Tanaka walks, #44 Dashiell Kowalczyk pitching. | Outs: 0 | WRN 2 – TAL 8
+[B4] Ground Out | Ball 1, Ball 2, #2 Corwin Tanaka steals 2nd, In play. | #27 Dario Whitcombe grounds out, third baseman #40 Wesley Marchetti to first baseman #31 Idris Thornbury, #2 Corwin Tanaka advances to 3rd. | Outs: 1 | WRN 2 – TAL 8
+[B4] Fly Out | Ball 1, #2 Corwin Tanaka scores on wild pitch, Strike 1 looking, In play. | #26 Malik Esterhazy flies out to center fielder #17 Rhys Delacroix. | Outs: 2 | WRN 2 – TAL 9
+[B4] Error | Ball 1, Ball 2, Ball 3, Strike 1 looking, In play. | #20 Quentin Sorensen hits a ground ball and reaches on an error by shortstop #15 Kenji Waverly, #20 Quentin Sorensen out advancing to 2nd. | Outs: 3 | WRN 2 – TAL 9
+
+TOP 5 — Wrenmoor Wolves batting
+[T5] Ground Out | Strike 1 swinging, In play. | #31 Idris Thornbury bunts out, pitcher #27 Dario Whitcombe to first baseman #2 Corwin Tanaka. | Outs: 1 | WRN 2 – TAL 9
+[T5] Walk | Ball 1, Ball 2, Ball 3, Foul, Ball 4. | #24 Soren Adeyemi walks, #27 Dario Whitcombe pitching. | Outs: 1 | WRN 2 – TAL 9
+[T5] Walk | Ball 1, Ball 2, Ball 3, Ball 4. | #40 Wesley Marchetti walks, #27 Dario Whitcombe pitching, #24 Soren Adeyemi advances to 2nd. | Outs: 1 | WRN 2 – TAL 9
+[T5] Strikeout | Strike 1 looking, Foul, Strike 3 looking. | #25 Ezra Vandermeer strikes out looking, #27 Dario Whitcombe pitching, #24 Soren Adeyemi remains at 2nd, #40 Wesley Marchetti remains at 1st. | Outs: 2 | WRN 2 – TAL 9
+[T5] Ground Out | Ball 1, In play. | #17 Rhys Delacroix grounds out, pitcher #27 Dario Whitcombe to first baseman #2 Corwin Tanaka. | Outs: 3 | WRN 2 – TAL 9
+
+BOTTOM 5 — Tallowmere Tigers batting
+[B5] Single | Ball 1, Strike 1 looking, Ball 2, Strike 2 looking, In play. | #17 Gideon Varga singles on a ground ball to first baseman #31 Idris Thornbury. | Outs: 0 | WRN 2 – TAL 9
+[B5] Walk | Ball 1, Strike 1 looking, Strike 2 swinging, Foul, Ball 2, Pickoff attempt at 1st, Ball 3, Foul, Ball 4. | #23 Ilan Prescott walks, #44 Dashiell Kowalczyk pitching, #17 Gideon Varga advances to 2nd. | Outs: 0 | WRN 2 – TAL 9
+[B5] Error | Strike 1 swinging, Ball 1, Strike 2 looking, In play. | #24 Rafael Lindgren hits a ground ball and reaches on an error by shortstop #15 Kenji Waverly, #17 Gideon Varga scores, #23 Ilan Prescott advances to 2nd. | Outs: 0 | WRN 2 – TAL 10
+[B5] Strikeout | Foul, Strike 2 swinging, Ball 1, Ball 2, Strike 3 swinging. | #18 Henrik Castellano strikes out swinging, #44 Dashiell Kowalczyk pitching, #23 Ilan Prescott remains at 2nd, #24 Rafael Lindgren remains at 1st. | Outs: 1 | WRN 2 – TAL 10
+[B5] Fielder's Choice | Foul, In play. | #19 Arjun Pemberton grounds into fielder's choice, pitcher #44 Dashiell Kowalczyk to shortstop #15 Kenji Waverly to first baseman #31 Idris Thornbury, #24 Rafael Lindgren out advancing to 2nd, #23 Ilan Prescott advances to 3rd. | Outs: 2 | WRN 2 – TAL 10
+[B5] Double | In play. | #7 Lucien Okonjo doubles on a fly ball to left fielder #25 Ezra Vandermeer, #19 Arjun Pemberton scores, #7 Lucien Okonjo advances to 3rd on the throw, #23 Ilan Prescott scores. | Outs: 2 | WRN 2 – TAL 12
+[B5] Walk | Foul, Ball 1, Ball 2, Strike 2 swinging, Ball 3, Ball 4. | #33 Nikolai Fairbanks walks, #44 Dashiell Kowalczyk pitching, #7 Lucien Okonjo remains at 3rd. | Outs: 2 | WRN 2 – TAL 12
+
+FINAL: Wrenmoor Wolves 2, Tallowmere Tigers 12
+LINE SCORE
+Team | 1 | 2 | 3 | 4 | 5 | R
+WRN | 0 | 1 | 0 | 1 | 0 | 2
+TAL | 5 | 0 | 3 | 1 | 3 | 12

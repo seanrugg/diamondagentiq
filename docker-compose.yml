@@ -14,6 +14,7 @@ services:
       - ./data/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./data/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
       - ./data/rules.sql:/docker-entrypoint-initdb.d/03-rules.sql:ro
+      - ./data/migrations/005_summer_league_house_rules.sql:/docker-entrypoint-initdb.d/04-house-rules.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U diq -d diamondagentiq"]
       interval: 5s

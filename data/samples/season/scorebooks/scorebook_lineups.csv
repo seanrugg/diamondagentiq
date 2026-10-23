@@ -1,0 +1,145 @@
+game,team,side,slot,no,player,listed_as,pos,pos_changes
+G10,Brackenfell Bitterns,Away,1,21,Victor Ostrowski,V. Ostrowski,RF,
+G10,Brackenfell Bitterns,Away,2,2,Nolan Ashby,N. Ashby,C,
+G10,Brackenfell Bitterns,Away,3,24,Rowan Bellamy,R. Bellamy,P,
+G10,Brackenfell Bitterns,Away,4,15,Cyrus Moreau,C. Moreau,3B,
+G10,Brackenfell Bitterns,Away,5,22,Ewan Lundberg,E. Lundberg,CF,
+G10,Brackenfell Bitterns,Away,6,4,Santiago Okoro,S. Okoro,1B,
+G10,Brackenfell Bitterns,Away,7,16,Paxton Greaves,P. Greaves,LF,
+G10,Brackenfell Bitterns,Away,8,20,Declan Ibarra,D. Ibarra,2B,
+G10,Brackenfell Bitterns,Away,9,18,Kai Westergaard,K. Westergaard,SS,
+G10,Wrenmoor Wolves,Home,1,31,Idris Thornbury,I. Thornbury,SS,inn 3: P;inn 5: CF
+G10,Wrenmoor Wolves,Home,1,31,Idris Thornbury,I. Thornbury,,inn 3: P;inn 5: CF
+G10,Wrenmoor Wolves,Home,2,44,Dashiell Kowalczyk,D. Kowalczyk,P,inn 3: 2B;inn 6: 3B
+G10,Wrenmoor Wolves,Home,2,44,Dashiell Kowalczyk,D. Kowalczyk,,inn 3: 2B;inn 6: 3B
+G10,Wrenmoor Wolves,Home,3,16,Callum Ferreira,C. Ferreira,2B,
+G10,Wrenmoor Wolves,Home,3,16,Callum Ferreira,C. Ferreira,,
+G10,Wrenmoor Wolves,Home,4,23,Felipe Szabo,F. Szabo,C,
+G10,Wrenmoor Wolves,Home,5,24,Soren Adeyemi,S. Adeyemi,CF,inn 5: P
+G10,Wrenmoor Wolves,Home,6,40,Wesley Marchetti,W. Marchetti,3B,inn 6: LF
+G10,Wrenmoor Wolves,Home,7,17,Rhys Delacroix,R. Delacroix,RF,
+G10,Wrenmoor Wolves,Home,8,33,Lorcan,Lorcan,1B,
+G10,Wrenmoor Wolves,Home,9,0,Tadeo Ashworth,T. Ashworth,LF,inn 6: 2B
+G10,Wrenmoor Wolves,Home,10,27,Emeka Brannigan,E. Brannigan,EH,inn 3: SS
+G05,Wrenmoor Wolves,Away,1,31,Idris Thornbury,I. Thornbury,CF,inn 5: P
+G05,Wrenmoor Wolves,Away,2,27,Emeka Brannigan,E. Brannigan,P,inn 5: LF
+G05,Wrenmoor Wolves,Away,3,23,Felipe Szabo,F. Szabo,1B,
+G05,Wrenmoor Wolves,Away,4,44,Dashiell Kowalczyk,D. Kowalczyk,3B,
+G05,Wrenmoor Wolves,Away,5,28,Anders Wilkerson,A. Wilkerson,2B,
+G05,Wrenmoor Wolves,Away,6,24,Soren Adeyemi,S. Adeyemi,RF,inn 3: LF;inn 5: CF
+G05,Wrenmoor Wolves,Away,7,15,Kenji Waverly,K. Waverly,C,
+G05,Wrenmoor Wolves,Away,8,40,Wesley Marchetti,W. Marchetti,EH,inn 3: RF
+G05,Wrenmoor Wolves,Away,9,34,Matthias Quintero,M. Quintero,LF,inn 5: RF
+G05,Wrenmoor Wolves,Away,9,34,Matthias Quintero,M. Quintero,,inn 5: RF
+G05,Wrenmoor Wolves,Away,10,20,Bastian Oyelaran,B. Oyelaran,SS,
+G05,Tallowmere Tigers,Home,1,19,Arjun Pemberton,A. Pemberton,SS,inn 5: CF
+G05,Tallowmere Tigers,Home,2,16,Theo Brightwater,T. Brightwater,2B,inn 4: C;inn 5: SS
+G05,Tallowmere Tigers,Home,3,33,Nikolai Fairbanks,N. Fairbanks,CF,
+G05,Tallowmere Tigers,Home,4,2,Corwin Tanaka,C. Tanaka,C,
+G05,Tallowmere Tigers,Home,4,2,Corwin Tanaka,C. Tanaka,,
+G05,Tallowmere Tigers,Home,5,21,Bram Halvorsen,B. Halvorsen,3B,
+G05,Tallowmere Tigers,Home,5,21,Bram Halvorsen,B. Halvorsen,,
+G05,Tallowmere Tigers,Home,6,27,Dario Whitcombe,D. Whitcombe,P,inn 5: 1B
+G05,Tallowmere Tigers,Home,7,15,Pierce Ulloa,P. Ulloa,RF,inn 5: P
+G05,Tallowmere Tigers,Home,8,26,Malik Esterhazy,M. Esterhazy,LF,
+G05,Tallowmere Tigers,Home,9,22,Silas Mwangi,S. Mwangi,EH,inn 4: RF
+G05,Tallowmere Tigers,Home,10,23,Ilan Prescott,I. Prescott,EH,
+G05,Tallowmere Tigers,Home,11,17,Gideon Varga,G. Varga,1B,inn 4: 3B
+G05,Tallowmere Tigers,Home,12,18,Henrik Castellano,H. Castellano,EH,inn 4: 2B
+G05,Tallowmere Tigers,Home,13,24,Rafael Lindgren,R. Lindgren,EH,inn 4: 1B
+G01,Wrenmoor Wolves,Away,1,31,Idris Thornbury,I. Thornbury,CF,inn 3: P;inn 4: SS
+G01,Wrenmoor Wolves,Away,2,27,Emeka Brannigan,E. Brannigan,3B,
+G01,Wrenmoor Wolves,Away,3,20,Bastian Oyelaran,B. Oyelaran,SS,inn 4: 1B
+G01,Wrenmoor Wolves,Away,4,23,Felipe Szabo,F. Szabo,1B,inn 4: C
+G01,Wrenmoor Wolves,Away,4,23,Felipe Szabo,F. Szabo,,inn 4: C
+G01,Wrenmoor Wolves,Away,5,15,Kenji Waverly,K. Waverly,C,inn 4: P;inn 5: 2B
+G01,Wrenmoor Wolves,Away,5,15,Kenji Waverly,K. Waverly,,inn 4: P;inn 5: 2B
+G01,Wrenmoor Wolves,Away,6,16,Callum Ferreira,C. Ferreira,2B,inn 5: P
+G01,Wrenmoor Wolves,Away,7,40,Wesley Marchetti,W. Marchetti,P,inn 3: CF
+G01,Wrenmoor Wolves,Away,8,17,Rhys Delacroix,R. Delacroix,LF,
+G01,Wrenmoor Wolves,Away,9,22,Mateo Okafor,M. Okafor,RF,
+G01,Wrenmoor Wolves,Away,9,22,Mateo Okafor,M. Okafor,,
+G01,Wrenmoor Wolves,Away,10,25,Ezra Vandermeer,E. Vandermeer,EH,inn 3: RF
+G01,Quillhaven Cranes,Home,1,1,Harlan Nwosu,H. Nwosu,P,
+G01,Quillhaven Cranes,Home,2,2,Isaac Fairweather,I. Fairweather,2B,
+G01,Quillhaven Cranes,Home,3,15,Milo Petrakis,M. Petrakis,3B,inn 5: P
+G01,Quillhaven Cranes,Home,4,10,Jonah Aldana,J. Aldana,C,
+G01,Quillhaven Cranes,Home,5,16,Otto Lindell,O. Lindell,CF,
+G01,Quillhaven Cranes,Home,6,17,Grady Hollis,G. Hollis,1B,inn 5: P
+G01,Quillhaven Cranes,Home,6,17,Grady Hollis,G. Hollis,,inn 5: P
+G01,Quillhaven Cranes,Home,7,20,Ezekiel Sato,E. Sato,SS,
+G01,Quillhaven Cranes,Home,8,21,Wyatt Dragomir,W. Dragomir,RF,
+G01,Quillhaven Cranes,Home,9,22,Benedikt Quayle,B. Quayle,LF,
+G01,Quillhaven Cranes,Home,10,23,Thiago Valdivia,T. Valdivia,EH,
+G02,Wrenmoor Wolves,Away,1,31,Idris Thornbury,I. Thornbury,SS,inn 5: P
+G02,Wrenmoor Wolves,Away,1,31,Idris Thornbury,I. Thornbury,,inn 5: P
+G02,Wrenmoor Wolves,Away,2,27,Emeka Brannigan,E. Brannigan,P,inn 5: SS
+G02,Wrenmoor Wolves,Away,3,20,Bastian Oyelaran,B. Oyelaran,1B,
+G02,Wrenmoor Wolves,Away,4,23,Felipe Szabo,F. Szabo,C,
+G02,Wrenmoor Wolves,Away,5,16,Callum Ferreira,C. Ferreira,2B,
+G02,Wrenmoor Wolves,Away,6,17,Rhys Delacroix,R. Delacroix,CF,
+G02,Wrenmoor Wolves,Away,7,40,Wesley Marchetti,W. Marchetti,3B,
+G02,Wrenmoor Wolves,Away,8,22,Mateo Okafor,M. Okafor,RF,
+G02,Wrenmoor Wolves,Away,9,25,Ezra Vandermeer,E. Vandermeer,LF,
+G02,Brackenfell Bitterns,Home,1,20,Declan Ibarra,D. Ibarra,2B,
+G02,Brackenfell Bitterns,Home,2,2,Nolan Ashby,N. Ashby,C,
+G02,Brackenfell Bitterns,Home,3,21,Victor Ostrowski,V. Ostrowski,RF,
+G02,Brackenfell Bitterns,Home,4,24,Rowan Bellamy,R. Bellamy,P,inn 7: 1B
+G02,Brackenfell Bitterns,Home,5,1,Alden Duquesne,A. Duquesne,1B,inn 7: P
+G02,Brackenfell Bitterns,Home,6,,Pool Player 1,Pool Player 1,SS,
+G02,Brackenfell Bitterns,Home,7,,Pool Player 2,Pool Player 2,3B,
+G02,Brackenfell Bitterns,Home,8,18,Kai Westergaard,K. Westergaard,CF,
+G02,Brackenfell Bitterns,Home,9,15,Cyrus Moreau,C. Moreau,EH,
+G02,Brackenfell Bitterns,Home,10,5,Fynn Rourke,F. Rourke,LF,
+G08,Quillhaven Cranes,Away,1,2,Isaac Fairweather,I. Fairweather,3B,
+G08,Quillhaven Cranes,Away,2,24,Ruben Kettering,R. Kettering,C,
+G08,Quillhaven Cranes,Away,3,15,Milo Petrakis,M. Petrakis,P,
+G08,Quillhaven Cranes,Away,3,15,Milo Petrakis,M. Petrakis,,
+G08,Quillhaven Cranes,Away,4,16,Otto Lindell,O. Lindell,2B,
+G08,Quillhaven Cranes,Away,5,17,Grady Hollis,G. Hollis,1B,inn 4: P
+G08,Quillhaven Cranes,Away,5,17,Grady Hollis,G. Hollis,,inn 4: P
+G08,Quillhaven Cranes,Away,6,10,Jonah Aldana,J. Aldana,EH,inn 4: CF
+G08,Quillhaven Cranes,Away,7,20,Ezekiel Sato,E. Sato,SS,
+G08,Quillhaven Cranes,Away,8,21,Wyatt Dragomir,W. Dragomir,RF,
+G08,Quillhaven Cranes,Away,9,22,Benedikt Quayle,B. Quayle,CF,
+G08,Quillhaven Cranes,Away,9,22,Benedikt Quayle,B. Quayle,,
+G08,Quillhaven Cranes,Away,10,23,Thiago Valdivia,T. Valdivia,LF,inn 5: 1B
+G08,Quillhaven Cranes,Away,10,23,Thiago Valdivia,T. Valdivia,,inn 5: 1B
+G08,Wrenmoor Wolves,Home,1,31,Idris Thornbury,I. Thornbury,P,inn 5: CF
+G08,Wrenmoor Wolves,Home,2,27,Emeka Brannigan,E. Brannigan,SS,
+G08,Wrenmoor Wolves,Home,3,23,Felipe Szabo,F. Szabo,C,inn 6: P
+G08,Wrenmoor Wolves,Home,4,15,Kenji Waverly,K. Waverly,1B,inn 5: C
+G08,Wrenmoor Wolves,Home,4,15,Kenji Waverly,K. Waverly,,inn 5: C
+G08,Wrenmoor Wolves,Home,5,44,Dashiell Kowalczyk,D. Kowalczyk,3B,
+G08,Wrenmoor Wolves,Home,6,28,Anders Wilkerson,A. Wilkerson,2B,
+G08,Wrenmoor Wolves,Home,7,24,Soren Adeyemi,S. Adeyemi,CF,inn 5: P;inn 6: LF
+G08,Wrenmoor Wolves,Home,7,24,Soren Adeyemi,S. Adeyemi,,inn 5: P;inn 6: LF
+G08,Wrenmoor Wolves,Home,8,16,Callum Ferreira,C. Ferreira,RF,inn 5: 1B
+G08,Wrenmoor Wolves,Home,8,16,Callum Ferreira,C. Ferreira,,inn 5: 1B
+G08,Wrenmoor Wolves,Home,9,17,Rhys Delacroix,R. Delacroix,LF,
+G08,Wrenmoor Wolves,Home,9,17,Rhys Delacroix,R. Delacroix,,
+G08,Wrenmoor Wolves,Home,10,40,Wesley Marchetti,W. Marchetti,EH,inn 3: RF;inn 4: 3B
+G08,Wrenmoor Wolves,Home,11,25,Ezra Vandermeer,E. Vandermeer,EH,inn 3: LF
+G08,Wrenmoor Wolves,Home,12,22,Mateo Okafor,M. Okafor,EH,inn 4: RF
+G06,Wrenmoor Wolves,Away,1,16,Callum Ferreira,C. Ferreira,SS,inn 7: P
+G06,Wrenmoor Wolves,Away,2,17,Rhys Delacroix,R. Delacroix,CF,
+G06,Wrenmoor Wolves,Away,3,44,Dashiell Kowalczyk,D. Kowalczyk,P,inn 7: SS
+G06,Wrenmoor Wolves,Away,4,23,Felipe Szabo,F. Szabo,C,
+G06,Wrenmoor Wolves,Away,5,15,Kenji Waverly,K. Waverly,1B,
+G06,Wrenmoor Wolves,Away,6,24,Soren Adeyemi,S. Adeyemi,2B,
+G06,Wrenmoor Wolves,Away,7,40,Wesley Marchetti,W. Marchetti,3B,
+G06,Wrenmoor Wolves,Away,8,22,Mateo Okafor,M. Okafor,RF,inn 4: LF
+G06,Wrenmoor Wolves,Away,8,22,Mateo Okafor,M. Okafor,,inn 4: LF
+G06,Wrenmoor Wolves,Away,9,25,Ezra Vandermeer,E. Vandermeer,LF,inn 7: RF
+G06,Wrenmoor Wolves,Away,9,25,Ezra Vandermeer,E. Vandermeer,,inn 7: RF
+G06,Dunmarrow Drakes,Home,1,2,Leon Borisov,L. Borisov,SS,
+G06,Dunmarrow Drakes,Home,2,3,Mason Tervo,M. Tervo,2B,inn 4: 3B
+G06,Dunmarrow Drakes,Home,2,3,Mason Tervo,M. Tervo,,inn 4: 3B
+G06,Dunmarrow Drakes,Home,3,4,Aurelio Grant,A. Grant,P,inn 4: C
+G06,Dunmarrow Drakes,Home,4,6,Nash Pellerin,N. Pellerin,3B,inn 4: P
+G06,Dunmarrow Drakes,Home,4,6,Nash Pellerin,N. Pellerin,,inn 4: P
+G06,Dunmarrow Drakes,Home,5,9,Caspian Ndiaye,C. Ndiaye,C,inn 4: P;inn 4: 2B
+G06,Dunmarrow Drakes,Home,6,10,Sterling Whitlock,S. Whitlock,CF,
+G06,Dunmarrow Drakes,Home,7,15,Kieran Oduya,K. Oduya,1B,
+G06,Dunmarrow Drakes,Home,8,16,Jasper Hargrove,J. Hargrove,LF,
+G06,Dunmarrow Drakes,Home,9,17,Tate Sorrell,T. Sorrell,RF,

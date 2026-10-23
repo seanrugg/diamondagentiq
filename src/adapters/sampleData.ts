@@ -15,7 +15,9 @@ async function open(): Promise<PGlite> {
   const { PGlite } = await import("@electric-sql/pglite");
   const pg = new PGlite();
   await pg.exec("CREATE SCHEMA diq_pg; SET search_path TO diq_pg, public;");
-  for (const file of ["schema.sql", "seed.sql", "rules.sql"]) await pg.exec(read(file));
+  for (const file of ["schema.sql", "seed.sql", "rules.sql", "migrations/005_summer_league_house_rules.sql"]) {
+    await pg.exec(read(file));
+  }
   return pg;
 }
 
