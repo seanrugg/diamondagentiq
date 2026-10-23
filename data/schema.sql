@@ -58,6 +58,23 @@ CREATE TABLE pitch_rest_rules (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE coaching_insights (
+  insight_code TEXT PRIMARY KEY,
+  topic TEXT NOT NULL,
+  sport TEXT NOT NULL CHECK (sport IN ('baseball', 'softball', 'both')),
+  age_min INTEGER,
+  age_max INTEGER,
+  audience TEXT NOT NULL CHECK (audience IN ('all', 'player', 'parent', 'coach', 'umpire')),
+  situation TEXT NOT NULL,
+  insight TEXT NOT NULL,
+  why TEXT,
+  try_this TEXT,
+  source_id TEXT NOT NULL REFERENCES rule_sources (source_id),
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  verified_by TEXT,
+  verify_note TEXT
+);
+
 CREATE TABLE house_rules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_name TEXT NOT NULL,

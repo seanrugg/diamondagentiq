@@ -224,3 +224,13 @@ describe("runAgentSql", () => {
     ).rejects.toThrow(/Column count mismatch/);
   });
 });
+
+describe("prepareSql: DevelopmentAgent queries", () => {
+  it("accepts the coaching_insights join and the drills lookup", () => {
+    const insights = prepareSql(
+      "SELECT c.insight_code, c.topic, c.verified, s.url FROM diq_pg.coaching_insights c JOIN diq_pg.rule_sources s ON c.source_id = s.source_id WHERE c.sport IN ('both', 'baseball') AND (c.age_min IS NULL OR c.age_min <= 10) AND (c.age_max IS NULL OR c.age_max >= 10)",
+    );
+    expect(insights).toContain("coaching_insights");
+    expect(prepareSql("SELECT d.id, d.title FROM diq_pg.drills d WHERE (d.age_min IS NULL OR d.age_min <= 10)")).toContain("drills");
+  });
+});

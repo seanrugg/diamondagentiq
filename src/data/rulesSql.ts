@@ -57,6 +57,25 @@ const TIER_COLUMNS: ColumnSpec[] = [
   { csv: "source_id", column: "source_id", type: "text", required: true },
 ];
 
+const INSIGHT_COLUMNS: ColumnSpec[] = [
+  { csv: "insight_id", column: "insight_code", type: "text", required: true },
+  { csv: "topic", column: "topic", type: "text", required: true },
+  { csv: "sport", column: "sport", type: "text", required: true },
+  { csv: "age_min", column: "age_min", type: "int" },
+  { csv: "age_max", column: "age_max", type: "int" },
+  { csv: "audience", column: "audience", type: "text", required: true },
+  { csv: "situation", column: "situation", type: "text", required: true },
+  { csv: "insight", column: "insight", type: "text", required: true },
+  { csv: "why", column: "why", type: "text" },
+  { csv: "try_this", column: "try_this", type: "text" },
+  { csv: "source_id", column: "source_id", type: "text", required: true },
+  { csv: "verified", column: "verified", type: "bool", required: true },
+  { csv: "verified_by", column: "verified_by", type: "text" },
+  { csv: "verify_note", column: "verify_note", type: "text" },
+];
+
+const AUDIENCES = new Set(["all", "player", "parent", "coach", "umpire"]);
+
 const SPORTS = new Set(["baseball", "softball", "both"]);
 const CALL_TYPES = new Set(["rule", "judgment", "mixed"]);
 
@@ -64,11 +83,13 @@ export type RulesCsvInput = {
   ruleSources: string;
   rulesFacts: string;
   pitchRestRules: string;
+  /** data/coaching/insights.csv; optional so older callers keep working. */
+  coachingInsights?: string;
 };
 
 export type RulesSqlOutput = {
   sql: string;
-  counts: { sources: number; facts: number; tiers: number };
+  counts: { sources: number; facts: number; tiers: number; insights: number };
 };
 
 /** Quote a value as a SQL literal according to its column type. */
@@ -141,6 +162,18 @@ export function buildRulesSql(input: RulesCsvInput): RulesSqlOutput {
     if (t.sport !== "baseball" && t.sport !== "softball") throw new Error(`${where}: bad sport ${t.sport}`);
   }
 
+  const insights = input.coachingInsights === undefined ? [] : parseCsvRecords(input.coachingInsights);
+  const insightCodes = new Set<string>();
+  for (const c of insights) {
+    const where = `coaching_insights ${c.insight_id}`;
+    if (insightCodes.has(c.insight_id ?? "")) throw new Error(`${where}: duplicate insight_id`);
+    insightCodes.add(c.insight_id ?? "");
+    if (!sourceIds.has(c.source_id ?? "")) throw new Error(`${where}: unknown source_id ${c.source_id}`);
+    if (!SPORTS.has(c.sport ?? "")) throw new Error(`${where}: bad sport ${c.sport}`);
+    if (!AUDIENCES.has(c.audience ?? "")) throw new Error(`${where}: bad audience ${c.audience}`);
+    if (!/^[a-z][a-z0-9_]*$/.test(c.topic ?? "")) throw new Error(`${where}: topic must be snake_case`);
+  }
+
   const byText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
   const sortedSources = [...sources].sort((a, b) => byText(a.source_id ?? "", b.source_id ?? ""));
   const sortedFacts = [...facts].sort((a, b) => byText(a.fact_id ?? "", b.fact_id ?? ""));
@@ -158,7 +191,18 @@ export function buildRulesSql(input: RulesCsvInput): RulesSqlOutput {
     insertBlock("rule_sources", SOURCE_COLUMNS, sortedSources.map((r) => toTuple(r, SOURCE_COLUMNS, `rule_sources ${r.source_id}`))),
     insertBlock("rules_facts", FACT_COLUMNS, sortedFacts.map((r) => toTuple(r, FACT_COLUMNS, `rules_facts ${r.fact_id}`))),
     insertBlock("pitch_rest_rules", TIER_COLUMNS, sortedTiers.map((r, i) => toTuple(r, TIER_COLUMNS, `pitch_rest_rules row ${i + 2}`))),
+    ...(input.coachingInsights === undefined
+      ? []
+      : [
+          insertBlock(
+            "coaching_insights",
+            INSIGHT_COLUMNS,
+            [...insights]
+              .sort((a, b) => byText(a.insight_id ?? "", b.insight_id ?? ""))
+              .map((r) => toTuple(r, INSIGHT_COLUMNS, `coaching_insights ${r.insight_id}`)),
+          ),
+        ]),
   ].join("\n");
 
-  return { sql, counts: { sources: sources.length, facts: facts.length, tiers: tiers.length } };
+  return { sql, counts: { sources: sources.length, facts: facts.length, tiers: tiers.length, insights: insights.length } };
 }

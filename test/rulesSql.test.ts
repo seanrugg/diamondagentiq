@@ -54,7 +54,8 @@ const tinyTiers =
 describe("buildRulesSql", () => {
   it("builds escaped INSERTs with NULLs for empty cells", () => {
     const { sql, counts } = buildRulesSql({ ruleSources: tinySources, rulesFacts: tinyFacts, pitchRestRules: tinyTiers });
-    expect(counts).toEqual({ sources: 1, facts: 1, tiers: 1 });
+    expect(counts).toEqual({ sources: 1, facts: 1, tiers: 1, insights: 0 });
+    expect(sql).not.toContain("coaching_insights");
     expect(sql).toContain("'It''s a rule, not judgment.'");
     expect(sql).toMatch(/'little_league', NULL, NULL, NULL, '2026'/);
     expect(sql).toContain("INSERT INTO pitch_rest_rules");
@@ -67,17 +68,32 @@ describe("buildRulesSql", () => {
     expect(() => buildRulesSql({ ...base, ruleSources: tinySources + tinySources.split("\n")[1] + "\n" })).toThrow(/duplicate source_id/);
   });
 
+  it("builds coaching insights and validates source, sport, audience and topic", () => {
+    const base = { ruleSources: tinySources, rulesFacts: tinyFacts, pitchRestRules: tinyTiers };
+    const header = "insight_id,topic,sport,age_min,age_max,audience,situation,insight,why,try_this,source_id,verified,verified_by,verify_note\n";
+    const row = "C001,plate_coverage,both,8,14,all,Strikeout away,Crowd the plate,Reach,Bat-length check,S1,false,,\n";
+    const { sql, counts } = buildRulesSql({ ...base, coachingInsights: header + row });
+    expect(counts.insights).toBe(1);
+    expect(sql).toContain("INSERT INTO coaching_insights (insight_code, topic");
+    expect(() => buildRulesSql({ ...base, coachingInsights: header + row.replace(",S1,", ",S9,") })).toThrow(/unknown source_id S9/);
+    expect(() => buildRulesSql({ ...base, coachingInsights: header + row.replace(",all,", ",fans,") })).toThrow(/bad audience/);
+    expect(() => buildRulesSql({ ...base, coachingInsights: header + row.replace("plate_coverage", "Plate Coverage") })).toThrow(/snake_case/);
+    expect(() => buildRulesSql({ ...base, coachingInsights: header + row + row })).toThrow(/duplicate insight_id/);
+  });
+
   it("matches the row counts of the real CSVs", () => {
     const input = {
       ruleSources: read("rules/rule_sources.csv"),
       rulesFacts: read("rules/rules_facts.csv"),
       pitchRestRules: read("rules/pitch_rest_rules.csv"),
+      coachingInsights: read("coaching/insights.csv"),
     };
     const { counts } = buildRulesSql(input);
     expect(counts).toEqual({
       sources: parseCsvRecords(input.ruleSources).length,
       facts: parseCsvRecords(input.rulesFacts).length,
       tiers: parseCsvRecords(input.pitchRestRules).length,
+      insights: parseCsvRecords(input.coachingInsights).length,
     });
   });
 
@@ -86,6 +102,7 @@ describe("buildRulesSql", () => {
       ruleSources: read("rules/rule_sources.csv"),
       rulesFacts: read("rules/rules_facts.csv"),
       pitchRestRules: read("rules/pitch_rest_rules.csv"),
+      coachingInsights: read("coaching/insights.csv"),
     });
     expect(read("rules.sql")).toBe(sql); // run `npm run rules:build` if this fails
   });

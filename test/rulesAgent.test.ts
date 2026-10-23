@@ -28,6 +28,7 @@ const request: SituationRequest = {
 };
 
 const context: ContextOutput = {
+  intent: "ruling",
   sport: "baseball",
   sanction: "little_league",
   age: 12,

@@ -36,6 +36,7 @@ const request = {
 };
 
 const context = {
+  intent: "ruling" as const,
   sport: "baseball" as const,
   sanction: "little_league",
   age: 12,

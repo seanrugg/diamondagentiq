@@ -55,6 +55,10 @@ export const SituationAnswerSchema = z.object({
   /** Deterministic pitch-rest result, when one was computed. */
   computation: z.record(z.unknown()).nullable().optional(),
   draft_data: z.boolean().optional(),
+  /** Which path answered: ruling (RulesAgent) or development/equipment/general (DevelopmentAgent). */
+  intent: z.enum(["ruling", "development", "equipment", "general"]).optional(),
+  /** Development path: the one next step DevelopmentAgent chose. */
+  focus: z.string().optional(),
   /** What the critique loop did: drafts reviewed and anything left unresolved. */
   review: z
     .object({

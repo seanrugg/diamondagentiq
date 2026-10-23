@@ -58,7 +58,11 @@ export function deterministicChecks(draft: CoachingDraft, rules: RulesOk): strin
     issues.push("Say clearly that the player is not eligible on the game date.");
   }
   if (rules.draft_data && !/\b(draft|unverified|not yet verified|hasn't been verified|has not been verified)\b/i.test(text)) {
-    issues.push("Disclose that the answer is based on draft rule data that hasn't been verified yet.");
+    issues.push(
+      rules.sources.every((s) => s.table === "coaching_insights")
+        ? "Add one short sentence saying this guidance comes from draft coaching notes that haven't been reviewed yet."
+        : "Disclose that the answer is based on draft rule data that hasn't been verified yet.",
+    );
   }
 
   const cited = rules.sources.map((s) => (s.rule_ref ?? "").toLowerCase()).join(" | ");

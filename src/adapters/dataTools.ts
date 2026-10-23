@@ -20,6 +20,7 @@ export const ALLOWED_TABLES = [
   "pitch_rest_rules",
   "house_rules",
   "drills",
+  "coaching_insights",
   "pitcher_appearances",
   "games",
   "box_scores",

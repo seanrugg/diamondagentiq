@@ -15,7 +15,11 @@ import { parseModelJson } from "./json.js";
 import type { SituationRequest } from "../schemas/situation.js";
 import { trace } from "../trace.js";
 
+export const INTENTS = ["ruling", "development", "equipment", "general"] as const;
+
 export const ContextOutputSchema = z.object({
+  /** What kind of help the question needs; routes the orchestrator. */
+  intent: z.enum(INTENTS).default("ruling"),
   sport: z.enum(["baseball", "softball"]),
   sanction: z.string().min(1),
   age: z.number().int().nonnegative(),
@@ -55,6 +59,7 @@ function buildPrompt(request: SituationRequest): string {
 Extract structured context from the situation request below. Return ONLY a JSON object (no markdown fences, no prose) matching this schema:
 
 {
+  "intent": "ruling" | "development" | "equipment" | "general",
   "sport": "baseball" | "softball",
   "sanction": string,            // e.g. "little_league"
   "age": number (int, >= 0),
@@ -67,6 +72,14 @@ Extract structured context from the situation request below. Return ONLY a JSON 
   },
   "missing_facts": string[]      // facts needed to answer that are not provided
 }
+
+intent:
+- "ruling": what a rule says or how a call or eligibility works (pitch counts and rest, balks, interference, protests, house rules).
+- "development": helping a player improve or recover from a tough moment (a strikeout, an error, confidence, approach, practice).
+- "equipment": choosing or checking gear (bat size or weight, legal bats, gloves, helmets).
+- "general": anything else about learning the game.
+If the question is about helping a player after a call (for example a called third strike), the intent is "development".
+For development, equipment and general questions, missing_facts should list only what you truly need to give good advice (usually none).
 
 Situation request:
 - question: ${request.question}
@@ -126,6 +139,7 @@ export async function contextAgent(
       action,
       input_summary: `question: ${request.question} role=${request.role} sport=${request.sport} sanction=${request.sanction} age=${request.age}`,
       output_summary: JSON.stringify({
+        intent: context.intent,
         topic: context.topic,
         entities: context.entities,
         missing_facts_count: context.missing_facts.length,

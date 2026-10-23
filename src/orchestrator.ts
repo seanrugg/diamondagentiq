@@ -2,15 +2,19 @@
  * Orchestrator: runs the agent team for one situation and owns the
  * critique/retry loop.
  *
- *   ContextAgent -> RulesAgent -> CallTypeAgent -> CoachingAgent <-> CriticAgent
+ *   ContextAgent -> RulesAgent       -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (intent "ruling")
+ *   ContextAgent -> DevelopmentAgent -> CallTypeAgent -> CoachingAgent <-> CriticAgent   (development, equipment, general)
  *
+ * Both middle agents return the same evidence shape (sources, summary,
+ * computation, draft flag), so the rest of the team is shared.
  * CriticAgent (code checks + Lightning review) can send a draft back to
  * CoachingAgent at most MAX_CRITIC_RETRIES times (AGENTS.md rule 9). Every
  * handoff is traced. Confidence is computed in code from the evidence, not
  * by a model.
  */
 import { callTypeAgent, type CallTypeOutput } from "./agents/callTypeAgent.js";
-import { coachingAgent, type CoachingDraft } from "./agents/coachingAgent.js";
+import { coachingAgent, type CoachingDraft, type DevelopmentInput } from "./agents/coachingAgent.js";
+import { developmentAgent } from "./agents/developmentAgent.js";
 import { contextAgent, type ContextOutput } from "./agents/contextAgent.js";
 import { criticAgent, deterministicChecks } from "./agents/criticAgent.js";
 import { rulesAgent } from "./agents/rulesAgent.js";
@@ -64,6 +68,7 @@ export function assembleAnswer(
   callType: CallTypeOutput,
   draft: CoachingDraft,
   review: { drafts: number; passed: boolean; unresolved_issues: string[] },
+  route: { intent?: ContextOutput["intent"]; focus?: string } = {},
 ): SituationAnswer {
   const answer = {
     what_happened: {
@@ -91,6 +96,8 @@ export function assembleAnswer(
     trace_id: getRunId(),
     computation: rules.computation,
     draft_data: rules.draft_data,
+    ...(route.intent ? { intent: route.intent } : {}),
+    ...(route.focus ? { focus: route.focus } : {}),
     review,
   };
   return SituationAnswerSchema.parse(answer);
@@ -103,11 +110,24 @@ export async function runSituation(
   const context = await contextAgent(request);
   if (!context.ok) return fail("contextAgent", context.error.message);
   const ctx: ContextOutput = context.context;
-  handoff("contextAgent", "rulesAgent", JSON.stringify({ topic: ctx.topic, entities: ctx.entities }));
+  const intent = ctx.intent ?? "ruling";
 
-  const rules = await rulesAgent(request, ctx, referenceDate);
-  if (!rules.ok) return fail("rulesAgent", rules.error.message);
-  handoff("rulesAgent", "callTypeAgent", `${rules.sources.length} sources; computation=${rules.computation ? "yes" : "no"}; draft_data=${rules.draft_data}`);
+  let rules: RulesOk;
+  let development: DevelopmentInput | null = null;
+  if (intent === "ruling") {
+    handoff("contextAgent", "rulesAgent", JSON.stringify({ intent, topic: ctx.topic, entities: ctx.entities }));
+    const found = await rulesAgent(request, ctx, referenceDate);
+    if (!found.ok) return fail("rulesAgent", found.error.message);
+    rules = found;
+    handoff("rulesAgent", "callTypeAgent", `${rules.sources.length} sources; computation=${rules.computation ? "yes" : "no"}; draft_data=${rules.draft_data}`);
+  } else {
+    handoff("contextAgent", "developmentAgent", JSON.stringify({ intent, topic: ctx.topic }));
+    const dev = await developmentAgent(request, ctx);
+    if (!dev.ok) return fail("developmentAgent", dev.error.message);
+    rules = dev.evidence;
+    development = { focus: dev.focus, insights: dev.insights, drills: dev.drills };
+    handoff("developmentAgent", "callTypeAgent", `focus: ${dev.focus}; insights ${dev.insights.map((i) => i.id).join(",")}; drills ${dev.drills.length}`);
+  }
 
   const callType = await callTypeAgent(request, ctx, rules);
   if (!callType.ok) return fail("callTypeAgent", callType.error.message);
@@ -118,7 +138,7 @@ export async function runSituation(
   let draft: CoachingDraft | null = null;
 
   for (let round = 0; round <= MAX_CRITIC_RETRIES; round += 1) {
-    const written = await coachingAgent(request, ctx, rules, callType.value, issues);
+    const written = await coachingAgent(request, ctx, rules, callType.value, issues, development);
     if (!written.ok) {
       if (draft) break; // keep the last good draft
       return fail("coachingAgent", written.error.message);
@@ -148,12 +168,12 @@ export async function runSituation(
     drafts,
     passed: issues.length === 0,
     unresolved_issues: issues,
-  });
+  }, { intent, focus: development?.focus });
   trace({
     agent_name: "orchestrator",
     action: "answer",
     input_summary: request.question,
-    output_summary: `call_type=${answer.call_type} confidence=${answer.confidence} drafts=${drafts} passed=${issues.length === 0}`,
+    output_summary: `intent=${intent} call_type=${answer.call_type} confidence=${answer.confidence} drafts=${drafts} passed=${issues.length === 0}`,
     status: "ok",
   });
   return { ok: true, answer };
