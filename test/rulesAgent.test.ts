@@ -114,7 +114,16 @@ describe("rulesAgent", () => {
     mockedGenerator
       .mockResolvedValueOnce(toolCall(FACTS_SQL))
       .mockResolvedValueOnce(toolCall(HOUSE_SQL, "call_2"))
-      .mockResolvedValueOnce(answer(goodAnswer));
+      .mockResolvedValueOnce(
+        answer({
+          ...goodAnswer,
+          missing_facts: [
+            "sanction pitch-count rest-day thresholds for 68 pitches (ages 11-12)",
+            "Exact calendar dates for Friday and Sunday",
+            "whether she also caught today",
+          ],
+        }),
+      );
 
     const result = await rulesAgent(request, context, TODAY);
 
@@ -134,6 +143,7 @@ describe("rulesAgent", () => {
     });
     expect(result.draft_data).toBe(true);
     expect(result.sources.map((s) => s.table)).toEqual(["rules_facts", "house_rules", "pitch_rest_rules"]);
+    expect(result.missing_facts).toEqual(["whether she also caught today"]);
     expect(result.sources.find((s) => s.table === "house_rules")?.synthetic).toBe(true);
     expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "super", tools: [expect.objectContaining({ type: "function" })] });
   });

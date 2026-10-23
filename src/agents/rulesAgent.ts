@@ -58,7 +58,10 @@ Data (Zetaris, schema diq_pg). Always list columns explicitly; never SELECT *.
 Rules you must follow:
 - Cite only fact_code values (rules_facts) and id values (house_rules) that your queries actually returned.
 - Never invent rule numbers and never quote a rulebook. Your summary is in your own words, built from the facts you found.
-- Do NOT calculate rest days or dates yourself. Code does that. Just say whether the pitch-rest calculation applies.
+- Do NOT calculate rest days or dates yourself, and do NOT search for the pitch-count rest chart. Code looks up the chart
+  (pitch_rest_rules), turns weekday names into dates, and computes the rest days and the earliest eligible date. Just say
+  whether the pitch-rest calculation applies, and don't list the chart, rest thresholds or calendar dates as missing facts.
+- Your summary should explain which rules apply and why. Don't hedge about the eligible date; code reports it alongside your summary.
 - If a house rule changes pitching rest, express it as structure:
   {"house_rule_id": "<id>", "kind": "add_days", "min_pitches": <n>, "days": <n>}  (extra days after outings of at least n pitches)
   or {"house_rule_id": "<id>", "kind": "absolute", "rest_days": <n>}
@@ -370,6 +373,15 @@ export async function rulesAgent(
     const computed = await computePitchRest(context, referenceDate, output.house_rule_adjustment, missing);
     computation = computed.computation;
     if (computed.tierSource) sources.push(computed.tierSource);
+  }
+
+  // When code computed the eligibility, drop model "missing facts" that the
+  // computation answered (the rest chart, thresholds, calendar dates).
+  if (computation) {
+    const answered = /(rest[- ]?day|threshold|pitch[- ]count chart|rest chart|calendar|exact date|which date|eligib)/i;
+    for (let i = missing.length - 1; i >= 0; i -= 1) {
+      if (answered.test(missing[i] ?? "")) missing.splice(i, 1);
+    }
   }
 
   const draftData = sources.some((s) => !s.verified);
