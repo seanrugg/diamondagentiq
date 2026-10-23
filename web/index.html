@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiamondAgentIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* Scorebook palette: cool scorecard paper, navy scorer's ink, red stitch for
+   "sent back", grass green for "passed". Night game in dark mode. */
+:root {
+  --paper: #F5F6F1;
+  --card: #FFFFFF;
+  --ink: #1D2B45;
+  --pencil: #5D6675;
+  --line: #D6DBCF;
+  --grid: #E9ECE3;
+  --stitch: #B3243A;
+  --grass: #2C6A42;
+  --dirt: #8A5A2B;
+  --focus: #2F5FD0;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --ui: "Barlow", system-ui, sans-serif;
+  --prose: "Source Serif 4", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111B27; --card: #172433; --ink: #E6EAE1; --pencil: #9DA8B4;
+    --line: #2B3A4B; --grid: #1B2938; --stitch: #EA6477; --grass: #6BBE86; --dirt: #D19A62; --focus: #8FB0FF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111B27; --card: #172433; --ink: #E6EAE1; --pencil: #9DA8B4;
+  --line: #2B3A4B; --grid: #1B2938; --stitch: #EA6477; --grass: #6BBE86; --dirt: #D19A62; --focus: #8FB0FF;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 16px/1.5 var(--ui);
+}
+a { color: inherit; text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+header.top {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px;
+  padding: 20px clamp(16px, 4vw, 40px) 14px; border-bottom: 2px solid var(--ink);
+}
+.wordmark { font: 700 clamp(30px, 5vw, 44px)/1 var(--display); letter-spacing: 0.01em; margin: 0; }
+.wordmark small { display: block; font: 500 16px/1.3 var(--ui); color: var(--pencil); letter-spacing: 0; margin-top: 6px; }
+.status { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--pencil); }
+.status b { color: var(--ink); font-weight: 600; }
+
+main {
+  display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 28px;
+  padding: 24px clamp(16px, 4vw, 40px) 64px; max-width: 1320px; margin: 0 auto;
+}
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+/* Question form */
+form.ask { position: sticky; top: 16px; align-self: start; display: grid; gap: 14px; }
+@media (max-width: 900px) { form.ask { position: static; } }
+form.ask h2 { font: 600 24px/1.15 var(--display); margin: 0; }
+label { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
+label span.hint { font-weight: 400; color: var(--pencil); }
+input, select, textarea {
+  font: 16px/1.4 var(--ui); color: var(--ink); background: var(--card);
+  border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; width: 100%;
+}
+textarea { min-height: 120px; resize: vertical; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+fieldset.roles { border: 0; padding: 0; margin: 0; display: grid; gap: 4px; }
+fieldset.roles legend { font-size: 14px; font-weight: 600; padding: 0; margin-bottom: 4px; }
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.seg label { display: block; text-align: center; padding: 8px 4px; font-weight: 500; cursor: pointer; background: var(--card); border-left: 1px solid var(--line); }
+.seg label:first-of-type { border-left: 0; }
+.seg input:checked + label { background: var(--ink); color: var(--paper); }
+.seg input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: -3px; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; }
+.examples button {
+  font: 500 14px/1.2 var(--ui); color: var(--ink); background: transparent; cursor: pointer;
+  border: 1px dashed var(--pencil); border-radius: 999px; padding: 6px 10px;
+}
+.examples button:hover { border-style: solid; }
+button.go {
+  font: 600 20px/1 var(--display); letter-spacing: 0.02em; color: var(--paper); background: var(--ink);
+  border: 0; border-radius: 4px; padding: 14px; cursor: pointer;
+}
+button.go[disabled] { opacity: 0.55; cursor: progress; }
+.formnote { font-size: 13px; color: var(--pencil); margin: 0; }
+
+/* The lineup card: the agent team's order of play, filled in as it happens. */
+section.lineup { background: var(--card); border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; }
+.lineup-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 16px; border-bottom: 2px solid var(--ink); }
+.lineup-head h2 { font: 700 26px/1 var(--display); margin: 0; }
+.lineup-head .clock { font: 600 18px/1 var(--display); color: var(--pencil); font-variant-numeric: tabular-nums; }
+.lineup-empty { padding: 28px 16px; color: var(--pencil); margin: 0; }
+ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+ol.steps > li {
+  display: grid; grid-template-columns: 44px minmax(110px, 170px) minmax(0, 1fr) auto; gap: 0 14px;
+  padding: 10px 16px 10px 0; border-top: 1px solid var(--grid); align-items: baseline;
+  animation: arrive 260ms ease-out;
+}
+ol.steps > li:first-child { border-top: 0; }
+@keyframes arrive { from { background: var(--grid); } to { background: transparent; } }
+ol.steps > li.counted::before {
+  counter-increment: step; content: counter(step);
+  font: 700 20px/1 var(--display); text-align: right; color: var(--pencil); font-variant-numeric: tabular-nums;
+}
+ol.steps > li.note { padding-top: 4px; padding-bottom: 6px; border-top: 0; }
+ol.steps > li.note::before { content: ""; }
+.who { font: 600 19px/1.15 var(--display); }
+.who em { display: block; font: 400 13px/1.3 var(--ui); font-style: normal; color: var(--pencil); }
+.what { font-size: 15px; overflow-wrap: anywhere; }
+.what .detail { display: block; color: var(--pencil); font-size: 13px; margin-top: 2px; }
+.meta { text-align: right; font-size: 13px; color: var(--pencil); white-space: nowrap; }
+.chip { display: inline-block; font: 600 14px/1 var(--display); letter-spacing: 0.02em; border: 1px solid currentColor; border-radius: 3px; padding: 3px 6px; color: var(--ink); }
+.chip.lightning { color: var(--dirt); }
+.chip.warn { color: var(--stitch); border-style: dashed; }
+li.sent-back .what { color: var(--stitch); }
+li.sent-back .who { color: var(--stitch); }
+li.passed .who, li.passed .what strong { color: var(--grass); }
+li.failed .what { color: var(--stitch); }
+li.note .what { font-size: 13px; color: var(--pencil); grid-column: 3 / -1; }
+@media (max-width: 640px) {
+  ol.steps > li { grid-template-columns: 32px minmax(0, 1fr); padding-right: 12px; }
+  ol.steps > li .what, ol.steps > li .meta, li.note .what { grid-column: 2; text-align: left; }
+  .meta { white-space: normal; }
+  .chip { line-height: 1.2; }
+  ol.steps > li.counted::before { font-size: 17px; }
+}
+
+/* The answer */
+section.answer { margin-top: 28px; display: grid; gap: 22px; }
+section.answer[hidden] { display: none; }
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; }
+.stamp {
+  width: 96px; height: 96px; border: 3px double var(--stitch); border-radius: 50%; display: grid; place-items: center;
+  color: var(--stitch); font: 700 20px/1 var(--display); text-align: center; transform: rotate(-8deg); padding: 6px;
+}
+.stamp small { display: block; font: 500 12px/1.1 var(--ui); margin-top: 3px; }
+.what-happened { font: 400 21px/1.55 var(--prose); margin: 0; max-width: 68ch; }
+.why-call { margin: 8px 0 0; color: var(--pencil); font-size: 15px; max-width: 68ch; }
+@media (max-width: 640px) { .verdict { grid-template-columns: 1fr; } .stamp { width: 80px; height: 80px; font-size: 17px; } }
+.answer h3 { font: 700 22px/1.1 var(--display); margin: 0 0 6px; }
+.answer p { margin: 0; max-width: 68ch; }
+.prose { font: 400 18px/1.6 var(--prose); }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.lesson-titles { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.lesson-titles li { font-size: 15px; color: var(--pencil); }
+.lesson-titles b { color: var(--ink); font-weight: 600; }
+blockquote.story { margin: 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--dirt); font: italic 400 18px/1.6 var(--prose); max-width: 68ch; }
+blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; color: var(--pencil); margin-top: 8px; }
+.plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--card); }
+.plan div { padding: 12px 14px; border-left: 1px solid var(--line); }
+.plan div:first-child { border-left: 0; }
+.plan h4 { font: 600 18px/1.1 var(--display); margin: 0 0 6px; }
+.plan ul { margin: 0; padding-left: 18px; }
+.plan li { margin: 4px 0; }
+.situation { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; background: var(--card); }
+.situation dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 8px 0 0; }
+.situation dt { font-weight: 600; }
+.situation dd { margin: 0; }
+table.sources { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.sources th, table.sources td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--grid); vertical-align: top; }
+table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
+.draft { color: var(--dirt); font-weight: 600; }
+.reviewed { color: var(--grass); font-weight: 600; }
+.confidence { display: grid; grid-template-columns: auto minmax(120px, 260px); gap: 10px; align-items: center; }
+.meter { height: 10px; border: 1px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.meter span { display: block; height: 100%; background: var(--ink); }
+.small { font-size: 14px; color: var(--pencil); }
+.error-box { border: 2px solid var(--stitch); border-radius: 6px; padding: 12px 14px; color: var(--stitch); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1 class="wordmark">DiamondAgentIQ<small>Understand the call. Learn from the moment. Keep everyone in the game.</small></h1>
+  <div class="status" id="status" aria-live="polite"><span>Checking the agent team…</span></div>
+</header>
+
+<main>
+  <form class="ask" id="ask">
+    <h2>Ask about a play, a call or a tough moment</h2>
+
+    <fieldset class="roles">
+      <legend>I'm a</legend>
+      <div class="seg">
+        <input type="radio" name="role" id="r-parent" value="parent" checked><label for="r-parent">Parent</label>
+        <input type="radio" name="role" id="r-coach" value="coach"><label for="r-coach">Coach</label>
+        <input type="radio" name="role" id="r-player" value="player"><label for="r-player">Player</label>
+        <input type="radio" name="role" id="r-umpire" value="umpire"><label for="r-umpire">Umpire</label>
+      </div>
+    </fieldset>
+
+    <div class="row2">
+      <label>Sport
+        <select name="sport"><option value="baseball">Baseball</option><option value="softball">Softball</option></select>
+      </label>
+      <label>Player's age
+        <input name="age" type="number" min="4" max="18" value="12" required>
+      </label>
+    </div>
+
+    <label>League or sanction
+      <select name="sanction">
+        <option value="little_league">Little League</option>
+        <option value="usssa">USSSA</option>
+        <option value="usa_softball">USA Softball</option>
+        <option value="nsa">NSA</option>
+        <option value="babe_ruth_league">Babe Ruth</option>
+        <option value="cal_ripken">Cal Ripken</option>
+        <option value="usa_baseball">USA Baseball</option>
+      </select>
+    </label>
+
+    <div class="row2">
+      <label>Tournament <span class="hint">if it has house rules</span>
+        <input name="event_name" placeholder="Fall Classic 12U">
+      </label>
+      <label>Team <span class="hint">for memory</span>
+        <input name="team" placeholder="Demo Hawks">
+      </label>
+    </div>
+
+    <label>What happened?
+      <textarea name="question" required placeholder="My son struck out to end the game on three pitches that looked outside. How do I help him?"></textarea>
+    </label>
+
+    <div>
+      <p class="formnote" id="ex-label">Try one:</p>
+      <div class="examples" aria-labelledby="ex-label">
+        <button type="button" data-example="pitch">68 pitches Friday, Sunday start?</button>
+        <button type="button" data-example="strikeout">Struck out to end the game</button>
+        <button type="button" data-example="d3k">Dropped third strike, runner on third</button>
+        <button type="button" data-example="scared">Scared at the plate</button>
+      </div>
+    </div>
+
+    <button class="go" id="go" type="submit">Ask the team</button>
+    <p class="formnote">Answers are a learning tool. The umpire is the authority on the field.</p>
+  </form>
+
+  <div>
+    <section class="lineup" aria-labelledby="lineup-title">
+      <div class="lineup-head">
+        <h2 id="lineup-title">The agent team, play by play</h2>
+        <span class="clock" id="clock" aria-live="off"></span>
+      </div>
+      <p class="lineup-empty" id="empty">Ask a question to watch the agents work it out: who looked up the rules, who wrote the answer, and when the Critic sent a draft back.</p>
+      <ol class="steps" id="steps" aria-live="polite"></ol>
+    </section>
+
+    <section class="answer" id="answer" hidden aria-live="polite"></section>
+  </div>
+</main>
+
+<script>
+const EXAMPLES = {
+  pitch: { role: "coach", sport: "baseball", sanction: "little_league", age: 12, event_name: "Fall Classic 12U", team: "Demo Hawks", today: "2026-10-18", question: "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?" },
+  strikeout: { role: "parent", sport: "baseball", sanction: "little_league", age: 10, event_name: "", team: "Demo Hawks", question: "My son struck out to end the game. 3 straight pitches. They were probably outside. What can I do to help him overcome that failure?" },
+  d3k: { role: "coach", sport: "softball", sanction: "usssa", age: 12, event_name: "", team: "Demo Hawks", question: "Dropped third strike with a runner on third and one out. What should my batter and my runner on third do?" },
+  scared: { role: "coach", sport: "baseball", sanction: "little_league", age: 11, event_name: "", team: "Demo Hawks", question: "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?" },
+};
+
+const AGENTS = {
+  contextAgent: ["Context", "reads the question"],
+  memoryAgent: ["Memory", "H-MEM, this team"],
+  rulesAgent: ["Rules", "looks up and applies rules"],
+  developmentAgent: ["Development", "picks lessons and drills"],
+  callTypeAgent: ["Call type", "judgment or rule"],
+  coachingAgent: ["Coaching", "writes the answer"],
+  criticAgent: ["Critic", "reviews the draft"],
+  orchestrator: ["Orchestrator", "runs the team"],
+  dataTools: ["Zetaris", "data lookup"],
+};
+
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const shortModel = (m) => !m ? "" : /lightning/i.test(m) ? "Nemotron Lightning 30B" : /super/i.test(m) ? "Nemotron Super 120B" : m;
+let forcedToday = null;
+
+async function loadStatus() {
+  try {
+    const h = await (await fetch("/healthz")).json();
+    const models = h.models?.super ? `<span><b>${esc(shortModel(h.models.super))}</b> and <b>${esc(shortModel(h.models.lightning))}</b> via Meterless Nightshift</span>` : `<span>Local model <b>${esc(h.models?.local)}</b></span>`;
+    $("#status").innerHTML = `${models}<span>Rules and coaching data via <b>Zetaris</b></span><span><b>${h.memory?.memories ?? 0}</b> team memories in H-MEM</span>`;
+  } catch {
+    $("#status").innerHTML = "<span>Can't reach the server. Start it with npm start.</span>";
+  }
+}
+
+function fill(ex) {
+  const f = $("#ask");
+  f.role.value = ex.role; f.sport.value = ex.sport; f.sanction.value = ex.sanction; f.age.value = ex.age;
+  f.event_name.value = ex.event_name || ""; f.team.value = ex.team || ""; f.question.value = ex.question;
+  forcedToday = ex.today || null;
+  f.question.focus();
+}
+document.querySelectorAll("[data-example]").forEach((b) => b.addEventListener("click", () => fill(EXAMPLES[b.dataset.example])));
+$("#ask").question.addEventListener("input", () => { forcedToday = null; });
+
+/* Turn one trace step into a lineup row (or nothing, for plumbing). */
+function rowFor(s) {
+  const [name, role] = AGENTS[s.agent] ?? [s.agent, ""];
+  const ms = s.receipt?.ms;
+  const requested = s.receipt?.requested_model;
+  const served = s.receipt?.routed_model || s.model;
+  let chip = "";
+  if (served) {
+    const rerouted = requested && served && requested !== served;
+    const cls = /lightning/i.test(served) ? "lightning" : "";
+    chip = rerouted
+      ? `<span class="chip warn" title="Asked for ${esc(requested)}">${esc(shortModel(served))}, asked ${esc(shortModel(requested).replace("Nemotron ", ""))}</span>`
+      : `<span class="chip ${cls}">${esc(shortModel(served))}</span>`;
+  }
+  const meta = `${chip}${ms ? `<div>${(ms / 1000).toFixed(1)} s</div>` : ""}`;
+  const out = s.output || "";
+
+  switch (`${s.agent}:${s.action}`) {
+    case "orchestrator:handoff":
+    case "orchestrator:answer":
+      return null;
+    case "dataTools:run_sql_rows":
+    case "dataTools:run_sql": {
+      const table = (s.input.match(/FROM\s+diq_pg\.(\w+)/i) || [])[1] || "a table";
+      const rows = (out.match(/^(\d+) rows/) || [])[1];
+      return { cls: "note zetaris", who: "", what: `${esc(table.replace(/_/g, " "))}${rows ? ` (${rows} rows)` : s.status === "error" ? ` (${esc(out.slice(0, 80))})` : ""}` };
+    }
+    case "orchestrator:critique":
+      return out === "passed"
+        ? { cls: "counted passed", who: "Verdict", role: "code checks + Critic", what: `<strong>Passed.</strong> ${esc(s.input)} goes out.` }
+        : { cls: "counted sent-back", who: "Sent back", role: "code checks + Critic", what: esc(out.replace(/^rejected:\s*/, "")) };
+    case "orchestrator:call_type_by_code":
+      return { cls: "counted", who: "Call type", role: "decided in code", what: "A rule question: written pitch-count rules applied to known facts. No umpire judgment involved." };
+    case "orchestrator:failed":
+      return { cls: "counted failed", who: "Stopped", role: esc(s.input), what: esc(out) };
+    case "rulesAgent:rules_result": {
+      // Read the fields by pattern: the summary can be cut short.
+      const field = (k) => { const m = out.match(new RegExp(`"${k}":("?)([^",}]*)\\1`)); return m ? m[2] : null; };
+      if (!/"computation":\{/.test(out) || !field("rest_days")) return null;
+      const c = { pitches: field("pitches"), age: field("age"), rest_days: field("rest_days"), governing: field("governing"), earliest_eligible_date: field("earliest_eligible_date"), game_date: field("game_date"), eligible_on_game_date: field("eligible_on_game_date") === "true" };
+      if (c.game_date === "null") c.game_date = null;
+      return { cls: "counted", who: "Pitch-rest math", role: "calculated in code", what: `${esc(c.pitches)} pitches at age ${esc(c.age)}: ${esc(c.rest_days)} days of rest${c.governing === "house_rule" ? " (the stricter house rule governs)" : ""}. Eligible again ${esc(c.earliest_eligible_date)}${c.game_date ? `; ${c.eligible_on_game_date ? "can" : "can't"} pitch on ${esc(c.game_date)}` : ""}.` };
+    }
+    case "rulesAgent:model_step":
+      return { cls: "counted", who: name, role, what: /tool call/.test(out) ? "Asks Zetaris for the rules that apply" : "Picks the rules that apply from what it found", meta };
+    case "memoryAgent:recall":
+      return { cls: "counted", who: name, role, what: out === "nothing relevant yet" ? "Nothing remembered for this team yet." : `Remembers: ${esc(out)}` };
+    case "memoryAgent:remember":
+      return { cls: "counted", who: name, role, what: `Saves what it learned (${esc(out.replace(/^saved\s*/, ""))}).` };
+    case "memoryAgent:feedback":
+      return { cls: "note", who: "", what: `H-MEM trust: ${esc(s.input)} marked ${esc(out)}` };
+    case "memoryAgent:mine_question":
+      return { cls: "counted", who: name, role, what: `Picks out facts worth remembering: ${esc(out.slice(0, 200))}`, meta };
+    case "developmentAgent:verify_picks":
+      return { cls: "note", who: "", what: esc(out.replace(/^mode=\w+;\s*/, "")) };
+    case "rulesAgent:empty_reply":
+    case "rulesAgent:validate_answer":
+    case "orchestrator:redraft_failed":
+    case "orchestrator:lesson_skipped":
+    case "orchestrator:critic_unavailable":
+    case "callTypeAgent:tier_fallback":
+    case "criticAgent:tier_fallback":
+    case "developmentAgent:tier_fallback":
+      return { cls: "note", who: "", what: `Retry or recovery: ${esc(out)}` };
+  }
+  if (s.agent === "dataTools" || s.agent === "data") return null;
+  if (!s.model) return null;
+  const doing = {
+    extract_context: "Works out the sport, league, age and what kind of help is needed",
+    classify_call: "Decides: umpire's judgment, a written rule, or both",
+    draft_answer: "Writes the answer and the improvement plan",
+    review_draft: (() => {
+      try { const v = JSON.parse(out); return v.pass ? "Reviews the draft for tone, safety and respect for the umpire: no problems" : `Reviews the draft and objects: ${esc((v.issues || []).join("; "))}`; }
+      catch { return "Reviews the draft"; }
+    })(),
+  }[s.action] ?? (s.action.startsWith("pick_") ? "Chooses the lesson, situation and drills that fit" : esc(s.action));
+  return { cls: s.status === "error" ? "counted failed" : "counted", who: name, role, what: s.status === "error" ? `${doing}. ${esc(out.slice(0, 200))}` : doing, meta };
+}
+
+function addStep(s) {
+  const r = rowFor(s);
+  if (!r) return;
+  $("#empty").hidden = true;
+  // Consecutive Zetaris lookups share one line.
+  const last = $("#steps").lastElementChild;
+  if (r.cls.includes("zetaris")) {
+    if (last && last.classList.contains("zetaris")) { last.querySelector(".what").innerHTML += `, ${r.what}`; return; }
+    r.what = `Zetaris: ${r.what}`;
+  }
+  const li = document.createElement("li");
+  li.className = r.cls;
+  li.innerHTML = r.cls.includes("note")
+    ? `<span class="what">${r.what}</span>`
+    : `<span class="who">${r.who}${r.role ? `<em>${r.role}</em>` : ""}</span><span class="what">${r.what}</span><span class="meta">${r.meta ?? ""}</span>`;
+  $("#steps").append(li);
+}
+
+const list = (items) => items && items.length ? `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="small">Nothing extra here.</p>`;
+
+function renderAnswer(a) {
+  const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", pending: "Pending" }[a.call_type] ?? a.call_type;
+  const parts = [];
+  parts.push(`<div class="verdict"><div class="stamp" aria-label="Call type: ${esc(stamp)}">${esc(stamp)}<small>call type</small></div>
+    <div><p class="what-happened">${esc(a.what_happened.summary)}</p><p class="why-call">${esc(a.call_type_rationale)}</p></div></div>`);
+  parts.push(`<div class="pair">
+    <div><h3>Who to talk to</h3><p><strong>${esc(a.channel.who)}.</strong> ${esc(a.channel.how)}</p></div>
+    <div><h3>The teachable moment</h3><p class="prose">${esc(a.teachable_moment)}</p></div></div>`);
+  if (a.life_lesson && a.life_lesson.text) {
+    parts.push(`<div><h3>Beyond the diamond</h3><p class="prose">${esc(a.life_lesson.text)}</p>
+      <ul class="lesson-titles">${a.life_lesson.lessons.map((l) => `<li><b>${esc(l.title)}.</b> ${esc(l.principle)}</li>`).join("")}</ul></div>`);
+  }
+  for (const s of a.situations ?? []) {
+    parts.push(`<div class="situation"><h3>${esc(s.name)}</h3><dl><dt>Offense</dt><dd>${esc(s.offense)}</dd><dt>Defense</dt><dd>${esc(s.defense)}</dd>${s.common_mistakes ? `<dt>Watch for</dt><dd>${esc(s.common_mistakes)}</dd>` : ""}</dl></div>`);
+  }
+  if (a.story) {
+    parts.push(`<div><h3>From the dugout</h3><blockquote class="story">${esc(a.story.story)}<footer>${esc(a.story.title)}, a real coaching moment from our team</footer></blockquote></div>`);
+  }
+  parts.push(`<div><h3>Improvement plan${a.focus ? `: ${esc(a.focus)}` : ""}</h3><div class="plan">
+    <div><h4>For the player</h4>${list(a.improvement_plan.individual)}</div>
+    <div><h4>For the team</h4>${list(a.improvement_plan.team)}</div>
+    <div><h4>At home</h4>${list(a.improvement_plan.at_home)}</div></div></div>`);
+  if (a.sources.length) {
+    parts.push(`<div><h3>Where this comes from</h3><table class="sources"><thead><tr><th>Source</th><th>Reference</th><th>Status</th></tr></thead><tbody>
+      ${a.sources.map((s) => `<tr><td><a href="${esc(s.source_url)}" target="_blank" rel="noopener">${esc(s.table.replace(/_/g, " "))} ${esc(s.id.length > 14 ? s.id.slice(0, 8) : s.id)}</a></td><td>${esc(s.rule_ref || (s.synthetic ? "synthetic demo rule" : ""))}${s.edition ? `, ${esc(s.edition)}` : ""}</td><td class="${s.verified ? "reviewed" : "draft"}">${s.verified ? "Reviewed" : "Draft"}</td></tr>`).join("")}
+    </tbody></table></div>`);
+  }
+  if (a.memory) {
+    const rec = a.memory.recalled.length ? a.memory.recalled.map((m) => `${esc(m.content)} (relevance ${m.relevance})`).join("<br>") : "Nothing yet for this team.";
+    parts.push(`<div><h3>What the team's memory added</h3><p class="small">Recalled: ${rec}</p><p class="small">Used in this answer: ${a.memory.used.length ? esc(a.memory.used.join(", ")) : "none"}. Saved for next time: ${esc(a.memory.saved.length)} memories.</p></div>`);
+  }
+  const why = [a.draft_data ? "some sources are draft data that hasn't been reviewed yet" : "", a.missing_facts.length ? `missing: ${a.missing_facts.join("; ")}` : "", a.review && !a.review.passed ? "the Critic still had concerns" : ""].filter(Boolean).join("; ");
+  parts.push(`<div class="confidence"><h3 style="margin:0">Confidence ${Math.round(a.confidence * 100)}%</h3><div class="meter" role="img" aria-label="Confidence ${Math.round(a.confidence * 100)} percent"><span style="width:${Math.round(a.confidence * 100)}%"></span></div></div>
+    <p class="small">${why ? `Lower because ${esc(why)}.` : "Every source is reviewed."} ${a.review ? `${a.review.drafts} draft${a.review.drafts === 1 ? "" : "s"} reviewed.` : ""} Trace ${esc(a.trace_id.slice(0, 8))}.</p>`);
+  const el = $("#answer");
+  el.innerHTML = parts.join("");
+  el.hidden = false;
+}
+
+let timer = null;
+$("#ask").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const body = {
+    role: f.role.value, sport: f.sport.value, sanction: f.sanction.value, age: Number(f.age.value),
+    question: f.question.value.trim(),
+    ...(f.event_name.value.trim() ? { event_name: f.event_name.value.trim() } : {}),
+    ...(f.team.value.trim() ? { team: f.team.value.trim() } : {}),
+    ...(forcedToday ? { today: forcedToday } : {}),
+  };
+  if (!body.question) return f.question.focus();
+  $("#steps").innerHTML = ""; $("#empty").hidden = false; $("#empty").textContent = "Starting the team…";
+  $("#answer").hidden = true; $("#go").disabled = true; $("#go").textContent = "The team is working…";
+  const started = Date.now();
+  clearInterval(timer);
+  timer = setInterval(() => { const s = Math.round((Date.now() - started) / 1000); $("#clock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }, 1000);
+
+  try {
+    const res = await fetch("/run/stream", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    if (!res.ok || !res.body) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error ? `${err.error}${err.issues ? ` (${err.issues.join("; ")})` : ""}` : `Server answered ${res.status}`);
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let nl;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, nl); buffer = buffer.slice(nl + 1);
+        if (!line.trim()) continue;
+        const msg = JSON.parse(line);
+        if (msg.type === "step") addStep(msg);
+        else if (msg.type === "answer") renderAnswer(msg.answer);
+        else if (msg.type === "error") throw new Error(`The team stopped at ${msg.error.stage}: ${msg.error.message}`);
+      }
+    }
+  } catch (err) {
+    const el = $("#answer");
+    el.innerHTML = `<div class="error-box"><strong>No answer this time.</strong> ${esc(err.message)}. Ask again; if it keeps happening, check that Nightshift and Zetaris are running.</div>`;
+    el.hidden = false;
+  } finally {
+    clearInterval(timer);
+    $("#go").disabled = false; $("#go").textContent = "Ask the team";
+    loadStatus();
+  }
+});
+
+loadStatus();
+</script>
+</body>
+</html>
