@@ -1,0 +1,22 @@
+{
+  "name": "DiamondAgentIQ",
+  "team": "Billy Goats GGUF",
+  "track": "The Agent That Can Explain Why",
+  "description": "A team of AI agents that helps parents, coaches, players and umpires understand youth baseball and softball calls (umpire judgment vs written rule, with cited rules and code-computed pitch rest) and turns each moment into a lesson and an improvement plan; a post-game mode reviews a box score like a member of the coaching staff.",
+  "repository": "https://github.com/seanrugg/diamondagentiq",
+  "entry_points": {
+    "web": "npm start  ->  http://127.0.0.1:8787",
+    "api": "POST /run  {\"input\": {...}}",
+    "sample_mode": "npm run start:sample  or  docker run -e SAMPLE_MODE=true",
+    "examples": "npm run demo  (input_examples/ -> output_examples/)"
+  },
+  "agents": ["ContextAgent", "MemoryAgent", "RulesAgent", "DevelopmentAgent", "CallTypeAgent", "CoachingAgent", "CriticAgent", "ScorebookAgent", "GameReviewAgent"],
+  "sponsor_technology": {
+    "zetaris": "All rules, house rules, pitch-rest tiers, coaching lessons, situations, stories, tips and drills are read through Zetaris REST; RulesAgent writes its own read-only SQL.",
+    "meterless": "Nightshift is the primary AI provider (per-agent app streams, compute receipts in every trace); the H-MEM engine gives each team memory with Critic-driven trust feedback.",
+    "nvidia": "Nemotron 3.5 Super VL 120B, Nemotron 3.5 Lightning 30B and Nemotron 3 Ultra 550B through Nightshift; Claude Code on local Nemotron 3.5 Super (Ollama) during development.",
+    "cursor": "Project scaffold and editing."
+  },
+  "data": "Own-words rule summaries with source links (draft until verified); team-written coaching content; synthetic tournament rules, drills and box score. No real minors' data.",
+  "license_notes": "Vendored Meterless H-MEM reference (Apache-2.0), PGlite (Apache-2.0)."
+}

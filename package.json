@@ -23,7 +23,8 @@
     "eval": "tsx --env-file=.env src/scripts/eval.ts",
     "demo": "tsx --env-file-if-exists=.env src/scripts/demo.ts",
     "memory": "tsx --env-file=.env src/scripts/memory.ts",
-    "start": "tsx --env-file=.env src/scripts/start.ts",
+    "start": "tsx --env-file-if-exists=.env src/scripts/start.ts",
+    "start:sample": "SAMPLE_MODE=true tsx src/scripts/start.ts",
     "test": "vitest run",
     "test:hmem": "npm test --prefix vendor/hmem"
   },
