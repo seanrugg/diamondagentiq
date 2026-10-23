@@ -13,6 +13,7 @@
  *   POST /review/stream post-game review of a box score (image data URL or
  *                       text), streamed the same way
  *   GET  /samples/box-score-demo.png   the synthetic sample box score
+ *   GET  /samples/play-by-play-demo.txt  a synthetic play-by-play (demo season G03)
  *   GET  /brand/<name>.png            logo, mark and icons (fixed names only)
  *
  * One question at a time: Nightshift drops concurrent requests, so a second
@@ -165,6 +166,10 @@ export const server = createServer((req, res) => {
     if (route === "GET /samples/box-score-demo.png") {
       res.writeHead(200, { "content-type": "image/png" });
       return res.end(readFileSync(new URL("../data/samples/box-score-demo.png", import.meta.url)));
+    }
+    if (route === "GET /samples/play-by-play-demo.txt") {
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
+      return res.end(readFileSync(new URL("../data/samples/season/play_by_play/G03_play_by_play.txt", import.meta.url)));
     }
     if (route === "GET /samples/box-score-demo.txt") {
       res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
