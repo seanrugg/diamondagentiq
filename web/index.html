@@ -192,7 +192,13 @@ blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; colo
 
 /* Expandable answer cards */
 .card { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
-.card summary { cursor: pointer; }
+.card summary { cursor: pointer; list-style: none; display: grid; padding-right: 28px; position: relative; }
+.card summary::after { content: "+"; position: absolute; right: 0; }
+details.card[open] .card summary::after { content: "–"; }
+details.card[open] .card-preview { display: none; }
+.card summary::-webkit-details-marker { display: none; }
+.card-title { font: 700 20px/1.2 var(--display); display: block; }
+.card-preview { font-size: 17px; color: var(--pencil); display: block; margin-top: 4px; }
 .card summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .card, .card * { animation: none !important; transition: none !important; } }
 table.sources { width: 100%; border-collapse: collapse; font-size: 17px; }
@@ -514,7 +520,7 @@ function renderAnswer(a) {
   const parts = [];
   parts.push(`<div class="verdict"><div class="stamp" aria-label="Call type: ${esc(stamp)}">${esc(stamp)}<small>call type</small></div>
     <div><p class="what-happened">${esc(a.what_happened.summary)}</p><p class="why-call">${esc(a.call_type_rationale)}</p></div></div>`);
-  const card = (title, html, preview) => `<details class="card"><summary>${esc(title)} — ${esc(firstSentence(preview))}</summary>${html}</details>`;
+  const card = (title, html, preview) => `<details class="card"><summary><span class="card-title">${esc(title)}</span><span class="card-preview">${esc(firstSentence(preview))}</span></summary>${html}</details>`;
   parts.push(card("Who to talk to", `<div><p><strong>${esc(a.channel.who)}.</strong> ${esc(a.channel.how)}</p></div>`, `${a.channel.who}. ${a.channel.how}`));
   parts.push(card("The teachable moment", `<div><p class="prose">${esc(a.teachable_moment)}</p></div>`, a.teachable_moment));
   if (a.life_lesson && a.life_lesson.text) {
@@ -533,10 +539,11 @@ function renderAnswer(a) {
     <div><h4>For the team</h4>${list(a.improvement_plan.team)}</div>
     <div><h4>At home</h4>${list(a.improvement_plan.at_home)}</div></div></div>`, planBits[0] ?? ""));
   if (a.sources.length) {
-    const src = a.sources[0];
+    const someDraft = a.sources.some((s) => !s.verified);
+    const preview = `${a.sources.length} sources${someDraft ? ", some still draft" : ""}`;
     parts.push(card("Where this comes from", `<div><table class="sources"><thead><tr><th>Source</th><th>Reference</th><th>Status</th></tr></thead><tbody>
       ${a.sources.map((s) => `<tr><td><a href="${esc(s.source_url)}" target="_blank" rel="noopener">${esc(s.table.replace(/_/g, " "))} ${esc(s.id.length > 14 ? s.id.slice(0, 8) : s.id)}</a></td><td>${esc(s.rule_ref || (s.synthetic ? "synthetic demo rule" : ""))}${s.edition ? `, ${esc(s.edition)}` : ""}</td><td class="${s.verified ? "reviewed" : "draft"}">${s.verified ? "Reviewed" : "Draft"}</td></tr>`).join("")}
-    </tbody></table></div>`, src.rule_ref || src.table));
+    </tbody></table></div>`, preview));
   }
   if (a.memory) {
     const rec = a.memory.recalled.length ? a.memory.recalled.map((m) => `${esc(m.content)} (relevance ${m.relevance})`).join("<br>") : "Nothing yet for this team.";
