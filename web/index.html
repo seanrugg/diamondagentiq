@@ -188,6 +188,10 @@ blockquote.story footer { font: 500 14px/1.4 var(--ui); font-style: normal; colo
 .plan h4 { font: 600 18px/1.1 var(--display); margin: 0 0 6px; }
 .plan ul { margin: 0; padding-left: 18px; }
 .plan li { margin: 4px 0; }
+.plan-tabs { display: flex; gap: 6px; margin: 8px 0; }
+.plan-tabs button { font: 17px/1 var(--ui); padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); }
+.plan-tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.plan-tabs button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .situation { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; background: var(--card); }
 .situation dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 8px 0 0; }
 .situation dt { font-weight: 600; }
@@ -537,10 +541,14 @@ function renderAnswer(a) {
     parts.push(card("From the dugout", `<div><blockquote class="story">${esc(a.story.story)}<footer>${esc(a.story.title)}, a real coaching moment from our team</footer></blockquote></div>`, a.story.story));
   }
   const planBits = [...(a.improvement_plan.individual ?? []), ...(a.improvement_plan.team ?? []), ...(a.improvement_plan.at_home ?? [])];
-  parts.push(card(`Improvement plan${a.focus ? `: ${a.focus}` : ""}`, `<div class="plan">
-    <div><h4>For the player</h4>${list(a.improvement_plan.individual)}</div>
-    <div><h4>For the team</h4>${list(a.improvement_plan.team)}</div>
-    <div><h4>At home</h4>${list(a.improvement_plan.at_home)}</div></div></div>`, planBits[0] ?? ""));
+  parts.push(card(`Improvement plan${a.focus ? `: ${a.focus}` : ""}`, `<div class="plan-tabs" role="tablist" aria-label="Improvement plan">
+    <button role="tab" id="plan-tab-1" aria-controls="plan-panel-1" aria-selected="true">Player</button>
+    <button role="tab" id="plan-tab-2" aria-controls="plan-panel-2" aria-selected="false" tabindex="-1">Team</button>
+    <button role="tab" id="plan-tab-3" aria-controls="plan-panel-3" aria-selected="false" tabindex="-1">Home</button>
+  </div>
+  <div role="tabpanel" id="plan-panel-1" aria-labelledby="plan-tab-1">${list(a.improvement_plan.individual)}</div>
+  <div role="tabpanel" id="plan-panel-2" aria-labelledby="plan-tab-2" hidden>${list(a.improvement_plan.team)}</div>
+  <div role="tabpanel" id="plan-panel-3" aria-labelledby="plan-tab-3" hidden>${list(a.improvement_plan.at_home)}</div>`, planBits[0] ?? ""));
   if (a.sources.length) {
     const someDraft = a.sources.some((s) => !s.verified);
     const preview = `${a.sources.length} sources${someDraft ? ", some still draft" : ""}`;
@@ -608,6 +616,38 @@ function showTab(which) {
 }
 $("#tab-ask").addEventListener("click", () => showTab("ask"));
 $("#tab-review").addEventListener("click", () => showTab("review"));
+
+/* Improvement plan tabs: one delegated listener on the answer section. */
+const selectPlanTab = (tabs, i) => {
+  tabs.forEach((t, j) => {
+    const sel = j === i;
+    t.setAttribute("aria-selected", String(sel));
+    t.tabIndex = sel ? 0 : -1;
+    const p = document.getElementById(t.getAttribute("aria-controls") ?? "");
+    if (p) p.hidden = !sel;
+  });
+};
+const onPlanTab = (e) => {
+  if (e.type === "click") {
+    const btn = e.target.closest("[role=tab]");
+    if (!btn) return;
+    const tabs = Array.from(btn.parentElement.querySelectorAll("[role=tab]"));
+    selectPlanTab(tabs, tabs.indexOf(btn));
+    return;
+  }
+  if (e.type !== "keydown" || !e.target.matches("[role=tab]")) return;
+  const tabs = Array.from(e.target.parentElement.querySelectorAll("[role=tab]"));
+  let i = tabs.indexOf(e.target);
+  if (e.key === "ArrowLeft") { e.preventDefault(); i = (i - 1 + tabs.length) % tabs.length; }
+  else if (e.key === "ArrowRight") { e.preventDefault(); i = (i + 1) % tabs.length; }
+  else if (e.key === "Home") { e.preventDefault(); i = 0; }
+  else if (e.key === "End") { e.preventDefault(); i = tabs.length - 1; }
+  else return;
+  selectPlanTab(tabs, i);
+  tabs[i].focus();
+};
+$("#answer").addEventListener("click", onPlanTab);
+$("#answer").addEventListener("keydown", onPlanTab);
 
 let reviewImage = null;
 const readAsDataUrl = (blob) => new Promise((resolve, reject) => { const fr = new FileReader(); fr.onload = () => resolve(fr.result); fr.onerror = reject; fr.readAsDataURL(blob); });
