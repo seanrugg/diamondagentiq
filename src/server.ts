@@ -13,6 +13,7 @@
  *   POST /review/stream post-game review of a box score (image data URL or
  *                       text), streamed the same way
  *   GET  /samples/box-score-demo.png   the synthetic sample box score
+ *   GET  /brand/<name>.png            logo, mark and icons (fixed names only)
  *
  * One question at a time: Nightshift drops concurrent requests, so a second
  * request while one is running gets 409. Model reasoning stays in the trace
@@ -168,6 +169,11 @@ export const server = createServer((req, res) => {
     if (route === "GET /samples/box-score-demo.txt") {
       res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
       return res.end(readFileSync(new URL("../data/samples/box-score-demo.txt", import.meta.url)));
+    }
+    const brand = /^GET \/brand\/(logo-wide|mark-512|apple-touch-icon|favicon-64)\.png$/.exec(route);
+    if (brand) {
+      res.writeHead(200, { "content-type": "image/png", "cache-control": "public, max-age=3600" });
+      return res.end(readFileSync(new URL(`../web/brand/${brand[1]}.png`, import.meta.url)));
     }
     if (route === "POST /review/stream") return handleReview(req, res);
     if (route === "POST /run") return handleRunEnvelope(req, res);
