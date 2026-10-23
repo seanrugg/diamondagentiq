@@ -318,7 +318,7 @@ details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
           <option value="nsa">NSA</option>
           <option value="babe_ruth_league">Babe Ruth</option>
           <option value="cal_ripken">Cal Ripken</option>
-          <option value="pitch_smart">Pitch Smart (rec league)</option>
+          <option value="pitch_smart">Pitch Smart</option>
         </select>
       </label>
       <label>Team <span class="hint">for memory</span>
@@ -532,12 +532,13 @@ const firstSentence = (t) => {
   return m ? m[0] : s;
 };
 
+const card = (title, html, preview) => `<details class="card"><summary><span class="card-title">${esc(title)}</span><span class="card-preview">${esc(firstSentence(preview))}</span></summary>${html}</details>`;
+
 function renderAnswer(a) {
   const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", pending: "Pending" }[a.call_type] ?? a.call_type;
   const parts = [];
   parts.push(`<div class="verdict"><div class="stamp" aria-label="Call type: ${esc(stamp)}">${esc(stamp)}<small>call type</small></div>
     <div><p class="what-happened">${esc(a.what_happened.summary)}</p><p class="why-call">${esc(a.call_type_rationale)}</p></div></div>`);
-  const card = (title, html, preview) => `<details class="card"><summary><span class="card-title">${esc(title)}</span><span class="card-preview">${esc(firstSentence(preview))}</span></summary>${html}</details>`;
   parts.push(card("Who to talk to", `<div><p><strong>${esc(a.channel.who)}.</strong> ${esc(a.channel.how)}</p></div>`, `${a.channel.who}. ${a.channel.how}`));
   parts.push(card("The teachable moment", `<div><p class="prose">${esc(a.teachable_moment)}</p></div>`, a.teachable_moment));
   if (a.life_lesson && a.life_lesson.text) {
@@ -591,28 +592,28 @@ function renderReview(r) {
   const row = (name, xs, rhe) => `<tr><td>${esc(name)}</td>${Array.from({ length: inn }, (_, i) => `<td>${esc(xs[i] ?? "")}</td>`).join("")}<td><b>${esc(rhe.r)}</b></td><td>${esc(rhe.h)}</td><td>${esc(rhe.e)}</td></tr>`;
   parts.push(`<div><h3>${box ? "What the Scorebook agent read" : "What the play-by-play adds up to"}</h3><table class="lines"><tr><th>Team</th>${head}<th>R</th><th>H</th><th>E</th></tr>${row(b.away_team, b.line_score.away, b.line_score.away_rhe)}${row(b.home_team, b.line_score.home, b.line_score.home_rhe)}</table>
     <p class="small">${r.read.issues.length ? `Some totals still disagree after ${r.read.reads} reads, so check these numbers: ${esc(r.read.issues.join(" "))}` : `${box ? `All totals agree (${r.read.reads === 1 ? "first read" : `after ${r.read.reads} reads`}). ${box.batting.length} batters, ${box.pitching.length} pitchers.` : "Counted in code from every play: runs match the line score and every half-inning has its outs."}`}</p></div>`);
-  parts.push(`<div class="pair"><div><h3>What decided it</h3>${list(r.what_decided_it)}</div><div><h3>What went well</h3>${list(r.strengths)}</div></div>`);
-  parts.push(`<div><h3>By the numbers</h3><p class="small">Calculated in code from the ${box ? "box score" : "play-by-play"}: ${esc(s.plate_appearances)} plate appearances, ${esc(s.hits)} hits, ${esc(s.walks)} walks, ${esc(s.strikeouts)} strikeouts (${pct(s.strikeout_rate)})${s.strikeouts_looking !== undefined ? `, ${esc(s.strikeouts_looking)} of them called third strikes` : ""}, on base ${pct(s.on_base_rate)}, ${esc(s.errors_committed)} errors, ${esc(s.walks_allowed)} walks allowed${s.pitches_per_inning ? `, ${esc(s.pitches_per_inning)} pitches per inning` : ""}.</p></div>`);
-  parts.push(`<div><h3>Practice priorities</h3><div style="display:grid;gap:10px">${r.priorities.map((p, i) => `<div class="priority"><h4>${i + 1}. ${esc(p.title)}</h4><p class="why">${esc(p.why)}</p>
+  parts.push(card("What decided it", `<div class="pair"><div>${list(r.what_decided_it)}</div><div>${list(r.strengths)}</div></div>`, r.what_decided_it[0] ?? ""));
+  parts.push(card("By the numbers", `<p class="small">Calculated in code from the ${box ? "box score" : "play-by-play"}: ${esc(s.plate_appearances)} plate appearances, ${esc(s.hits)} hits, ${esc(s.walks)} walks, ${esc(s.strikeouts)} strikeouts (${pct(s.strikeout_rate)})${s.strikeouts_looking !== undefined ? `, ${esc(s.strikeouts_looking)} of them called third strikes` : ""}, on base ${pct(s.on_base_rate)}, ${esc(s.errors_committed)} errors, ${esc(s.walks_allowed)} walks allowed${s.pitches_per_inning ? `, ${esc(s.pitches_per_inning)} pitches per inning` : ""}.</p>`, `${s.strikeouts} strikeouts, ${s.errors_committed} errors`));
+  parts.push(card("Practice priorities", `<div style="display:grid;gap:10px">${r.priorities.map((p, i) => `<div class="priority"><h4>${i + 1}. ${esc(p.title)}</h4><p class="why">${esc(p.why)}</p>
     ${p.drills.map((d) => `<p><strong>${esc(d.title)}</strong> (${esc(d.setting)}). ${esc(d.description)}${d.safety_notes ? ` <span class="small">Safety: ${esc(d.safety_notes)}</span>` : ""}</p>`).join("")}
-    ${p.insights.map((x) => `<p class="small">${esc(x.insight)}</p>`).join("")}</div>`).join("")}</div></div>`);
+    ${p.insights.map((x) => `<p class="small">${esc(x.insight)}</p>`).join("")}</div>`).join("")}</div>`, r.priorities.map((p) => p.title).join(", ")));
   if (r.rule_moments?.length) {
     const label = { dropped_third_strike: "Dropped third strike", balk: "Balk", offensive_interference: "Offensive interference", courtesy_runner: "Courtesy runner", inning_run_cap: "Run cap ended the half-inning", pickoff_out: "Pickoff" };
-    parts.push(`<div><h3>Rule moments to teach</h3>${list(r.rule_moments.map((m) => `${label[m.kind] ?? m.kind}: ${m.half}, ${m.batting_team} batting.`))}<p class="small">Found in the play-by-play. Ask about any of them on the "Ask about a moment" tab to learn the rule.</p></div>`);
+    parts.push(card("Rule moments to teach", `${list(r.rule_moments.map((m) => `${label[m.kind] ?? m.kind}: ${m.half}, ${m.batting_team} batting.`))}<p class="small">Found in the play-by-play. Ask about any of them on the "Ask about a moment" tab to learn the rule.</p>`, `${r.rule_moments.length} moments from this game`));
   }
   if (r.pitcher_rest.length) {
-    parts.push(`<div><h3>Pitcher rest</h3><table class="sources"><thead><tr><th>Pitcher</th><th>Pitches</th><th>Rest days</th><th>Eligible again</th></tr></thead><tbody>
+    parts.push(card("Pitcher rest", `<table class="sources"><thead><tr><th>Pitcher</th><th>Pitches</th><th>Rest days</th><th>Eligible again</th></tr></thead><tbody>
       ${r.pitcher_rest.map((p) => `<tr><td>${esc(p.player)}</td><td>${esc(p.pitches)}</td><td>${esc(p.rest_days ?? "?")}</td><td>${esc(p.eligible_again ?? p.note ?? "")}</td></tr>`).join("")}</tbody></table>
-      <p class="small">Calculated in code from the league's pitch-count chart (draft rule data).</p></div>`);
+      <p class="small">Calculated in code from the league's pitch-count chart (draft rule data).</p>`, `${r.pitcher_rest.length} pitchers need rest`));
   }
-  if (r.lesson) parts.push(`<div><h3>Beyond the diamond: ${esc(r.lesson.title)}</h3><p class="prose">${esc(r.team_talk)}</p><p class="small">${esc(r.lesson.principle)}</p></div>`);
-  if (r.at_home.length) parts.push(`<div><h3>At home</h3>${list(r.at_home)}</div>`);
+  if (r.lesson) parts.push(card(`Beyond the diamond: ${r.lesson.title}`, `<p class="prose">${esc(r.team_talk)}</p><p class="small">${esc(r.lesson.principle)}</p>`, r.team_talk));
+  if (r.at_home.length) parts.push(card("At home", `${list(r.at_home)}`, r.at_home[0] ?? ""));
   if (r.memory) {
     const rec = r.memory.recalled.length ? r.memory.recalled.map((m) => esc(m.content)).join("<br>") : "Nothing yet for this team.";
-    parts.push(`<div><h3>What the team's memory added</h3><p class="small">Recalled: ${rec}</p><p class="small">Saved this game for next time.</p></div>`);
+    parts.push(card("What the team's memory added", `<p class="small">Recalled: ${rec}</p><p class="small">Saved this game for next time.</p>`, r.memory.recalled.length ? r.memory.recalled[0].content : "Nothing yet for this team."));
   }
-  parts.push(`<div class="confidence"><h3 style="margin:0">Confidence ${Math.round(r.confidence * 100)}%</h3><div class="meter" role="img" aria-label="Confidence ${Math.round(r.confidence * 100)} percent"><span style="width:${Math.round(r.confidence * 100)}%"></span></div></div>
-    <p class="small">${r.review.drafts} draft${r.review.drafts === 1 ? "" : "s"} reviewed${r.review.passed ? "" : "; the Critic still had concerns"}. Coaching notes are drafts until our coach reviews them. Trace ${esc(r.trace_id.slice(0, 8))}.</p>`);
+  parts.push(card(`Confidence ${Math.round(r.confidence * 100)}%`, `<div class="confidence"><div class="meter" role="img" aria-label="Confidence ${Math.round(r.confidence * 100)} percent"><span style="width:${Math.round(r.confidence * 100)}%"></span></div></div>
+    <p class="small">${r.review.drafts} draft${r.review.drafts === 1 ? "" : "s"} reviewed${r.review.passed ? "" : "; the Critic still had concerns"}. Coaching notes are drafts until our coach reviews them. Trace ${esc(r.trace_id.slice(0, 8))}.</p>`, "Reviewed."));
   const el = $("#answer");
   el.innerHTML = parts.join("");
   el.hidden = false;
