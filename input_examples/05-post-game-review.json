@@ -1,0 +1,12 @@
+{
+  "run_id": "example-05",
+  "mode": "review",
+  "input": {
+    "role": "coach",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 12,
+    "team": "Demo Hawks",
+    "text": "SYNTHETIC DEMO DATA: fictional teams and players\nRiverside Comets 4, Demo Hawks 3 - Final - Sat Oct 17, 2026 - Fall Classic 12U\n\nLINE SCORE   1 2 3 4 5 6   R H E\nComets       0 1 0 2 0 1   4 7 1\nHawks        1 0 0 2 0 0   3 6 2\n\nDEMO HAWKS BATTING   AB R H RBI BB SO\nA Rivera #2           3 1 1 0 1 0\nJ Ortiz #12           3 1 2 1 0 0\nM Chen #7             3 0 1 1 0 1\nD Park #21            3 0 0 0 0 2\nL Brooks #5           2 1 1 0 1 0\nS Patel #9            3 0 0 0 0 2\nT Nguyen #14          2 0 1 1 0 1\nR Diaz #3             2 0 0 0 1 1\nK Moore #18           2 0 0 0 0 2\nTotals               23 3 6 3 3 9\n\nDEMO HAWKS PITCHING   IP  H R ER BB SO #P\nJ Ortiz #12          4.0 5 3 2  2  4  71\nM Chen #7            2.0 2 1 1  1  3  34\nTotals               6.0 7 4 3  3  7 105\n"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "run_id": "example-01",
+  "mode": "situation",
+  "today": "2026-10-18",
+  "input": {
+    "role": "coach",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 12,
+    "event_name": "Fall Classic 12U",
+    "team": "Demo Hawks",
+    "question": "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?"
+  }
+}

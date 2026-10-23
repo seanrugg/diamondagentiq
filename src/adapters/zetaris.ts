@@ -111,6 +111,12 @@ export type SqlResult = {
 /** Run one statement and return the rows plus any column metadata. */
 export async function runSqlDetailed(sql: string): Promise<SqlResult> {
   const statement = normalizeSql(sql);
+  if (config.SAMPLE_MODE) {
+    // No Zetaris available: run the same SQL on the bundled tables (src/adapters/sampleData.ts).
+    const { sampleSql } = await import("./sampleData.js");
+    const result = await sampleSql(statement);
+    return { data: result.data, columns: result.columns, payloadKeys: ["sample_mode"] };
+  }
   const queryId = randomUUID();
 
   for (let attempt = 0; attempt < 2; attempt += 1) {

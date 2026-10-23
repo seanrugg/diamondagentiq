@@ -1,0 +1,12 @@
+{
+  "run_id": "example-02",
+  "mode": "situation",
+  "input": {
+    "role": "parent",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 10,
+    "team": "Demo Hawks",
+    "question": "My son struck out to end the game. 3 straight pitches. They were probably outside. What can I do to help him overcome that failure?"
+  }
+}

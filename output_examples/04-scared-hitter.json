@@ -1,0 +1,168 @@
+{
+  "agents": [
+    {
+      "name": "ContextAgent",
+      "role": "Reads the question: sport, league, age, what kind of help is needed",
+      "model": "sample-offline"
+    },
+    {
+      "name": "MemoryAgent",
+      "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
+      "model": "sample-offline"
+    },
+    {
+      "name": "RulesAgent",
+      "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
+      "model": "sample-offline"
+    },
+    {
+      "name": "DevelopmentAgent",
+      "role": "Picks the lesson, game situation, story, coaching tips and drills",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CallTypeAgent",
+      "role": "Umpire's judgment, written rule, or both",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CoachingAgent",
+      "role": "Writes the answer, teachable moment, life lesson and improvement plan",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CriticAgent",
+      "role": "Reviews every draft (with code checks) and sends it back when it falls short",
+      "model": "sample-offline"
+    },
+    {
+      "name": "ScorebookAgent",
+      "role": "Transcribes a box score; code checks the totals and asks for a re-read",
+      "model": "sample-offline"
+    },
+    {
+      "name": "GameReviewAgent",
+      "role": "Post-game: what decided the game and the practice priorities",
+      "model": "sample-offline"
+    }
+  ],
+  "sample_mode": true,
+  "run_id": "example-04",
+  "mode": "situation",
+  "trace_id": "a1eec354-72ad-43c2-8de1-c27c7d83b185",
+  "log_file": "logs/trace-a1eec354-72ad-43c2-8de1-c27c7d83b185.jsonl",
+  "execution_time_seconds": 0,
+  "status": "success",
+  "output": {
+    "what_happened": {
+      "summary": "That's a moment worth learning from. The one next step: plate coverage. This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "sources": [
+        "coaching_lessons:L003",
+        "coaching_lessons:L005",
+        "coaching_insights:C001",
+        "coaching_insights:C004"
+      ]
+    },
+    "call_type": "rule",
+    "call_type_rationale": "A written rule decides this once the facts are known.",
+    "channel": {
+      "who": "Your players, then the tournament director if a rule is unclear",
+      "how": "Talk to the team at the next practice; take any rule question to the director calmly between innings, never a judgment call."
+    },
+    "teachable_moment": "Believe in your players before they believe in themselves: Have confidence in your players even when they don't show it, even when their track record says failure. Don't lose that confidence. Feed it to them and they will succeed.",
+    "improvement_plan": {
+      "individual": [
+        "Before the at-bat, set your feet so the end of the bat covers the far edge of the plate. If the pitcher keeps missing away, inch closer.",
+        "At the plate meeting, ask once, briefly and respectfully, then adjust. Never argue balls and strikes during play: they're judgment calls and can't be protested."
+      ],
+      "team": [
+        "Soft toss: two-strike low pitches: Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate. Safety: Keep tosses out of the hitter’s feet. Helmets for hitter and tosser."
+      ],
+      "at_home": [
+        "Give players the chance to step up, including the ones without a great record yet, and tell them you believe in them before the result."
+      ]
+    },
+    "confidence": 0.6,
+    "sources": [
+      {
+        "table": "coaching_lessons",
+        "id": "L003",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_lessons",
+        "id": "L005",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C001",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C004",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      }
+    ],
+    "missing_facts": [],
+    "trace_id": "a1eec354-72ad-43c2-8de1-c27c7d83b185",
+    "computation": null,
+    "draft_data": true,
+    "intent": "development",
+    "focus": "plate coverage",
+    "life_lesson": {
+      "text": "People rise to the belief others show in them, at school, at work and at home.",
+      "lessons": [
+        {
+          "id": "L003",
+          "title": "Believe in your players before they believe in themselves",
+          "principle": "Have confidence in your players even when they don't show it, even when their track record says failure. Don't lose that confidence. Feed it to them and they will succeed."
+        },
+        {
+          "id": "L005",
+          "title": "Big moments aren't scripted",
+          "principle": "The moments that matter most aren't planned. They happen because kids are put in situations where they can fail or succeed, and sometimes they succeed through what could have been failure."
+        }
+      ]
+    },
+    "review": {
+      "drafts": 1,
+      "passed": true,
+      "unresolved_issues": []
+    },
+    "memory": {
+      "recalled": [
+        {
+          "id": "mem-1",
+          "content": "A coach of a 12-year-old baseball player asked: My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?",
+          "relevance": 0.179,
+          "confidence": 0.75
+        }
+      ],
+      "used": [
+        "mem-1"
+      ],
+      "saved": [
+        "mem-6",
+        "mem-7"
+      ]
+    }
+  }
+}

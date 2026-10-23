@@ -1,0 +1,12 @@
+{
+  "run_id": "example-03",
+  "mode": "situation",
+  "input": {
+    "role": "coach",
+    "sport": "softball",
+    "sanction": "usssa",
+    "age": 12,
+    "team": "Demo Comets",
+    "question": "Dropped third strike with a runner on third and one out. What should my batter and my runner on third do?"
+  }
+}

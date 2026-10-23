@@ -1,0 +1,355 @@
+{
+  "agents": [
+    {
+      "name": "ContextAgent",
+      "role": "Reads the question: sport, league, age, what kind of help is needed",
+      "model": "sample-offline"
+    },
+    {
+      "name": "MemoryAgent",
+      "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
+      "model": "sample-offline"
+    },
+    {
+      "name": "RulesAgent",
+      "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
+      "model": "sample-offline"
+    },
+    {
+      "name": "DevelopmentAgent",
+      "role": "Picks the lesson, game situation, story, coaching tips and drills",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CallTypeAgent",
+      "role": "Umpire's judgment, written rule, or both",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CoachingAgent",
+      "role": "Writes the answer, teachable moment, life lesson and improvement plan",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CriticAgent",
+      "role": "Reviews every draft (with code checks) and sends it back when it falls short",
+      "model": "sample-offline"
+    },
+    {
+      "name": "ScorebookAgent",
+      "role": "Transcribes a box score; code checks the totals and asks for a re-read",
+      "model": "sample-offline"
+    },
+    {
+      "name": "GameReviewAgent",
+      "role": "Post-game: what decided the game and the practice priorities",
+      "model": "sample-offline"
+    }
+  ],
+  "sample_mode": true,
+  "run_id": "example-05",
+  "mode": "review",
+  "trace_id": "262d47c4-0d36-4fc9-be7f-94d173e35c35",
+  "log_file": "logs/trace-262d47c4-0d36-4fc9-be7f-94d173e35c35.jsonl",
+  "execution_time_seconds": 0,
+  "status": "success",
+  "output": {
+    "box_score": {
+      "away_team": "Riverside Comets",
+      "home_team": "Demo Hawks",
+      "date": "2026-10-17",
+      "event": "Fall Classic 12U",
+      "line_score": {
+        "away": [
+          0,
+          1,
+          0,
+          2,
+          0,
+          1
+        ],
+        "home": [
+          1,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        "away_rhe": {
+          "r": 4,
+          "h": 7,
+          "e": 1
+        },
+        "home_rhe": {
+          "r": 3,
+          "h": 6,
+          "e": 2
+        }
+      },
+      "stats_team": "Demo Hawks",
+      "batting": [
+        {
+          "player": "A Rivera #2",
+          "ab": 3,
+          "r": 1,
+          "h": 1,
+          "rbi": 0,
+          "bb": 1,
+          "so": 0
+        },
+        {
+          "player": "J Ortiz #12",
+          "ab": 3,
+          "r": 1,
+          "h": 2,
+          "rbi": 1,
+          "bb": 0,
+          "so": 0
+        },
+        {
+          "player": "M Chen #7",
+          "ab": 3,
+          "r": 0,
+          "h": 1,
+          "rbi": 1,
+          "bb": 0,
+          "so": 1
+        },
+        {
+          "player": "D Park #21",
+          "ab": 3,
+          "r": 0,
+          "h": 0,
+          "rbi": 0,
+          "bb": 0,
+          "so": 2
+        },
+        {
+          "player": "L Brooks #5",
+          "ab": 2,
+          "r": 1,
+          "h": 1,
+          "rbi": 0,
+          "bb": 1,
+          "so": 0
+        },
+        {
+          "player": "S Patel #9",
+          "ab": 3,
+          "r": 0,
+          "h": 0,
+          "rbi": 0,
+          "bb": 0,
+          "so": 2
+        },
+        {
+          "player": "T Nguyen #14",
+          "ab": 2,
+          "r": 0,
+          "h": 1,
+          "rbi": 1,
+          "bb": 0,
+          "so": 1
+        },
+        {
+          "player": "R Diaz #3",
+          "ab": 2,
+          "r": 0,
+          "h": 0,
+          "rbi": 0,
+          "bb": 1,
+          "so": 1
+        },
+        {
+          "player": "K Moore #18",
+          "ab": 2,
+          "r": 0,
+          "h": 0,
+          "rbi": 0,
+          "bb": 0,
+          "so": 2
+        }
+      ],
+      "batting_totals": {
+        "ab": 23,
+        "r": 3,
+        "h": 6,
+        "rbi": 3,
+        "bb": 3,
+        "so": 9
+      },
+      "pitching": [
+        {
+          "player": "J Ortiz #12",
+          "ip": "4.0",
+          "h": 5,
+          "r": 3,
+          "er": 2,
+          "bb": 2,
+          "so": 4,
+          "pitches": 71
+        },
+        {
+          "player": "M Chen #7",
+          "ip": "2.0",
+          "h": 2,
+          "r": 1,
+          "er": 1,
+          "bb": 1,
+          "so": 3,
+          "pitches": 34
+        }
+      ],
+      "pitching_totals": {
+        "ip": "6.0",
+        "h": 7,
+        "r": 4,
+        "er": 3,
+        "bb": 3,
+        "so": 7,
+        "pitches": 105
+      }
+    },
+    "read": {
+      "reads": 1,
+      "issues": []
+    },
+    "stats": {
+      "result": "loss",
+      "runs_for": 3,
+      "runs_against": 4,
+      "plate_appearances": 26,
+      "hits": 6,
+      "walks": 3,
+      "strikeouts": 9,
+      "strikeout_rate": 0.346,
+      "on_base_rate": 0.346,
+      "batting_average": 0.261,
+      "errors_committed": 2,
+      "pitches": 105,
+      "outs_recorded": 18,
+      "pitches_per_inning": 17.5,
+      "walks_allowed": 3,
+      "strikeouts_pitched": 7,
+      "big_innings_against": [
+        {
+          "inning": 4,
+          "runs": 2
+        }
+      ]
+    },
+    "pitcher_rest": [
+      {
+        "player": "J Ortiz #12",
+        "pitches": 71,
+        "rest_days": 4,
+        "eligible_again": "2026-10-22",
+        "note": null
+      },
+      {
+        "player": "M Chen #7",
+        "pitches": 34,
+        "rest_days": 1,
+        "eligible_again": "2026-10-19",
+        "note": null
+      }
+    ],
+    "headline": "A close game and a clear next step for practice.",
+    "what_decided_it": [
+      "The other team's big inning (inning 4: 2.).",
+      "9 strikeouts in 26 plate appearances."
+    ],
+    "strengths": [
+      "Our pitchers walked only 3."
+    ],
+    "priorities": [
+      {
+        "title": "Two-strike approach",
+        "why": "We struck out in 9 of 26 plate appearances (35%).",
+        "drills": [
+          {
+            "id": "e43f297f-56fb-4ca9-958e-4676ba366025",
+            "title": "Soft toss: two-strike low pitches",
+            "description": "Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate.",
+            "setting": "team",
+            "safety_notes": "Keep tosses out of the hitter’s feet. Helmets for hitter and tosser."
+          }
+        ],
+        "insights": [
+          {
+            "id": "C003",
+            "insight": "With two strikes, protect the zone: widen what you'll swing at, shorten the swing, choke up slightly, and try to put the ball in play or foul off tough pitches.",
+            "source_url": "https://github.com/seanrugg/diamondagentiq",
+            "verified": false
+          },
+          {
+            "id": "C001",
+            "insight": "Many youth pitchers miss away from the batter on purpose, because they don't want to hit anyone. Moving closer to the plate (crowding it) brings those outside pitches into reach.",
+            "source_url": "https://github.com/seanrugg/diamondagentiq",
+            "verified": false
+          }
+        ]
+      },
+      {
+        "title": "Clean up routine plays",
+        "why": "We made 2 errors.",
+        "drills": [
+          {
+            "id": "c92ad72a-2dc0-4c1b-b003-639fabd317e5",
+            "title": "Low-zone framing holds",
+            "description": "From a kneeling or receiving stance, catcher tracks low strikes, beats the ball to the bottom of the zone, and holds a quiet glove for one beat. No stabbing.",
+            "setting": "individual",
+            "safety_notes": "Start with tennis balls if the catcher is new to framing. Do not mix live bats in this station."
+          }
+        ],
+        "insights": []
+      }
+    ],
+    "lesson": {
+      "id": "L008",
+      "title": "A game built on failure",
+      "principle": "In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition.",
+      "life_lesson": "Failing often on the way to success is normal in anything worth doing; what matters is learning from each try."
+    },
+    "team_talk": "We lost that one as a team, and we'll get better as a team. Nobody here is defined by one game.",
+    "at_home": [
+      "Ten dry swings with a two-strike, choked-up grip."
+    ],
+    "sources": [
+      {
+        "table": "coaching_lessons",
+        "id": "L008",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C003",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C001",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      }
+    ],
+    "confidence": 0.7,
+    "review": {
+      "drafts": 1,
+      "passed": true,
+      "unresolved_issues": []
+    },
+    "synthetic_input": true,
+    "trace_id": "262d47c4-0d36-4fc9-be7f-94d173e35c35",
+    "memory": {
+      "recalled": [],
+      "used": [],
+      "saved": [
+        "mem-8"
+      ]
+    }
+  }
+}

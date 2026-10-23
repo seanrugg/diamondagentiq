@@ -61,6 +61,8 @@ const envSchema = z
       .transform((value) => (value?.split("#")[0]?.trim() === "tools" ? "tools" : "off")),
     /** Port for npm start (the web page and POST /run); binds to 127.0.0.1. */
     DIQ_PORT: z.coerce.number().int().min(1).max(65535).default(8787),
+    /** Interface to bind; 0.0.0.0 inside Docker so the port mapping reaches it. */
+    DIQ_HOST: z.string().optional().transform((v) => v?.trim() || "127.0.0.1"),
     SAMPLE_MODE: z
       .enum(["true", "false"])
       .default("false")
@@ -98,6 +100,25 @@ function trimStringEnvValues(
   const trimmed: Record<string, string | undefined> = {};
   for (const [key, value] of Object.entries(env)) {
     trimmed[key] = typeof value === "string" ? value.trim() : value;
+  }
+  // SAMPLE_MODE runs with an empty .env: placeholders fill the service settings
+  // that aren't used (data comes from the bundled tables, answers from the
+  // offline stand-in in src/adapters/sampleModel.ts).
+  if (trimmed.SAMPLE_MODE === "true") {
+    const placeholders: Record<string, string> = {
+      ZETARIS_REST_URL: "http://sample-mode.invalid/api/v1.0",
+      ZETARIS_ORG_ID: "0",
+      ZETARIS_USERNAME: "sample",
+      ZETARIS_PASSWORD: "sample",
+      DIQ_PG_PASSWORD: "sample",
+      LLM_PROVIDER: "meterless",
+      OLLAMA_BASE_URL: "http://sample-mode.invalid/v1",
+      OLLAMA_MODEL: "sample",
+      METERLESS_BASE_URL: "http://sample-mode.invalid/v1",
+      METERLESS_RUNTIME_TOKEN: "sample",
+      METERLESS_MODEL: "sample-offline",
+    };
+    for (const [key, value] of Object.entries(placeholders)) if (!trimmed[key]) trimmed[key] = value;
   }
   return trimmed as unknown as z.input<typeof envSchema>;
 }

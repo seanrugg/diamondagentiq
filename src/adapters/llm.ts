@@ -105,7 +105,7 @@ export type GeneratorResult = {
   finish_reason: string | null;
   /** Number of 499 retries this call needed. */
   retries: number;
-  provider: "ollama" | "meterless";
+  provider: "ollama" | "meterless" | "sample";
   receipt?: MeterlessReceipt;
 };
 
@@ -155,6 +155,21 @@ export async function generator(
   messages: ChatCompletionMessageParam[],
   opts?: GeneratorOpts,
 ): Promise<GeneratorResult> {
+  if (config.SAMPLE_MODE) {
+    // No model available: the offline stand-in answers (src/adapters/sampleModel.ts).
+    const { sampleReply, SAMPLE_MODEL } = await import("./sampleModel.js");
+    const reply = sampleReply(messages, opts?.agent);
+    return {
+      content: reply.content,
+      toolCalls: reply.toolCalls,
+      reasoning: null,
+      model: SAMPLE_MODEL,
+      requested_model: opts?.tier ? `${opts.tier} tier` : "default",
+      finish_reason: reply.toolCalls.length ? "tool_calls" : "stop",
+      retries: 0,
+      provider: "sample",
+    };
+  }
   const provider = config.LLM_PROVIDER;
   const model =
     opts?.model ??

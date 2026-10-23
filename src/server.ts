@@ -4,7 +4,9 @@
  *
  *   GET  /              the page (web/index.html)
  *   GET  /healthz       provider, models and memory status (no secrets)
- *   POST /run           SituationRequest JSON -> SituationAnswer JSON
+ *   POST /run           {"input": {...}} (a question, or a box score image/text)
+ *                       -> {run_id, status, output | error, agents, trace_id,
+ *                       log_file, execution_time_seconds}
  *   POST /run/stream    same, streamed as NDJSON: one {"type":"step"} per trace
  *                       line (the live agent timeline), then {"type":"answer"}
  *                       or {"type":"error"}
@@ -20,7 +22,8 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { readFileSync } from "node:fs";
 import { openMemory } from "./adapters/hmem.js";
 import { config, meterlessModelForTier } from "./config.js";
-import { runSituation, type OrchestratorResult } from "./orchestrator.js";
+import { runSituation } from "./orchestrator.js";
+import { normalizeRunInput, runOnce } from "./runApi.js";
 import { runGameReview } from "./gameReview.js";
 import { GameReviewRequestSchema } from "./schemas/boxScore.js";
 import { SituationRequestSchema } from "./schemas/situation.js";
@@ -80,6 +83,20 @@ function send(res: ServerResponse, status: number, body: unknown): void {
   res.end(JSON.stringify(body));
 }
 
+async function handleRunEnvelope(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const raw = await readJson(req, MAX_REVIEW_BODY_BYTES);
+  if (busy) return send(res, 409, { status: "error", error: { type: "Busy", message: "Another run is in progress. Try again when it finishes.", recoverable: true } });
+  busy = true;
+  try {
+    const envelope = await runOnce(normalizeRunInput(raw), { memory });
+    return send(res, envelope.status === "success" ? 200 : envelope.error?.type === "InvalidInput" ? 400 : 502, envelope);
+  } catch (error) {
+    return send(res, 400, { status: "error", error: { type: "InvalidInput", message: error instanceof Error ? error.message : String(error), recoverable: true } });
+  } finally {
+    busy = false;
+  }
+}
+
 async function handleRun(req: IncomingMessage, res: ServerResponse, stream: boolean): Promise<void> {
   const raw = (await readJson(req)) as Record<string, unknown>;
   const parsed = SituationRequestSchema.safeParse(raw);
@@ -90,8 +107,8 @@ async function handleRun(req: IncomingMessage, res: ServerResponse, stream: bool
   busy = true;
   try {
     if (!stream) {
-      const result: OrchestratorResult = await withRun(() => runSituation(parsed.data, today, { memory }));
-      return send(res, result.ok ? 200 : 502, result.ok ? result.answer : result.error);
+      const envelope = await runOnce({ input: raw, today }, { memory });
+      return send(res, envelope.status === "success" ? 200 : 502, envelope);
     }
     res.writeHead(200, { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" });
     const write = (obj: unknown) => {
@@ -138,6 +155,7 @@ export const server = createServer((req, res) => {
       return send(res, 200, {
         ok: true,
         busy,
+        sample_mode: config.SAMPLE_MODE,
         provider: config.LLM_PROVIDER,
         models: config.LLM_PROVIDER === "meterless" ? { super: meterlessModelForTier("super"), lightning: meterlessModelForTier("lightning"), judge: meterlessModelForTier("judge"), app_streams: config.METERLESS_APP_STREAMS } : { local: config.OLLAMA_MODEL },
         memory: { memories: memory.store.all().length, ledger: memory.ledger.stats() },
@@ -152,7 +170,7 @@ export const server = createServer((req, res) => {
       return res.end(readFileSync(new URL("../data/samples/box-score-demo.txt", import.meta.url)));
     }
     if (route === "POST /review/stream") return handleReview(req, res);
-    if (route === "POST /run") return handleRun(req, res, false);
+    if (route === "POST /run") return handleRunEnvelope(req, res);
     if (route === "POST /run/stream") return handleRun(req, res, true);
     return send(res, 404, { error: `No route for ${route}` });
   })().catch((error: unknown) => {
@@ -162,9 +180,9 @@ export const server = createServer((req, res) => {
   });
 });
 
-/** Listen on 127.0.0.1 (see src/scripts/start.ts). */
-export function startServer(port = config.DIQ_PORT): void {
-  server.listen(port, "127.0.0.1", () => {
-    console.log(`DiamondAgentIQ is running: open http://127.0.0.1:${port} (Ctrl+C to stop)`);
+/** Listen on DIQ_HOST (127.0.0.1 by default; 0.0.0.0 in Docker). See src/scripts/start.ts. */
+export function startServer(port = config.DIQ_PORT, host = config.DIQ_HOST): void {
+  server.listen(port, host, () => {
+    console.log(`DiamondAgentIQ is running: open http://127.0.0.1:${port} (Ctrl+C to stop)${config.SAMPLE_MODE ? " [SAMPLE_MODE]" : ""}`);
   });
 }

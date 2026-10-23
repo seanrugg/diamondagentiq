@@ -37,6 +37,11 @@ export type TraceRecord = {
 /** Per-request context (the server runs many questions in one process). */
 const scope = new AsyncLocalStorage<{ runId: string; listener?: (record: TraceRecord) => void }>();
 
+/** logs/trace-<run_id>.jsonl for a run started with withRun(). */
+export function getRunTracePath(runId = getRunId()): string {
+  return join(logDir, `trace-${runId}.jsonl`);
+}
+
 /**
  * Run fn with its own run id; every trace line inside it carries that id and
  * is also handed to listener (used to stream a live timeline to the web page).
@@ -75,6 +80,7 @@ export function trace(event: TraceEvent): void {
   const line = JSON.stringify(record);
 
   appendFileSync(logPath, `${line}\n`);
+  if (scope.getStore()) appendFileSync(getRunTracePath(record.run_id), `${line}\n`);
   process.stdout.write(`${line}\n`);
   try {
     scope.getStore()?.listener?.(record);

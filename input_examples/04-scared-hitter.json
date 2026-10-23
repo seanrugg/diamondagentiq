@@ -1,0 +1,12 @@
+{
+  "run_id": "example-04",
+  "mode": "situation",
+  "input": {
+    "role": "coach",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 11,
+    "team": "Demo Hawks",
+    "question": "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?"
+  }
+}
