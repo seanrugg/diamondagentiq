@@ -3,7 +3,7 @@
  * 1. Deterministic checks in code (grounding that must never slip):
  *    the computed date is stated, draft data is disclosed, no rule number
  *    appears that isn't in the cited sources, the plan isn't empty.
- * 2. A Lightning-tier review of the guardrails code can't check:
+ * 2. A judge-tier review (METERLESS_MODEL_JUDGE, else Lightning) of the guardrails code can't check:
  *    umpire authority, no ruling on judgment, calm channel, safe and
  *    age-appropriate advice, no medical advice.
  * The orchestrator sends failing drafts back to CoachingAgent (max 2 retries).
@@ -107,7 +107,7 @@ Call type: ${callType.call_type} (${callType.rationale})
 Draft:
 ${JSON.stringify(draft, null, 2)}`;
 
-  return askJson("criticAgent", "review_draft", "lightning", [
+  return askJson("criticAgent", "review_draft", "judge", [
     { role: "system", content: system },
     { role: "user", content: user },
   ], CriticOutputSchema);

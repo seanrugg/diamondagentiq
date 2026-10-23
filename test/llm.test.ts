@@ -315,3 +315,24 @@ describe("METERLESS_DIRECT_MODE", () => {
     expect(sent.tool_choice).toBeUndefined();
   });
 });
+
+describe("meterless-app per agent", () => {
+  it("sends one app id by default and diamondagentiq-<agent> with METERLESS_APP_STREAMS=per-agent", async () => {
+    let mod = await loadGenerator();
+    expect(mod.meterlessAppId("criticAgent")).toBe("diamondagentiq");
+    mod = await loadGenerator({ METERLESS_APP_STREAMS: "per-agent" });
+    expect(mod.meterlessAppId("criticAgent")).toBe("diamondagentiq-critic");
+    expect(mod.meterlessAppId("callTypeAgent")).toBe("diamondagentiq-call-type");
+    expect(mod.meterlessAppId(undefined)).toBe("diamondagentiq");
+  });
+
+  it("judge tier uses METERLESS_MODEL_JUDGE, else Lightning", async () => {
+    setFixture(meterlessResponse);
+    let mod = await loadGenerator({ METERLESS_MODEL_LIGHTNING: "nvidia/nemotron-3.5-lightning-30b-a3b" });
+    await mod.generator([{ role: "user", content: "x" }], { tier: "judge" });
+    expect(lastModel()).toBe("nvidia/nemotron-3.5-lightning-30b-a3b");
+    mod = await loadGenerator({ METERLESS_MODEL_JUDGE: "meterless/judge" });
+    await mod.generator([{ role: "user", content: "x" }], { tier: "judge" });
+    expect(lastModel()).toBe("meterless/judge");
+  });
+});

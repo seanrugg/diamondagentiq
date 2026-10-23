@@ -4,8 +4,8 @@
  * validation error, then return a structured error (AGENTS.md rule 6).
  * Every call is traced with the model's reasoning and the Meterless receipt.
  *
- * Lightning-tier calls fall back to Super if the provider rejects the
- * Lightning model (HTTP 400/404). The fallback is traced so the routing is
+ * Lightning- and judge-tier calls fall back to Super if the provider rejects
+ * the model (HTTP 400/404). The fallback is traced so the routing is
  * honest in the logs.
  */
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
@@ -14,7 +14,7 @@ import { generator, type GeneratorOpts, type GeneratorResult } from "../adapters
 import { trace } from "../trace.js";
 import { parseModelJson } from "./json.js";
 
-export type Tier = "super" | "lightning";
+export type Tier = "super" | "lightning" | "judge";
 
 export type JsonAgentResult<T> =
   | { ok: true; value: T; model: string }
@@ -30,20 +30,20 @@ export async function callModel(
   agent: string,
   messages: ChatCompletionMessageParam[],
   tier: Tier,
-  extra: Omit<GeneratorOpts, "tier"> = {},
+  extra: Omit<GeneratorOpts, "tier" | "agent"> = {},
 ): Promise<GeneratorResult> {
   try {
-    return await generator(messages, { ...extra, tier });
+    return await generator(messages, { ...extra, tier, agent });
   } catch (error) {
-    if (tier !== "lightning" || !isModelRejected(error)) throw error;
+    if (tier === "super" || !isModelRejected(error)) throw error;
     trace({
       agent_name: agent,
       action: "tier_fallback",
-      input_summary: "lightning model rejected by provider",
+      input_summary: `${tier} model rejected by provider`,
       output_summary: `falling back to super: ${error instanceof Error ? error.message.slice(0, 160) : "error"}`,
       status: "error",
     });
-    return generator(messages, { ...extra, tier: "super" });
+    return generator(messages, { ...extra, tier: "super", agent });
   }
 }
 

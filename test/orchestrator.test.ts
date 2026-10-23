@@ -176,7 +176,7 @@ describe("runSituation", () => {
     const redraftPrompt = mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>;
     expect(redraftPrompt.at(-1)?.content).toMatch(/reviewer rejected/i);
     expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "super" }); // Coaching
-    expect(mockedGenerator.mock.calls[2]?.[1]).toMatchObject({ tier: "lightning" }); // Critic
+    expect(mockedGenerator.mock.calls[2]?.[1]).toMatchObject({ tier: "judge", agent: "criticAgent" }); // Critic
   });
 
   it("asks CallTypeAgent (Lightning) when the evidence isn't a pure rule answer", async () => {

@@ -111,6 +111,7 @@ export async function contextAgent(
 
     result = await generator([{ role: "user", content: attemptPrompt }], {
       tier: "super",
+      agent: "contextAgent",
     });
     lastInput = result.content ?? null;
 

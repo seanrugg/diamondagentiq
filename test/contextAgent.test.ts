@@ -53,7 +53,7 @@ describe("contextAgent", () => {
     expect(mockedGenerator).toHaveBeenCalledTimes(1);
     expect(mockedGenerator).toHaveBeenLastCalledWith(
       expect.anything(),
-      { tier: "super" },
+      { tier: "super", agent: "contextAgent" },
     );
   });
 

@@ -4,7 +4,7 @@ import type {
   ChatCompletionMessageParam,
   ChatCompletionTool,
 } from "openai/resources/chat/completions";
-import { config, meterlessModelForTier } from "../config.js";
+import { config, meterlessModelForTier, type ModelTier } from "../config.js";
 
 const REQUEST_TIMEOUT_MS = 120_000;
 /** Waits before each retry of a dropped request (HTTP 499): bounded, two retries. */
@@ -20,8 +20,10 @@ export type GeneratorOpts = {
   tools?: ChatCompletionTool[];
   model?: string;
   temperature?: number;
-  tier?: "super" | "lightning";
+  tier?: ModelTier;
   toolChoice?: "none" | "auto";
+  /** Which agent is calling; names its Nightshift app stream when METERLESS_APP_STREAMS=per-agent. */
+  agent?: string;
   /**
    * Makes the request unique so Nightshift's response cache can't answer it.
    * A cache hit comes back instantly with no receipt (and has replayed blank
@@ -29,6 +31,13 @@ export type GeneratorOpts = {
    */
   nonce?: string;
 };
+
+/** meterless-app value: one stable lowercase id, or one per agent (diamondagentiq-critic). */
+export function meterlessAppId(agent?: string): string {
+  if (config.METERLESS_APP_STREAMS !== "per-agent" || !agent) return "diamondagentiq";
+  const slug = agent.replace(/Agent$/, "").replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`).replace(/[^a-z0-9-]/g, "").replace(/^-+|-+$/g, "");
+  return slug ? `diamondagentiq-${slug}` : "diamondagentiq";
+}
 
 /**
  * Nightshift serves requests that carry tools straight to the pinned model
@@ -174,7 +183,10 @@ export async function generator(
   let retries = 0;
   for (;;) {
     try {
-      completion = await client.chat.completions.create(request, { timeout: REQUEST_TIMEOUT_MS });
+      completion = await client.chat.completions.create(request, {
+        timeout: REQUEST_TIMEOUT_MS,
+        ...(provider === "meterless" ? { headers: { "meterless-app": meterlessAppId(opts?.agent) } } : {}),
+      });
       break;
     } catch (error) {
       const delay = LLM_RETRY_DELAYS_MS[retries];

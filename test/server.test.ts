@@ -22,7 +22,7 @@ describe("server publicStep", () => {
     });
     expect(JSON.stringify(step)).not.toContain("private chain of thought");
     expect(JSON.stringify(step)).not.toContain("secret-token");
-    expect(step.receipt).toEqual({ requested_model: "lightning", routed_model: "super", provider: "nvidia", ms: 45000, tokens_out: 20 });
+    expect(step.receipt).toEqual({ receipt_id: "x", requested_model: "lightning", routed_model: "super", provider: "nvidia", ms: 45000, tokens_out: 20 });
     vi.unstubAllEnvs();
   });
 });

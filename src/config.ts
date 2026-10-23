@@ -42,6 +42,13 @@ const envSchema = z
     METERLESS_MODEL: z.string().min(1),
     METERLESS_MODEL_SUPER: optionalString,
     METERLESS_MODEL_LIGHTNING: optionalString,
+    /** Model or route for judging steps (CriticAgent), e.g. meterless/judge. Falls back to Lightning. */
+    METERLESS_MODEL_JUDGE: optionalString,
+    /** "per-agent": send meterless-app as diamondagentiq-<agent>, so Nightshift shows one app stream per agent. */
+    METERLESS_APP_STREAMS: z
+      .string()
+      .optional()
+      .transform((value) => (value?.split("#")[0]?.trim() === "per-agent" ? "per-agent" : "single")),
     /** Where H-MEM keeps state.json and ledger.jsonl (local only, gitignored). */
     DIQ_MEMORY_DIR: z
       .string()
@@ -114,9 +121,14 @@ export type AppConfig = typeof config;
  * wins when set; otherwise fall back to METERLESS_MODEL so the NVIDIA lane is
  * pinned by model ID instead of being left to meterless/auto routing.
  */
+export type ModelTier = "super" | "lightning" | "judge";
+
 export function meterlessModelForTier(
-  tier?: "super" | "lightning",
+  tier?: ModelTier,
 ): string {
+  if (tier === "judge") {
+    return config.METERLESS_MODEL_JUDGE ?? config.METERLESS_MODEL_LIGHTNING ?? config.METERLESS_MODEL;
+  }
   if (tier === "super") {
     return config.METERLESS_MODEL_SUPER ?? config.METERLESS_MODEL;
   }

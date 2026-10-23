@@ -32,6 +32,7 @@ const localToday = () =>
 export function publicStep(r: TraceRecord) {
   const receipt = r.receipt
     ? {
+        receipt_id: r.receipt.receipt_id,
         requested_model: r.receipt.requested_model,
         routed_model: r.receipt.routed_model,
         provider: r.receipt.winning_route?.provider ?? null,
@@ -111,7 +112,7 @@ export const server = createServer((req, res) => {
         ok: true,
         busy,
         provider: config.LLM_PROVIDER,
-        models: config.LLM_PROVIDER === "meterless" ? { super: meterlessModelForTier("super"), lightning: meterlessModelForTier("lightning") } : { local: config.OLLAMA_MODEL },
+        models: config.LLM_PROVIDER === "meterless" ? { super: meterlessModelForTier("super"), lightning: meterlessModelForTier("lightning"), judge: meterlessModelForTier("judge"), app_streams: config.METERLESS_APP_STREAMS } : { local: config.OLLAMA_MODEL },
         memory: { memories: memory.store.all().length, ledger: memory.ledger.stats() },
       });
     }

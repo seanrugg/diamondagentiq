@@ -152,6 +152,7 @@ async function askModel(
     const toolsAllowed = toolCallsUsed < MAX_TOOL_CALLS;
     const result = await generator(messages, {
       tier: "super",
+      agent: AGENT,
       // After a blank reply, make the retry unique so a cached blank can't come back.
       ...(emptyRetries > 0 ? { nonce: `${getRunId()}-${step}` } : {}),
       ...(toolsAllowed ? { tools: [run_sql] } : {}),
