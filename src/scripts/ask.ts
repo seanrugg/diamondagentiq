@@ -11,6 +11,9 @@ import { runSituation } from "../orchestrator.js";
 import { SituationRequestSchema } from "../schemas/situation.js";
 import { getTracePath } from "../trace.js";
 
+/** Flags that never take a value, so they can't swallow the question. */
+const BOOLEAN_FLAGS = new Set(["save"]);
+
 function parseArgs(argv: string[]): { args: Record<string, string>; positional: string[] } {
   const args: Record<string, string> = {};
   const positional: string[] = [];
@@ -18,7 +21,7 @@ function parseArgs(argv: string[]): { args: Record<string, string>; positional: 
     const arg = argv[i] ?? "";
     if (arg.startsWith("--")) {
       const next = argv[i + 1];
-      if (next !== undefined && !next.startsWith("--")) {
+      if (!BOOLEAN_FLAGS.has(arg.slice(2)) && next !== undefined && !next.startsWith("--")) {
         args[arg.slice(2)] = next;
         i += 1;
       } else {
