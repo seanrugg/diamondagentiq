@@ -50,6 +50,23 @@ function fail(stage: string, message: string): OrchestratorResult {
   return { ok: false, error: { stage, message, trace_id: getRunId() } };
 }
 
+/**
+ * A computed pitch-rest answer where every cited rules fact is tagged "rule"
+ * involves no umpire judgment, so code classifies it and skips a model call.
+ * Anything else (judgment, mixed, development questions) goes to CallTypeAgent.
+ */
+export function callTypeFromEvidence(rules: RulesOk): CallTypeOutput | null {
+  const facts = rules.sources.filter((s) => s.table === "rules_facts");
+  if (!rules.computation || rules.call_type_hint !== "rule" || facts.length === 0) return null;
+  if (!facts.every((s) => s.call_type === "rule")) return null;
+  return {
+    call_type: "rule",
+    rationale: "This follows from written pitch-count and rest rules applied to known facts (pitches thrown and dates); no umpire judgment is involved.",
+    judgment_parts: [],
+    rule_parts: ["pitch count", "required rest days", "earliest eligible date"],
+  };
+}
+
 /** Confidence from evidence: draft data, missing facts, sources, unresolved review issues. */
 export function computeConfidence(rules: RulesOk, unresolved: number): number {
   let c = 0.9;
@@ -197,8 +214,16 @@ async function runStages(
   }
 
   track.stage = "callTypeAgent";
-  const callType = await callTypeAgent(request, ctx, rules);
-  if (!callType.ok) return fail("callTypeAgent", callType.error.message);
+  const byCode = callTypeFromEvidence(rules);
+  let callType: { ok: true; value: CallTypeOutput };
+  if (byCode) {
+    callType = { ok: true, value: byCode };
+    trace({ agent_name: "orchestrator", action: "call_type_by_code", input_summary: "computed pitch-rest answer; every cited fact is a rule", output_summary: "rule (CallTypeAgent not needed)", status: "ok" });
+  } else {
+    const classified = await callTypeAgent(request, ctx, rules);
+    if (!classified.ok) return fail("callTypeAgent", classified.error.message);
+    callType = classified;
+  }
   handoff("callTypeAgent", "coachingAgent", `${callType.value.call_type}: ${callType.value.rationale}`);
 
   let issues: string[] = [];
@@ -207,9 +232,15 @@ async function runStages(
 
   for (let round = 0; round <= MAX_CRITIC_RETRIES; round += 1) {
     track.stage = "coachingAgent";
-    const written = await coachingAgent(request, ctx, rules, callType.value, issues, development);
+    const written = await coachingAgent(request, ctx, rules, callType.value, issues, development).catch(
+      (error: unknown) => ({ ok: false as const, error: { message: error instanceof Error ? error.message : String(error), attempts: 1 } }),
+    );
     if (!written.ok) {
-      if (draft) break; // keep the last good draft
+      if (draft) {
+        // Keep the last draft and report what's still open, rather than losing a whole answer.
+        trace({ agent_name: "orchestrator", action: "redraft_failed", input_summary: `round ${round + 1}`, output_summary: `kept draft ${drafts}: ${written.error.message}`.slice(0, 300), status: "error" });
+        break;
+      }
       return fail("coachingAgent", written.error.message);
     }
     draft = written.value;
@@ -217,9 +248,17 @@ async function runStages(
     handoff("coachingAgent", "criticAgent", `draft ${drafts}`);
 
     const codeIssues = deterministicChecks(draft, rules, (development?.lessons.length ?? 0) > 0);
-    track.stage = "criticAgent";
-    const review = await criticAgent(request, draft, callType.value, ctx.age);
-    const modelIssues = review.ok && !review.value.pass ? review.value.issues : [];
+    // If code already found problems the draft goes back anyway, so skip the
+    // model review this round (saves a slow call). Its turn comes on the redraft.
+    let modelIssues: string[] = [];
+    if (codeIssues.length === 0) {
+      track.stage = "criticAgent";
+      const review = await criticAgent(request, draft, callType.value, ctx.age).catch((error: unknown) => {
+        trace({ agent_name: "orchestrator", action: "critic_unavailable", input_summary: `draft ${drafts}`, output_summary: error instanceof Error ? error.message.slice(0, 200) : "error", status: "error" });
+        return null;
+      });
+      modelIssues = review?.ok && !review.value.pass ? review.value.issues : [];
+    }
     issues = [...codeIssues, ...modelIssues];
 
     trace({

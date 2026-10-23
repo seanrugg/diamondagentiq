@@ -45,7 +45,9 @@ function dateForms(iso: string): string[] {
   return [iso, `${month} ${d}`, `${month.slice(0, 3)} ${d}`, `${m}/${d}`];
 }
 
-const RULE_REF = /\b(?:Rule|Regulation|Reg\.)\s+[0-9IVX][\w.()-]*/gi;
+// "Rule 7.13", "Regulation VI(c)": a number or an upper-case Roman numeral.
+// The numeral part is case-sensitive so prose like "rule interpretation" isn't flagged.
+const RULE_REF = /\b(?:[Rr]ule|[Rr]egulation|[Rr]eg\.)\s+(?:\d[\w.()-]*|[IVXL]+(?![a-z])[\w.()-]*)/g;
 
 export function deterministicChecks(draft: CoachingDraft, rules: RulesOk, needsLesson = false): string[] {
   const text = draftText(draft);

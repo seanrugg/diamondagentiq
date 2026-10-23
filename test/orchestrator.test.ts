@@ -5,7 +5,7 @@ import { rulesAgent } from "../src/agents/rulesAgent.js";
 import { askJson } from "../src/agents/modelJson.js";
 import { deterministicChecks } from "../src/agents/criticAgent.js";
 import type { CoachingDraft } from "../src/agents/coachingAgent.js";
-import { computeConfidence, MAX_CRITIC_RETRIES, runSituation } from "../src/orchestrator.js";
+import { callTypeFromEvidence, computeConfidence, MAX_CRITIC_RETRIES, runSituation } from "../src/orchestrator.js";
 import type { RulesResult } from "../src/schemas/rules.js";
 import { CallTypeOutputSchema } from "../src/agents/callTypeAgent.js";
 import { developmentAgent } from "../src/agents/developmentAgent.js";
@@ -115,6 +115,11 @@ describe("deterministicChecks", () => {
     expect(deterministicChecks(d, rules).join(" ")).toMatch(/draft rule data/);
   });
 
+  it("doesn't mistake prose like 'rule interpretation' for a rule number", () => {
+    const d = { ...goodDraft, channel: { who: "Head coach", how: "Protests are only for rule interpretation, never for judgment. Regulation viewpoints vary." } };
+    expect(deterministicChecks(d, rules)).toEqual([]);
+  });
+
   it("flags a rule number that isn't in the sources, but allows cited ones", () => {
     const d = { ...goodDraft, teachable_moment: "Regulation VI(c) sets the max; Rule 7.13 covers leading off." };
     const issues = deterministicChecks(d, rules);
@@ -138,12 +143,20 @@ describe("computeConfidence", () => {
   });
 });
 
+describe("callTypeFromEvidence", () => {
+  it("classifies a computed pitch-rest answer built only on rule facts, and nothing else", () => {
+    expect(callTypeFromEvidence(rules)?.call_type).toBe("rule");
+    expect(callTypeFromEvidence({ ...rules, call_type_hint: "mixed" })).toBeNull();
+    expect(callTypeFromEvidence({ ...rules, computation: null })).toBeNull();
+    const judgmentFact = { ...rules.sources[0]!, call_type: "judgment" as const };
+    expect(callTypeFromEvidence({ ...rules, sources: [judgmentFact] })).toBeNull();
+  });
+});
+
 describe("runSituation", () => {
-  it("sends a draft back when the critic finds a problem, then answers", async () => {
+  it("sends a draft back when the code check finds a problem, skipping the model review that round", async () => {
     mockedGenerator
-      .mockResolvedValueOnce(reply(callType)) // CallTypeAgent
-      .mockResolvedValueOnce(reply(draftWithoutDate)) // CoachingAgent draft 1
-      .mockResolvedValueOnce(reply({ pass: true, issues: [] })) // CriticAgent (code check still fails it)
+      .mockResolvedValueOnce(reply(draftWithoutDate)) // CoachingAgent draft 1 (code check fails; no model review)
       .mockResolvedValueOnce(reply(goodDraft)) // CoachingAgent draft 2
       .mockResolvedValueOnce(reply({ pass: true, issues: [] })); // CriticAgent
 
@@ -152,23 +165,33 @@ describe("runSituation", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.answer.review).toEqual({ drafts: 2, passed: true, unresolved_issues: [] });
-    expect(result.answer.call_type).toBe("rule");
+    expect(result.answer.call_type).toBe("rule"); // by code: computed answer, rule facts only
     expect(result.answer.confidence).toBe(0.6);
     expect(result.answer.sources.map((s) => s.id)).toEqual(["F003", "hr-1"]);
     expect(result.answer.trace_id).toBeTruthy();
 
-    const redraftPrompt = mockedGenerator.mock.calls[3]?.[0] as Array<{ content: string }>;
+    expect(mockedGenerator).toHaveBeenCalledTimes(3);
+    const redraftPrompt = mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>;
     expect(redraftPrompt.at(-1)?.content).toMatch(/reviewer rejected/i);
-    expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "lightning" }); // CallType
-    expect(mockedGenerator.mock.calls[1]?.[1]).toMatchObject({ tier: "super" }); // Coaching
+    expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "super" }); // Coaching
     expect(mockedGenerator.mock.calls[2]?.[1]).toMatchObject({ tier: "lightning" }); // Critic
   });
 
+  it("asks CallTypeAgent (Lightning) when the evidence isn't a pure rule answer", async () => {
+    mockedRules.mockResolvedValueOnce({ ...rules, call_type_hint: "mixed" });
+    mockedGenerator
+      .mockResolvedValueOnce(reply({ ...callType, call_type: "mixed" }))
+      .mockResolvedValueOnce(reply(goodDraft))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
+    const result = await runSituation(request, "2026-10-18");
+    expect(result.ok && result.answer.call_type).toBe("mixed");
+    expect(mockedGenerator.mock.calls[0]?.[1]).toMatchObject({ tier: "lightning" });
+  });
+
   it(`stops after ${MAX_CRITIC_RETRIES} retries and reports unresolved issues with lower confidence`, async () => {
-    mockedGenerator.mockResolvedValueOnce(reply(callType));
     for (let i = 0; i <= MAX_CRITIC_RETRIES; i += 1) {
       mockedGenerator
-        .mockResolvedValueOnce(reply(draftWithoutDate))
+        .mockResolvedValueOnce(reply(goodDraft))
         .mockResolvedValueOnce(reply({ pass: false, issues: ["Tone is too harsh."] }));
     }
 
@@ -180,7 +203,18 @@ describe("runSituation", () => {
     expect(result.answer.review?.passed).toBe(false);
     expect(result.answer.review?.unresolved_issues.join(" ")).toMatch(/Tone is too harsh/);
     expect(result.answer.confidence).toBe(0.4);
-    expect(mockedGenerator).toHaveBeenCalledTimes(1 + 2 * (MAX_CRITIC_RETRIES + 1));
+    expect(mockedGenerator).toHaveBeenCalledTimes(2 * (MAX_CRITIC_RETRIES + 1));
+  });
+
+  it("keeps the last draft if a redraft fails (e.g. a 499), and reports what's unresolved", async () => {
+    mockedGenerator
+      .mockResolvedValueOnce(reply(draftWithoutDate))
+      .mockRejectedValueOnce(Object.assign(new Error("499 The request was aborted before completion."), { status: 499 }));
+    const result = await runSituation(request, "2026-10-18");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.answer.review).toMatchObject({ drafts: 1, passed: false });
+    expect(result.answer.review?.unresolved_issues.join(" ")).toMatch(/2026-10-22/);
   });
 
   it("adds a lesson to a ruling after RulesAgent, and requires the life_lesson", async () => {
@@ -191,9 +225,7 @@ describe("runSituation", () => {
         sources: [{ table: "coaching_lessons", id: "L004", rule_ref: null, source_url: lesson.source_url, edition: null, verified: false, synthetic: false, call_type: null, summary: "Winning formula" }] },
     });
     mockedGenerator
-      .mockResolvedValueOnce(reply(callType))
       .mockResolvedValueOnce(reply(goodDraft)) // no life_lesson: code check rejects it
-      .mockResolvedValueOnce(reply({ pass: true, issues: [] }))
       .mockResolvedValueOnce(reply({ ...goodDraft, life_lesson: "Resting her builds another pitcher's confidence; teams win with depth, and so do families." }))
       .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
 
@@ -208,9 +240,9 @@ describe("runSituation", () => {
     expect(result.answer.life_lesson?.text).toMatch(/depth/);
     expect(result.answer.computation).toMatchObject({ earliest_eligible_date: "2026-10-22" });
 
-    const coachingSystem = (mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>)[0]?.content ?? "";
+    const coachingSystem = (mockedGenerator.mock.calls[0]?.[0] as Array<{ content: string }>)[0]?.content ?? "";
     expect(coachingSystem).toMatch(/arm care/);
-    const coachingUser = (mockedGenerator.mock.calls[1]?.[0] as Array<{ content: string }>)[1]?.content ?? "";
+    const coachingUser = (mockedGenerator.mock.calls[0]?.[0] as Array<{ content: string }>)[1]?.content ?? "";
     expect(coachingUser).toContain("Computed result");
     expect(coachingUser).toContain("For a coach: Build depth.");
   });
@@ -218,7 +250,6 @@ describe("runSituation", () => {
   it("still answers a ruling when DevelopmentAgent throws", async () => {
     mockedDev.mockRejectedValueOnce(new Error("zetaris down"));
     mockedGenerator
-      .mockResolvedValueOnce(reply(callType))
       .mockResolvedValueOnce(reply(goodDraft))
       .mockResolvedValueOnce(reply({ pass: true, issues: [] }));
     const result = await runSituation(request, "2026-10-18");
@@ -227,9 +258,9 @@ describe("runSituation", () => {
   });
 
   it("turns a thrown error (e.g. a 499 after retries) into a structured error for that stage", async () => {
-    mockedGenerator.mockRejectedValueOnce(Object.assign(new Error("499 The request was aborted before completion."), { status: 499 }));
+    mockedContext.mockRejectedValueOnce(Object.assign(new Error("499 The request was aborted before completion."), { status: 499 }));
     const result = await runSituation(request, "2026-10-18");
-    expect(result).toMatchObject({ ok: false, error: { stage: "callTypeAgent", message: expect.stringMatching(/499/) } });
+    expect(result).toMatchObject({ ok: false, error: { stage: "contextAgent", message: expect.stringMatching(/499/) } });
   });
 
   it("returns a structured error naming the stage that failed", async () => {
