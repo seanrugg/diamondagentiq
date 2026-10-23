@@ -50,8 +50,14 @@ try {
     headers: { Authorization: `Bearer ${config.METERLESS_RUNTIME_TOKEN}`, "meterless-app": "diamondagentiq" },
     signal: AbortSignal.timeout(10_000),
   });
-  const text = await res.text();
-  console.log(`GET /v1/meterless/classes (${res.status}):\n${text.slice(0, 1500)}\n`);
+  const body = (await res.json()) as { classes?: Record<string, { availability?: string; ready?: string[]; cloud?: string[]; dispositions?: string[]; why?: string | null }> };
+  console.log(`GET /v1/meterless/classes (${res.status}):`);
+  for (const [name, c] of Object.entries(body.classes ?? {})) {
+    if (!["text", "code", "judge", "vision"].includes(name)) continue;
+    const seats = [...(c.ready ?? []), ...(c.cloud ?? [])].join(", ") || "none";
+    console.log(`  ${name.padEnd(6)} ${String(c.availability).padEnd(11)} seats: ${seats}${c.why ? `\n         why: ${c.why}` : ""}`);
+  }
+  console.log("");
 } catch (error) {
   console.log(`GET /v1/meterless/classes failed: ${error instanceof Error ? error.message : String(error)}\n`);
 }
