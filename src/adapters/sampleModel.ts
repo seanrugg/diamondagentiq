@@ -231,6 +231,10 @@ function coaching(messages: Msg[]): SampleReply {
     // Lead with the first two sentences of the situation; the card below holds the rest.
     const lead = (sit?.[2] ?? "").match(/[^.!?]+[.!?]+/g)?.slice(0, 2).join(" ").trim();
     if (sit) parts.push(`${sit[1]}. ${lead ?? ""} The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).`.replace(/\s+/g, " "));
+  } else if (/\bbats?\b/i.test(question) && !judgment) {
+    // Equipment: lead with the most relevant bat tip (the menu is already ranked).
+    const tip = t.match(/^- C\d+ \[(?:drop_weight|bat_fit_now|bat_care|softball_bat_certification|equipment_bat|bat_weight_check)[^\]]*\]: (.+?)(?: Why: | Try: |$)/m)?.[1];
+    parts.push(`Good question to ask before buying. ${tip ?? "Start with what your league allows, then fit the bat to the player."} Bat legality comes from your league's rule, so check its bat standard (see the sources) before you buy.`);
   } else if (/protest/i.test(question) && judgment) {
     parts.push("A strike call is the umpire's judgment, and judgment calls can't be protested: a protest is only for how a written rule was applied. Tell the coach that calmly and once, then get the game moving. If the coach believes a rule was misapplied, the league's protest procedure (in the sources) is the place for it, after the game.");
   } else if (callType === "coaching") {

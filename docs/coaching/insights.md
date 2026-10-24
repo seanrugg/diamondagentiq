@@ -4,6 +4,34 @@
 
 Practical tips by topic, with the ages and audience they're for.
 
+## bat care
+
+### C018: Taking care of a bat
+
+Ages 6-18 · for all · both · source `JB-GUIDE`
+
+Don't roll or shave a bat: it can void the warranty and make the bat illegal. Composite bats need a short break-in at partial power (follow the maker's instructions), and shouldn't be used in cold weather (below about 60 degrees F) or with heavy yellow cage balls. Turn the bat a quarter turn after each swing so wear spreads around the barrel.
+
+**Why:** An altered or damaged bat can be removed from play, and replacing one is expensive.
+
+**Try this:** Mark the label side and rotate a quarter turn each swing in batting practice; keep composite bats out of cold-weather games and cage machines.
+
+Draft, not yet reviewed.
+
+## bat fit now
+
+### C017: Buying a bigger bat to grow into
+
+Ages 5-14 · for parent · both · source `JB-YOUTH-SELECT`
+
+Don't buy a bat to grow into. A bat that's too long or too heavy hurts swing mechanics now, and those habits stick. Fit the bat to the player today: height and weight give a starting length, then watch how it swings.
+
+**Why:** Bat speed and control drive good contact; an oversized bat costs both.
+
+**Try this:** Use the maker's size chart for a starting length, then have the player try a teammate's bat one size up and one size down and compare the swings.
+
+Draft, not yet reviewed.
+
 ## bat weight check
 
 ### C012: Choosing a bat or wondering if it's too heavy
@@ -29,6 +57,20 @@ Focus on what you control: being ready, your approach, effort and how you respon
 **Why:** Measuring yourself by things you control builds confidence that lasts through slumps.
 
 **Try this:** After each at-bat, grade one controllable (Was I ready? Did I swing at my pitch?) instead of the result.
+
+Draft, not yet reviewed.
+
+## drop weight
+
+### C016: Reading a bat's size or comparing bats
+
+Ages 4-18 · for all · both · source `JB-GUIDE`
+
+A bat's drop is its length minus its weight in ounces: a 30-inch bat at -10 weighs 20 ounces. The bigger the drop number, the lighter the bat. Typical ranges: tee ball about -10.5 to -14, coach pitch -9 to -12, fastpitch -8 to -13; high school and college baseball use -3 BBCOR bats.
+
+**Why:** Matching the drop to the player's age and strength keeps the bat light enough to swing with control, and some leagues limit the drop.
+
+**Try this:** Read the length and drop printed on the bat (for example 29-inch, -10), work out the weight, then check that the league's bat rule allows it before buying.
 
 Draft, not yet reviewed.
 
@@ -153,6 +195,20 @@ Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!' Fair o
 **Why:** A ground ball near the line can roll foul and come back fair. A batter who stops to judge it gives away an out that running would have saved.
 
 **Try this:** In practice, roll balls down the lines that go foul and come back fair. The batter runs every one; the fielder makes the play; a coach plays umpire and signals fair or calls foul.
+
+Draft, not yet reviewed.
+
+## softball bat certification
+
+### C019: Choosing a softball bat for a league or tournament
+
+Ages 6-18 · for all · softball · source `JB-SB-GOV`
+
+Softball has several governing bodies (for example USA Softball, USSSA, NSA, ISA and WBSC), and each certifies bats separately. A bat that's legal in one league may not be legal in another.
+
+**Why:** An uncertified bat can be removed from the game or penalized.
+
+**Try this:** Before buying or before a tournament, find out which body governs it and look the bat up on that body's certified list.
 
 Draft, not yet reviewed.
 
