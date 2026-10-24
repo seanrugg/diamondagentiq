@@ -376,7 +376,7 @@ const AGENTS = {
   memoryAgent: ["Memory", "H-MEM, this team"],
   rulesAgent: ["Rules", "looks up and applies rules"],
   developmentAgent: ["Development", "picks lessons and drills"],
-  callTypeAgent: ["Call type", "judgment or rule"],
+  callTypeAgent: ["Call type", "judgment, rule or coaching"],
   coachingAgent: ["Coaching", "writes the answer"],
   criticAgent: ["Critic", "reviews the draft"],
   orchestrator: ["Orchestrator", "runs the team"],
@@ -496,7 +496,7 @@ function rowFor(s) {
   if (!s.model) return null;
   const doing = {
     extract_context: "Works out the sport, league, age and what kind of help is needed",
-    classify_call: "Decides: umpire's judgment, a written rule, or both",
+    classify_call: "Decides: umpire's judgment, a written rule, both, or no call (coaching)",
     draft_answer: "Writes the answer and the improvement plan",
     read_box_score: "Reads every line of the box score",
     reread_box_score: "Reads the box score again, checking the lines that disagreed",
