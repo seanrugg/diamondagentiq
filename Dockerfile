@@ -17,4 +17,5 @@ COPY . .
 RUN mkdir -p /app/logs /app/memory
 
 EXPOSE 8787
-CMD ["npx", "tsx", "src/scripts/start.ts"]
+# node runs the app directly (no npx wrapper), so one Ctrl+C or `docker stop` reaches it.
+CMD ["node", "--import", "tsx", "src/scripts/start.ts"]
