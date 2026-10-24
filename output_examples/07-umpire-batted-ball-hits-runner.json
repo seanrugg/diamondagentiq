@@ -1,0 +1,194 @@
+{
+  "agents": [
+    {
+      "name": "ContextAgent",
+      "role": "Reads the question: sport, league, age, what kind of help is needed",
+      "model": "sample-offline"
+    },
+    {
+      "name": "MemoryAgent",
+      "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
+      "model": "sample-offline"
+    },
+    {
+      "name": "RulesAgent",
+      "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
+      "model": "sample-offline"
+    },
+    {
+      "name": "DevelopmentAgent",
+      "role": "Picks the lesson, game situation, story, coaching tips and drills",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CallTypeAgent",
+      "role": "Umpire's judgment, written rule, or both",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CoachingAgent",
+      "role": "Writes the answer, teachable moment, life lesson and improvement plan",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CriticAgent",
+      "role": "Reviews every draft (with code checks) and sends it back when it falls short",
+      "model": "sample-offline"
+    },
+    {
+      "name": "ScorebookAgent",
+      "role": "Transcribes a box score; code checks the totals and asks for a re-read",
+      "model": "sample-offline"
+    },
+    {
+      "name": "GameReviewAgent",
+      "role": "Post-game: what decided the game and the practice priorities",
+      "model": "sample-offline"
+    }
+  ],
+  "sample_mode": true,
+  "run_id": "example-07",
+  "mode": "situation",
+  "trace_id": "8e42790b-ec33-47f2-bf69-2f995e11f553",
+  "log_file": "logs/trace-8e42790b-ec33-47f2-bf69-2f995e11f553.jsonl",
+  "execution_time_seconds": 1.7,
+  "status": "success",
+  "output": {
+    "what_happened": {
+      "summary": "Runner hit by a fair batted ball, bases loaded, no outs. One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources). This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "sources": [
+        "rules_facts:F028",
+        "rules_facts:F087",
+        "rules_facts:F088",
+        "rules_facts:F089",
+        "coaching_lessons:L010",
+        "coaching_lessons:L011",
+        "coaching_situations:SIT004"
+      ]
+    },
+    "call_type": "mixed",
+    "call_type_rationale": "The umpire's judgment decides what happened; a written rule then sets what follows.",
+    "channel": {
+      "who": "Your partner or umpire-in-chief",
+      "how": "Talk it through after the game, calmly; between innings, keep your focus on the next play."
+    },
+    "teachable_moment": "Control the moment: When a play gets loud and confusing, the adults set the temperature. Umpires stop the play, get together and explain calmly; coaches lower their voices and wait for the explanation.",
+    "improvement_plan": {
+      "individual": [
+        "Kill it loudly: 'Time! Dead ball!' with both arms up. Get your partner, agree on what happened and where everyone goes, then explain once to each coach. Don't let the volume change the call: a misapplied rule can be corrected, and a judgment call stands."
+      ],
+      "team": [
+        "Before the next game, walk through dead-ball mechanics with your partner: who calls it, the signal, and where you meet."
+      ],
+      "at_home": []
+    },
+    "confidence": 0.6,
+    "sources": [
+      {
+        "table": "rules_facts",
+        "id": "F028",
+        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/02/February-2026-Plays-and-Clarification.pdf",
+        "verified": false,
+        "rule_ref": "Rule 8-7-J; Rule 1 Obstruction (as cited)",
+        "edition": "2026-02",
+        "synthetic": false
+      },
+      {
+        "table": "rules_facts",
+        "id": "F087",
+        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
+        "verified": false,
+        "rule_ref": "Rule 9, Sec 2",
+        "edition": "2026 (posted 2026-01-12)",
+        "synthetic": false
+      },
+      {
+        "table": "rules_facts",
+        "id": "F088",
+        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
+        "verified": false,
+        "rule_ref": "Rule 9, Sec 2",
+        "edition": "2026 (posted 2026-01-12)",
+        "synthetic": false
+      },
+      {
+        "table": "rules_facts",
+        "id": "F089",
+        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
+        "verified": false,
+        "rule_ref": "Rule 9, Sec 2",
+        "edition": "2026 (posted 2026-01-12)",
+        "synthetic": false
+      },
+      {
+        "table": "coaching_lessons",
+        "id": "L010",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_lessons",
+        "id": "L011",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_situations",
+        "id": "SIT004",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      }
+    ],
+    "missing_facts": [],
+    "trace_id": "8e42790b-ec33-47f2-bf69-2f995e11f553",
+    "computation": null,
+    "draft_data": true,
+    "intent": "ruling",
+    "focus": "Control the moment",
+    "life_lesson": {
+      "text": "In any heated moment, slowing down and getting the facts straight before reacting keeps a mistake from turning into a fight.",
+      "lessons": [
+        {
+          "id": "L010",
+          "title": "Control the moment",
+          "principle": "When a play gets loud and confusing, the adults set the temperature. Umpires stop the play, get together and explain calmly; coaches lower their voices and wait for the explanation."
+        },
+        {
+          "id": "L011",
+          "title": "Play until you hear 'foul'",
+          "principle": "Every batted ball is live until the umpire says otherwise. Players don't decide fair or foul; the umpire does. So run hard and play the ball until you hear 'Foul!' or 'Time!'"
+        }
+      ]
+    },
+    "situations": [
+      {
+        "id": "SIT004",
+        "name": "Runner hit by a fair batted ball, bases loaded, no outs",
+        "offense": "One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. Nothing after the dead ball counts. The batter is awarded first base and only forced runners move up one base, so with the bases loaded: the batter goes to first, the runner from first to second, the runner from second to third, and no run scores. Coaches: when you hear 'dead ball', stop calling for runners to go and let the umpires place them.",
+        "defense": "Once the umpire calls dead ball, tags and throws don't count, however good they were: hold the ball and let the umpires place the runners. The key judgment is whether a fielder touched the ball before it hit the runner. If she did, the ball stays live and the runner isn't out unless she interfered on purpose, so the tags that followed would count.",
+        "common_mistakes": "The umpire calls the runner out but doesn't kill the play loudly, so everyone keeps playing; a second umpire calls more outs on a ball that was already dead; coaches yell players into extra running and tagging; the crew changes a call because of the noise instead of getting together. Fix: 'Time! Dead ball!' with both arms up, a quick crew conference, then one calm explanation to each coach."
+      }
+    ],
+    "review": {
+      "drafts": 1,
+      "passed": true,
+      "unresolved_issues": []
+    },
+    "memory": {
+      "recalled": [],
+      "used": [],
+      "saved": [
+        "mem-1"
+      ]
+    }
+  }
+}

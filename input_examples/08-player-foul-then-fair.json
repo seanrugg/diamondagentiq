@@ -1,0 +1,12 @@
+{
+  "run_id": "example-08",
+  "mode": "situation",
+  "input": {
+    "role": "player",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 10,
+    "team": "Demo Hawks",
+    "question": "I hit a slow roller down the first base line. It rolled foul, then rolled back fair, and the first baseman picked it up and beat me to first. Both umpires called me out. Didn't the ball go foul? How is a foul ball fair?"
+  }
+}

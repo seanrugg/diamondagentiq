@@ -1,0 +1,12 @@
+{
+  "run_id": "example-07",
+  "mode": "situation",
+  "input": {
+    "role": "umpire",
+    "sport": "softball",
+    "sanction": "usa_softball",
+    "age": 10,
+    "team": "Demo Comets",
+    "question": "10U softball, bases loaded, no outs. A fly ball goes to the third baseman near the line; she misses it and the ball hits the runner on third in fair territory, then rolls foul. Play continues with coaches yelling to run and to tag. The plate umpire calls the runner on third out, then the field umpire calls two more runners out on tags. No infield fly at this age. How many outs are there, is the inning over, and where should the runners be?"
+  }
+}
