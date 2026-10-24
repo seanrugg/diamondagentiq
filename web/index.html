@@ -269,6 +269,7 @@ details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
         <option value="babe_ruth_league">Babe Ruth</option>
         <option value="cal_ripken">Cal Ripken</option>
         <option value="usa_baseball">USA Baseball</option>
+        <option value="pitch_smart">Rec league (Pitch Smart)</option>
       </select>
     </label>
 
@@ -288,10 +289,12 @@ details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
     <div>
       <p class="formnote" id="ex-label">Try one:</p>
       <div class="examples" aria-labelledby="ex-label">
-        <button type="button" data-example="pitch">68 pitches Friday, Sunday start?</button>
-        <button type="button" data-example="strikeout">Struck out to end the game</button>
-        <button type="button" data-example="d3k">Dropped third strike, runner on third</button>
-        <button type="button" data-example="scared">Scared at the plate</button>
+        <button type="button" data-example="strikeout">Parent: struck out to end the game</button>
+        <button type="button" data-example="pitch">Coach: 68 pitches Friday, Sunday start?</button>
+        <button type="button" data-example="scared">Coach: scared at the plate</button>
+        <button type="button" data-example="d3k">Coach: dropped third strike, runner on third</button>
+        <button type="button" data-example="swing">Player: help with my swing</button>
+        <button type="button" data-example="protest">Umpire: coach wants to protest my call</button>
       </div>
     </div>
 
@@ -318,7 +321,7 @@ details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
           <option value="nsa">NSA</option>
           <option value="babe_ruth_league">Babe Ruth</option>
           <option value="cal_ripken">Cal Ripken</option>
-          <option value="pitch_smart">Pitch Smart</option>
+          <option value="pitch_smart">Rec league (Pitch Smart)</option>
         </select>
       </label>
       <label>Team <span class="hint">for memory</span>
@@ -361,6 +364,8 @@ const EXAMPLES = {
   pitch: { role: "coach", sport: "baseball", sanction: "little_league", age: 12, event_name: "Fall Classic 12U", team: "Demo Hawks", today: "2026-10-18", question: "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?" },
   strikeout: { role: "parent", sport: "baseball", sanction: "little_league", age: 10, event_name: "", team: "Demo Hawks", question: "My son struck out to end the game. 3 straight pitches. They were probably outside. What can I do to help him overcome that failure?" },
   d3k: { role: "coach", sport: "softball", sanction: "usssa", age: 12, event_name: "", team: "Demo Hawks", question: "Dropped third strike with a runner on third and one out. What should my batter and my runner on third do?" },
+  swing: { role: "player", sport: "baseball", sanction: "little_league", age: 13, event_name: "", team: "Demo Hawks", question: "I need help with my swing. I can't hit the ball very far." },
+  protest: { role: "umpire", sport: "baseball", sanction: "little_league", age: 12, event_name: "", team: "Demo Hawks", question: "A coach wants to protest my strike-three call that ended the inning. What do I tell him?" },
   scared: { role: "coach", sport: "baseball", sanction: "little_league", age: 11, event_name: "", team: "Demo Hawks", question: "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?" },
 };
 
@@ -535,7 +540,7 @@ const firstSentence = (t) => {
 const card = (title, html, preview) => `<details class="card"><summary><span class="card-title">${esc(title)}</span><span class="card-preview">${esc(firstSentence(preview))}</span></summary>${html}</details>`;
 
 function renderAnswer(a) {
-  const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", pending: "Pending" }[a.call_type] ?? a.call_type;
+  const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", coaching: "Coaching", pending: "Pending" }[a.call_type] ?? a.call_type;
   const parts = [];
   parts.push(`<div class="verdict"><div class="stamp" aria-label="Call type: ${esc(stamp)}">${esc(stamp)}<small>call type</small></div>
     <div><p class="what-happened">${esc(a.what_happened.summary)}</p><p class="why-call">${esc(a.call_type_rationale)}</p></div></div>`);

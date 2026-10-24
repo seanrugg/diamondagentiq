@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const RoleSchema = z.enum(["parent", "coach", "umpire", "player"]);
 const SportSchema = z.enum(["baseball", "softball"]);
-const CallTypeSchema = z.enum(["judgment", "rule", "mixed", "pending"]);
+const CallTypeSchema = z.enum(["judgment", "rule", "mixed", "coaching", "pending"]);
 
 // A cited rule/source row, as it would come back from Zetaris.
 const SourceSchema = z.object({

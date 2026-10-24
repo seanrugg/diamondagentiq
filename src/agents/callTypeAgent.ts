@@ -11,7 +11,7 @@ import type { ContextOutput } from "./contextAgent.js";
 import { askJson, type JsonAgentResult } from "./modelJson.js";
 
 export const CallTypeOutputSchema = z.object({
-  call_type: z.enum(["judgment", "rule", "mixed"]),
+  call_type: z.enum(["judgment", "rule", "mixed", "coaching"]),
   rationale: z.string().min(1),
   judgment_parts: z.array(z.string()).default([]),
   rule_parts: z.array(z.string()).default([]),
@@ -34,8 +34,9 @@ export function callTypeAgent(
 - "judgment": the outcome rests on what the umpire saw (ball/strike, safe/out, fair/foul, whether obstruction or interference happened). Never reviewable by protest.
 - "rule": the outcome follows from a written rule once the facts are known (pitch counts and rest, eligibility, base awards for a known event).
 - "mixed": judgment decides whether something happened, then a rule sets the award or penalty.
+- "coaching": no umpire call and no rule is in question: a skills, confidence, effort or development question (for example "help with my swing", "my hitter is scared at the plate"). Use it only when nothing about a call or a rule is being asked.
 Each cited fact is tagged with its own call_type; use them. Reply with ONLY this JSON object:
-{"call_type": "judgment"|"rule"|"mixed", "rationale": "<1-2 sentences in plain words>", "judgment_parts": ["..."], "rule_parts": ["..."]}`;
+{"call_type": "judgment"|"rule"|"mixed"|"coaching", "rationale": "<1-2 sentences in plain words>", "judgment_parts": ["..."], "rule_parts": ["..."]}`;
 
   const user = `Question (${request.role}): ${request.question}
 Sport/sanction/age: ${context.sport} / ${context.sanction} / ${context.age}

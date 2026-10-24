@@ -9,7 +9,7 @@ import type { SituationAnswer } from "../schemas/situation.js";
 
 export const EvalChecksSchema = z.object({
   intent: z.enum(["ruling", "development", "equipment", "general"]).optional(),
-  call_type: z.enum(["judgment", "rule", "mixed"]).optional(),
+  call_type: z.enum(["judgment", "rule", "mixed", "coaching"]).optional(),
   computation: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
   /** Tables that must appear among the cited sources. */
   cites: z.array(z.string()).default([]),

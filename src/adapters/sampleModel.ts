@@ -31,8 +31,10 @@ const words = (s: string) => new Set(s.toLowerCase().replace(/[^a-z0-9\s]/g, " "
 const overlap = (a: Set<string>, b: string) => [...words(b)].filter((w) => a.has(w)).length;
 const json = (v: unknown): SampleReply => ({ content: JSON.stringify(v), toolCalls: [] });
 
-const JUDGMENT_WORDS = /\b(strike|strikes|ball|balls|outside|inside|called|safe|umpire|obstruct|interfer|missed a call)\b/i;
-const RULE_WORDS = /\b(pitch(es)?|eligible|rest|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule)\b/i;
+// Balls and strikes, not "hit the ball".
+const JUDGMENT_WORDS = /\b(strikes?|strike-three|strike three|balls and strikes|ball four|outside|inside|called|safe|umpire|obstruct|interfer|missed a call)\b/i;
+// "Pitches" alone isn't a rule question ("hit by pitches"); a count or rest is.
+const RULE_WORDS = /\b(\d+\s*pitches|pitch count|eligible|rest days?|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule)\b/i;
 
 // ---------- ContextAgent ----------
 function context(messages: Msg[]): SampleReply {
@@ -43,7 +45,7 @@ function context(messages: Msg[]): SampleReply {
     ? "equipment"
     : /(\d+\s*pitches|\bpitch count|\beligible|\brest days|\bdropped third|\buncaught|\bprotest|\bbalk|\binfield fly|\bhouse rule|\ballowed to pitch|\bcan (he|she) pitch)/.test(q)
       ? "ruling"
-      : /\b(struck out|strikeout|scared|confidence|error|lost|failure|help (him|her)|blaming|handshake|0 for|worst|missed a call|yelled)\b/.test(q)
+      : /\b(struck out|strikeout|scared|confidence|error|lost|failure|help (him|her|me)|help with|blaming|handshake|0 for|worst|missed a call|yelled|swing|hit the ball|froze|nervous|throw|catch|field|practice)\b/.test(q)
         ? "development"
         : "general";
   const days = [...q.matchAll(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|yesterday|today|tomorrow)\b/g)].map((m) => m[1]);
@@ -146,6 +148,8 @@ const EXPAND: [RegExp, string][] = [
   [/dropped third|uncaught/, "dropped third strike situation runner"],
   [/umpire|call/, "umpire mistake human respect"],
   [/worst|0 for|value/, "value failure stat line"],
+  [/swing|hit the ball|hit it|far|power/, "bat weight check heavy control size tee balance"],
+  [/froze|frozen|taking|looking/, "two strike approach strike zone confidence"],
 ];
 function expand(text: string): string {
   const t = text.toLowerCase();
@@ -173,7 +177,7 @@ function development(messages: Msg[]): SampleReply {
     insight_ids: insights.slice(0, 2).map((i) => i.id),
     drill_ids: drills.slice(0, 1).map((d) => d.id),
     focus,
-    call_type_hint: JUDGMENT_WORDS.test(question) ? "judgment" : RULE_WORDS.test(question) ? "rule" : "mixed",
+    call_type_hint: JUDGMENT_WORDS.test(question) ? "judgment" : RULE_WORDS.test(question) ? "rule" : "coaching",
   });
 }
 
@@ -183,8 +187,9 @@ function callType(messages: Msg[]): SampleReply {
   const question = t.match(/^Question \([a-z]+\): (.*)$/m)?.[1] ?? "";
   const judgment = JUDGMENT_WORDS.test(question);
   const rule = RULE_WORDS.test(question) || /\[rule\]/.test(t);
-  const call_type = judgment && rule ? "mixed" : judgment ? "judgment" : rule ? "rule" : "judgment";
+  const call_type = judgment && rule ? "mixed" : judgment ? "judgment" : rule ? "rule" : "coaching";
   const rationale = {
+    coaching: "No umpire call or rule is in question here: this is about skills, confidence and the next step.",
     judgment: "What happened on the field (balls and strikes, safe or out) is the umpire's judgment; it can't be protested.",
     rule: "A written rule decides this once the facts are known.",
     mixed: "The umpire's judgment decides what happened; a written rule then sets what follows.",
@@ -206,6 +211,7 @@ function coaching(messages: Msg[]): SampleReply {
   const memory = t.match(/^- (mem-\d+): (.*)$/m);
   const hasDraftNotes = /\[draft/.test(t);
   const judgment = JUDGMENT_WORDS.test(question);
+  const callType = t.match(/^Call type: (\w+)/m)?.[1] ?? "";
 
   const eligible = computed.match(/Earliest eligible date: ([^.]+, \d{4})\./)?.[1];
   const notEligible = /NOT eligible on the game date \(([^)]+)\)/.exec(computed)?.[1];
@@ -218,6 +224,13 @@ function coaching(messages: Msg[]): SampleReply {
   } else if (/^Situations \(strategy\):\n- /m.test(t)) {
     const sit = t.match(/^Situations \(strategy\):\n- (.+?)(?: \[draft\])?\. Offense: (.+?) Defense: (.+?)(?: Common mistakes: .*?)? \(Applies only/m);
     if (sit) parts.push(`${sit[1]}. Offense: ${sit[2]} Defense: ${sit[3]} This applies only where your league uses the uncaught-third-strike rule.`);
+  } else if (/protest/i.test(question) && judgment) {
+    parts.push("A strike call is the umpire's judgment, and judgment calls can't be protested: a protest is only for how a written rule was applied. Tell the coach that calmly and once, then get the game moving. If the coach believes a rule was misapplied, the league's protest procedure (in the sources) is the place for it, after the game.");
+  } else if (callType === "coaching") {
+    const step = focus ? `The one next step: ${focus.toLowerCase()}.` : "Pick one small thing and practise it this week.";
+    parts.push(role === "player"
+      ? `That's a great thing to work on, and wanting to get better is where it starts. ${step} Progress comes from good reps, not from trying harder all at once.`
+      : `Helping a player through this is worth the time. ${step} Small wins at practice rebuild confidence faster than talks about it, so set up reps the player can succeed at.`);
   } else if (judgment) {
     parts.push("That moment stings, and it's worth talking about. Whether those pitches were strikes was the umpire's call; what the player controls is readiness, where he stands, and his approach.");
   } else {
@@ -230,7 +243,11 @@ function coaching(messages: Msg[]): SampleReply {
     ? { who: "You first, then the coach", how: "Let your child talk first on the ride home and keep it supportive; ask the coach for a few minutes later in the week if you want to talk technique." }
     : role === "umpire"
       ? { who: "Your partner or umpire-in-chief", how: "Talk it through after the game, calmly; between innings, keep your focus on the next play." }
-      : { who: "Your players, then the tournament director if a rule is unclear", how: "Talk to the team at the next practice; take any rule question to the director calmly between innings, never a judgment call." };
+      : role === "player"
+        ? { who: "Your coach", how: "Ask at the start or end of practice for one thing to work on, then practise it with a parent or teammate between practices." }
+        : callType === "coaching" || !RULE_WORDS.test(question)
+          ? { who: "The player, one-on-one", how: "A short, calm talk at practice: one thing to work on, plenty of encouragement, and let the player tell you how it feels." }
+          : { who: "Your players, then the tournament director if a rule is unclear", how: "Talk to the team at the next practice; take any rule question to the director calmly between innings, never a judgment call." };
 
   return json({
     what_happened: parts.join(" "),

@@ -27,7 +27,7 @@ export const RulesModelOutputSchema = z.object({
     ])
     .nullish(),
   summary: z.string().min(1),
-  call_type_hint: z.enum(["judgment", "rule", "mixed"]),
+  call_type_hint: z.enum(["judgment", "rule", "mixed", "coaching"]),
   missing_facts: z.array(z.string()).default([]),
 });
 
@@ -69,7 +69,7 @@ export type RulesResult =
   | {
       ok: true;
       summary: string;
-      call_type_hint: "judgment" | "rule" | "mixed";
+      call_type_hint: "judgment" | "rule" | "mixed" | "coaching";
       sources: RuleSource[];
       computation: PitchRestComputation | null;
       draft_data: boolean;

@@ -37,7 +37,7 @@ export const DevelopmentPickSchema = z.object({
   situation_ids: z.array(z.string()).default([]),
   story_id: z.string().nullish(),
   focus: z.string().min(1),
-  call_type_hint: z.enum(["judgment", "rule", "mixed"]),
+  call_type_hint: z.enum(["judgment", "rule", "mixed", "coaching"]),
 });
 export type DevelopmentPick = z.infer<typeof DevelopmentPickSchema>;
 
@@ -298,8 +298,8 @@ Pick ONLY ids from the menus:
 - story_id: a story only if it truly fits the moment; otherwise null.
 - 0-${MAX_INSIGHTS} insights (prefer ones for a ${request.role} or "all") and 0-${MAX_DRILLS} drills.
 Name ONE focus: the single most useful next step, in a few plain words.
-call_type_hint: "judgment" if the question involves what the umpire saw (balls and strikes, safe/out), "rule" if a written rule decides it, "mixed" if both.
-Reply with ONLY: {"lesson_ids": ["L001"], "situation_ids": [], "story_id": null, "insight_ids": [], "drill_ids": [], "focus": "...", "call_type_hint": "judgment"|"rule"|"mixed"}`;
+call_type_hint: "judgment" if the question involves what the umpire saw (balls and strikes, safe/out), "rule" if a written rule decides it, "mixed" if both, "coaching" if no call or rule is involved (skills, confidence, effort).
+Reply with ONLY: {"lesson_ids": ["L001"], "situation_ids": [], "story_id": null, "insight_ids": [], "drill_ids": [], "focus": "...", "call_type_hint": "judgment"|"coaching"|"rule"|"mixed"}`;
 
   const user = `Question (${request.role}): ${request.question}
 Sport/age: ${context.sport} / ${context.age} | Topic: ${context.topic}
