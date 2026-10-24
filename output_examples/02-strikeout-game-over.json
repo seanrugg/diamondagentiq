@@ -3,90 +3,90 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-02",
   "mode": "situation",
-  "trace_id": "130e48b4-81e2-4782-9f6d-ee555d372a0b",
-  "log_file": "logs/trace-130e48b4-81e2-4782-9f6d-ee555d372a0b.jsonl",
-  "execution_time_seconds": 0,
+  "trace_id": "6069ac60-e15b-432e-bc53-49ae641c0dc5",
+  "log_file": "logs/trace-6069ac60-e15b-432e-bc53-49ae641c0dc5.jsonl",
+  "execution_time_seconds": 92.4,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "That moment stings, and it's worth talking about. Whether those pitches were strikes was the umpire's call; what the player controls is readiness, where he stands, and his approach. This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "summary": "Striking out to end the game is tough, and it’s okay if he feels upset. The ball-strike calls were the umpire’s judgment, so whether those pitches were outside isn’t something to argue or protest. One at-bat is just information; what matters is his readiness, approach and effort, not the result. This guidance comes from draft coaching notes that haven’t been reviewed yet.",
       "sources": [
+        "coaching_lessons:L007",
         "coaching_lessons:L008",
-        "coaching_lessons:L003",
-        "coaching_insights:C001",
-        "coaching_insights:C005"
+        "coaching_insights:C005",
+        "coaching_insights:C006",
+        "coaching_insights:C008"
       ]
     },
-    "call_type": "mixed",
-    "call_type_rationale": "The umpire's judgment decides what happened; a written rule then sets what follows.",
+    "call_type": "judgment",
+    "call_type_rationale": "The strikeout depended on the umpire’s ball/strike calls, which are judgment calls and cannot be protested or reviewed; no written rule determines the outcome or answers the parent’s question about mental resilience.",
     "channel": {
-      "who": "You first, then the coach",
-      "how": "Let your child talk first on the ride home and keep it supportive; ask the coach for a few minutes later in the week if you want to talk technique."
+      "who": "You as the parent, with the head coach handling any technique later",
+      "how": "On the ride home or at a calm time later, let him speak first, say “I love watching you play,” praise his effort and approach, and avoid breaking down what went wrong unless he asks"
     },
-    "teachable_moment": "A game built on failure: In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition.",
+    "teachable_moment": "A strikeout is one at-bat of information, not a measure of his worth; he can learn from it and still be a great teammate and person.",
     "improvement_plan": {
       "individual": [
-        "Before the at-bat, set your feet so the end of the bat covers the far edge of the plate. If the pitcher keeps missing away, inch closer.",
-        "Pick one thing to work on (for example, plate coverage or the two-strike approach), practise it this week, and let the rest go."
+        "Practice the two-strike approach off a tee: from a tee on the outer half, use a slightly shorter two-strike swing and drive the ball the other way, five quality reps, helmet on, net set so missed balls stay clear of walkways."
       ],
       "team": [
-        "Soft toss: two-strike low pitches: Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate. Safety: Keep tosses out of the hitter’s feet. Helmets for hitter and tosser."
+        "Coach runs a short two-strike situational drill so hitters practice protecting the plate and resetting between pitches."
       ],
       "at_home": [
-        "Remind your child that even the best hitters fail most of the time. A tough day is part of the game, not a sign they don't belong."
+        "Let him lead the conversation after games; say “I love watching you play” and praise effort and approach rather than critiquing the strikeout."
       ]
     },
     "confidence": 0.6,
     "sources": [
       {
         "table": "coaching_lessons",
-        "id": "L008",
+        "id": "L007",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
         "verified": false,
         "rule_ref": null,
@@ -95,16 +95,7 @@
       },
       {
         "table": "coaching_lessons",
-        "id": "L003",
-        "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
-        "rule_ref": null,
-        "edition": null,
-        "synthetic": false
-      },
-      {
-        "table": "coaching_insights",
-        "id": "C001",
+        "id": "L008",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
         "verified": false,
         "rule_ref": null,
@@ -119,26 +110,44 @@
         "rule_ref": null,
         "edition": null,
         "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C006",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C008",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
       }
     ],
     "missing_facts": [],
-    "trace_id": "130e48b4-81e2-4782-9f6d-ee555d372a0b",
+    "trace_id": "6069ac60-e15b-432e-bc53-49ae641c0dc5",
     "computation": null,
     "draft_data": true,
     "intent": "development",
-    "focus": "plate coverage",
+    "focus": "Let him speak first on the ride home; say 'I love watching you play' and praise his effort.",
     "life_lesson": {
-      "text": "Failing often on the way to success is normal in anything worth doing; what matters is learning from each try.",
+      "text": "Your son’s value isn’t defined by a stat line or one game-ending out; even great hitters fail most of the time. Beyond baseball, what matters is how he responds to setbacks and keeps showing up with effort.",
       "lessons": [
+        {
+          "id": "L007",
+          "title": "Your value isn't your stat line",
+          "principle": "Your value is not determined by your failures or your successes."
+        },
         {
           "id": "L008",
           "title": "A game built on failure",
           "principle": "In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition."
-        },
-        {
-          "id": "L003",
-          "title": "Believe in your players before they believe in themselves",
-          "principle": "Have confidence in your players even when they don't show it, even when their track record says failure. Don't lose that confidence. Feed it to them and they will succeed."
         }
       ]
     },
@@ -150,18 +159,30 @@
     "memory": {
       "recalled": [
         {
-          "id": "mem-1",
-          "content": "A coach of a 12-year-old baseball player asked: My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?",
-          "relevance": 0.156,
+          "id": "mem-2",
+          "content": "Coach wants to know if the pitcher can pitch Sunday",
+          "relevance": 0.225,
           "confidence": 0.7
+        },
+        {
+          "id": "mem-1",
+          "content": "12U pitcher threw 68 pitches on Friday",
+          "relevance": 0.153,
+          "confidence": 0.7
+        },
+        {
+          "id": "mem-3",
+          "content": "2026-10-18: a coach asked about Little League pitch count rest eligibility for a 12U pitcher after throwing 68 pitches. Focus given: Develop other pitchers for Sunday and follow the 5-day rest rule. Lesson: Winning comes from a winning formula; Believe in your players before they believe in themselves. Pitcher eligible again 2026-10-22.",
+          "relevance": 0.136,
+          "confidence": 0.6
         }
       ],
-      "used": [
-        "mem-1"
-      ],
+      "used": [],
       "saved": [
-        "mem-3",
-        "mem-4"
+        "mem-4",
+        "mem-5",
+        "mem-6",
+        "mem-7"
       ]
     }
   }

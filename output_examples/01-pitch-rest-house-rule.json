@@ -3,65 +3,64 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-01",
   "mode": "situation",
-  "trace_id": "44530a3b-3671-4dda-99a0-3179a4f1fe19",
-  "log_file": "logs/trace-44530a3b-3671-4dda-99a0-3179a4f1fe19.jsonl",
-  "execution_time_seconds": 2.1,
+  "trace_id": "5f4ce4f3-2db4-4e6f-9f6f-fb665ee27ee7",
+  "log_file": "logs/trace-5f4ce4f3-2db4-4e6f-9f6f-fb665ee27ee7.jsonl",
+  "execution_time_seconds": 91.6,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Not on Sunday, October 18, 2026: the pitcher is not eligible yet. With 5 day(s) of rest, the earliest eligible date is Thursday, October 22, 2026. The event's house rule is stricter than the league chart, so it governs at this event. This is based on draft rule data that hasn't been verified yet. This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "summary": "She cannot pitch on Sunday, October 18. She threw 68 pitches on Friday, October 16, which is within the 12U daily limit of 85, but requires 4 calendar days of rest under Little League rules. The Fall Classic 12U house rule adds one extra day for any outing of 21 or more pitches, so she needs 5 total days and is first eligible Thursday, October 22; this rule answer is based on draft rule data that hasn't been verified yet.",
       "sources": [
-        "rules_facts:F001",
-        "rules_facts:F002",
         "rules_facts:F003",
-        "rules_facts:F004",
-        "house_rules:64a10585-16d2-494b-88ac-f7c6f9670413",
+        "rules_facts:F006",
+        "rules_facts:F007",
+        "house_rules:45912bfd-7bc4-46bc-a728-b04bc4d4070e",
         "pitch_rest_rules:LL-PITCH: age 11-12, 66-85 pitches",
         "coaching_lessons:L004",
         "coaching_lessons:L003",
@@ -71,41 +70,29 @@
     "call_type": "rule",
     "call_type_rationale": "This follows from written pitch-count and rest rules applied to known facts (pitches thrown and dates); no umpire judgment is involved.",
     "channel": {
-      "who": "Your players, then the tournament director if a rule is unclear",
-      "how": "Talk to the team at the next practice; take any rule question to the director calmly between innings, never a judgment call."
+      "who": "head coach",
+      "how": "talk calmly before the game or between innings to confirm the pitching plan and rest tracking"
     },
-    "teachable_moment": "Winning comes from a winning formula: Winning is fun and feels great, but it doesn't happen without a winning formula: healthy arms, many players who can contribute, and everyone playing their part. Don't put the scoreboard above developing players.",
+    "teachable_moment": "Use her required rest day to let another pitcher build confidence and show the team that following the rules protects every arm.",
     "improvement_plan": {
       "individual": [
-        "Track pitches every outing and plan the rotation before a tournament weekend."
+        "Mark her rest days on a calendar and do a light recovery circuit with band work and short catch, no max-effort throws",
+        "Follow Pitch Smart age-12 arm-care habits and get plenty of sleep and hydration",
+        "Track every pitch so she knows exactly when she is eligible again"
       ],
       "team": [
-        "Between-outing recovery circuit: Light movement, band work, and a short catch progression the day after a high-pitch outing. Stop at any sharp elbow or shoulder pain and check rest rules before the next live inning. Safety: This is recovery, not a bullpen. No max-effort throws. Pair with the pitcher’s remaining rest days."
+        "Give another pitcher reps in lower-pressure innings on Sunday",
+        "Build a rotation so more players can contribute and stay fresh",
+        "Treat rest days as part of the game plan, not as punishment"
       ],
       "at_home": [
-        "Protect arms and build depth: give more pitchers reps in lower-pressure innings so they're ready when you need them. Rest your best arm when the rules or their body say so."
+        "Play catch at short distances with smooth mechanics, not max effort",
+        "Keep throwing light and fun until she is eligible again on Thursday",
+        "Rest her arm and avoid catching on non-pitching days"
       ]
     },
     "confidence": 0.6,
     "sources": [
-      {
-        "table": "rules_facts",
-        "id": "F001",
-        "source_url": "https://www.littleleague.org/playing-rules/pitch-count/",
-        "verified": false,
-        "rule_ref": "Regulation VI(c)",
-        "edition": "page modified 2026-02-11",
-        "synthetic": false
-      },
-      {
-        "table": "rules_facts",
-        "id": "F002",
-        "source_url": "https://www.littleleague.org/playing-rules/pitch-count/",
-        "verified": false,
-        "rule_ref": "Regulation VI(c)",
-        "edition": "page modified 2026-02-11",
-        "synthetic": false
-      },
       {
         "table": "rules_facts",
         "id": "F003",
@@ -117,16 +104,25 @@
       },
       {
         "table": "rules_facts",
-        "id": "F004",
+        "id": "F006",
         "source_url": "https://www.littleleague.org/playing-rules/pitch-count/",
         "verified": false,
-        "rule_ref": "Regulation VI(c)",
+        "rule_ref": "Regulation VI, Note 1",
+        "edition": "page modified 2026-02-11",
+        "synthetic": false
+      },
+      {
+        "table": "rules_facts",
+        "id": "F007",
+        "source_url": "https://www.littleleague.org/playing-rules/pitch-count/",
+        "verified": false,
+        "rule_ref": "Regulation VI, Note",
         "edition": "page modified 2026-02-11",
         "synthetic": false
       },
       {
         "table": "house_rules",
-        "id": "64a10585-16d2-494b-88ac-f7c6f9670413",
+        "id": "45912bfd-7bc4-46bc-a728-b04bc4d4070e",
         "source_url": "synthetic://fall-classic-12u/house-rules.txt",
         "verified": false,
         "rule_ref": "Fall Classic 12U, Pitching rest",
@@ -171,7 +167,7 @@
       }
     ],
     "missing_facts": [],
-    "trace_id": "44530a3b-3671-4dda-99a0-3179a4f1fe19",
+    "trace_id": "5f4ce4f3-2db4-4e6f-9f6f-fb665ee27ee7",
     "computation": {
       "pitches": 68,
       "age": 12,
@@ -181,15 +177,15 @@
       "rest_days": 5,
       "governing": "house_rule",
       "conflict": true,
-      "house_rule_id": "64a10585-16d2-494b-88ac-f7c6f9670413",
+      "house_rule_id": "45912bfd-7bc4-46bc-a728-b04bc4d4070e",
       "earliest_eligible_date": "2026-10-22",
       "eligible_on_game_date": false
     },
     "draft_data": true,
     "intent": "ruling",
-    "focus": "pitch workload",
+    "focus": "Develop other pitchers for Sunday and follow the 5-day rest rule",
     "life_lesson": {
-      "text": "Long-term success comes from building people and habits, not from chasing one result at any cost.",
+      "text": "Protecting arms and giving other pitchers reps shows that lasting success comes from healthy habits and teamwork, not from winning one game at any cost. Players grow when a coach shows confidence in them, at school, at work and at home. This guidance comes from draft coaching notes that haven't been reviewed yet.",
       "lessons": [
         {
           "id": "L004",
@@ -213,7 +209,8 @@
       "used": [],
       "saved": [
         "mem-1",
-        "mem-2"
+        "mem-2",
+        "mem-3"
       ]
     }
   }

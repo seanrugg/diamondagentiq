@@ -3,55 +3,55 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-05",
   "mode": "review",
-  "trace_id": "c80c4fc1-73e6-4c99-961c-18b26d9ee694",
-  "log_file": "logs/trace-c80c4fc1-73e6-4c99-961c-18b26d9ee694.jsonl",
-  "execution_time_seconds": 0,
+  "trace_id": "2b98b8b1-d687-4fdf-84a6-df0cc6021332",
+  "log_file": "logs/trace-2b98b8b1-d687-4fdf-84a6-df0cc6021332.jsonl",
+  "execution_time_seconds": 279.8,
   "status": "success",
   "output": {
     "game": {
@@ -292,25 +292,24 @@
         "note": null
       }
     ],
-    "headline": "A close game and a clear next step for practice.",
+    "headline": "Demo Hawks fall 4-3; focus on two-strike approach, plate coverage, and pitcher recovery",
     "what_decided_it": [
-      "The other team's big inning (inning 4: 2).",
-      "9 strikeouts in 26 plate appearances."
+      "Riverside's 2-run inning 4 was their only big inning; Demo Hawks struck out 9 of 26 plate appearances (35%) and committed 2 errors."
     ],
     "strengths": [
-      "Our pitchers walked only 3."
+      "Pitchers recorded 7 strikeouts while allowing only 3 walks; team on-base rate was 35% with 6 hits and 3 walks."
     ],
     "priorities": [
       {
-        "title": "Two-strike approach",
-        "why": "We struck out in 9 of 26 plate appearances (35%).",
+        "title": "Protect the plate with two strikes",
+        "why": "Team struck out 35% of plate appearances (9 of 26), and the game ended with consecutive strikeouts.",
         "drills": [
           {
-            "id": "3027dbb8-adb2-41a8-b878-57b2282ac9af",
-            "title": "Soft toss: two-strike low pitches",
-            "description": "Short-hop or low tosses at the knees. Two-strike goal is contact through the bottom of the zone, not a lift. Alternate sides of the plate.",
+            "id": "f2aaf2f0-c41e-4870-bf1c-4626cf0b7b35",
+            "title": "Soft toss: two-strike outside corner",
+            "description": "Partner kneels off to the side and tosses to the outer half. Hitter works a two-strike approach: later start, compact finish, ball to the opposite field.",
             "setting": "team",
-            "safety_notes": "Keep tosses out of the hitter’s feet. Helmets for hitter and tosser."
+            "safety_notes": "Tosser stays outside the swing arc and wears a helmet. Stop the round if tosses drift toward the hitter’s hands."
           }
         ],
         "insights": [
@@ -319,7 +318,22 @@
             "insight": "With two strikes, protect the zone: widen what you'll swing at, shorten the swing, choke up slightly, and try to put the ball in play or foul off tough pitches.",
             "source_url": "https://github.com/seanrugg/diamondagentiq",
             "verified": false
-          },
+          }
+        ]
+      },
+      {
+        "title": "Crowd the plate to reach outside pitches",
+        "why": "Youth pitchers often miss away, and too many at-bats ended on outside pitches; moving closer brings those pitches into reach.",
+        "drills": [
+          {
+            "id": "b51feb3f-3392-4267-8763-3ab031bfab54",
+            "title": "Tee: two-strike outside corner",
+            "description": "From a tee on the outer half, hitters take a slightly shorter two-strike swing and drive the ball the other way. Five quality reps, then switch.",
+            "setting": "individual",
+            "safety_notes": "Set the net so missed balls cannot reach a walkway. Helmet on for every swing."
+          }
+        ],
+        "insights": [
           {
             "id": "C001",
             "insight": "Many youth pitchers miss away from the batter on purpose, because they don't want to hit anyone. Moving closer to the plate (crowding it) brings those outside pitches into reach.",
@@ -329,18 +343,25 @@
         ]
       },
       {
-        "title": "Clean up routine plays",
-        "why": "We made 2 errors.",
+        "title": "Respect pitcher rest and recovery",
+        "why": "J Ortiz #12 threw 71 pitches and is eligible 2026-10-22; M Chen #7 threw 34 pitches and is eligible 2026-10-19, so neither pitches before those dates.",
         "drills": [
           {
-            "id": "333a48e5-de3f-4a47-b4a4-b09cdd9897bb",
-            "title": "Low-zone framing holds",
-            "description": "From a kneeling or receiving stance, catcher tracks low strikes, beats the ball to the bottom of the zone, and holds a quiet glove for one beat. No stabbing.",
+            "id": "2e2d6e8b-f471-4bee-a32c-e33fe03361d3",
+            "title": "Between-outing recovery circuit",
+            "description": "Light movement, band work, and a short catch progression the day after a high-pitch outing. Stop at any sharp elbow or shoulder pain and check rest rules before the next live inning.",
             "setting": "individual",
-            "safety_notes": "Start with tennis balls if the catcher is new to framing. Do not mix live bats in this station."
+            "safety_notes": "This is recovery, not a bullpen. No max-effort throws. Pair with the pitcher’s remaining rest days."
           }
         ],
-        "insights": []
+        "insights": [
+          {
+            "id": "C014",
+            "insight": "Follow pitch counts and rest days, don't pitch on three days in a row, avoid catching on non-pitching days, and take time off from throwing each year.",
+            "source_url": "https://www.mlb.com/pitch-smart/pitching-guidelines/ages-9-12",
+            "verified": false
+          }
+        ]
       }
     ],
     "lesson": {
@@ -349,9 +370,10 @@
       "principle": "In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition.",
       "life_lesson": "Failing often on the way to success is normal in anything worth doing; what matters is learning from each try."
     },
-    "team_talk": "We lost that one as a team, and we'll get better as a team. Nobody here is defined by one game.",
+    "team_talk": "We competed hard and gave ourselves a chance until the final out. One inning or one at-bat does not define this team—we win and lose together, and every player matters. Let's keep believing in each other and get back to work this week.",
     "at_home": [
-      "Ten dry swings with a two-strike, choked-up grip."
+      "Let your player talk first on the ride home and say, 'I love watching you play.'",
+      "Praise effort and approach, not the scoreboard, and leave technique to the coach at a calm, agreed time."
     ],
     "sources": [
       {
@@ -371,21 +393,52 @@
         "id": "C001",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
         "verified": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C014",
+        "source_url": "https://www.mlb.com/pitch-smart/pitching-guidelines/ages-9-12",
+        "verified": false
       }
     ],
-    "confidence": 0.7,
+    "confidence": 0.5,
     "review": {
-      "drafts": 1,
-      "passed": true,
-      "unresolved_issues": []
+      "drafts": 2,
+      "passed": false,
+      "unresolved_issues": [
+        "Remove 'the game ended with consecutive strikeouts' from the two-strike priority; that ending is not in the provided facts.",
+        "Remove 'too many at-bats ended on outside pitches' from the plate-coverage priority; pitch location is not in the provided facts."
+      ]
     },
     "synthetic_input": true,
-    "trace_id": "c80c4fc1-73e6-4c99-961c-18b26d9ee694",
+    "trace_id": "2b98b8b1-d687-4fdf-84a6-df0cc6021332",
     "memory": {
-      "recalled": [],
-      "used": [],
+      "recalled": [
+        {
+          "id": "mem-6",
+          "content": "The player is working on recovering from a game-ending strikeout.",
+          "relevance": 0.165,
+          "confidence": 0.75
+        },
+        {
+          "id": "mem-9",
+          "content": "One of the team's hitters has been hit by pitches multiple times this season.",
+          "relevance": 0.164,
+          "confidence": 0.7
+        },
+        {
+          "id": "mem-4",
+          "content": "The player struck out on three straight outside pitches to end the game.",
+          "relevance": 0.158,
+          "confidence": 0.7
+        }
+      ],
+      "used": [
+        "mem-4",
+        "mem-6"
+      ],
       "saved": [
-        "mem-8"
+        "mem-13"
       ]
     }
   }

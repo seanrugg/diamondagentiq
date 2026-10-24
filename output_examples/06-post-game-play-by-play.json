@@ -3,55 +3,55 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-06",
   "mode": "review",
-  "trace_id": "48833ab1-4141-4141-9ea7-73d360a69063",
-  "log_file": "logs/trace-48833ab1-4141-4141-9ea7-73d360a69063.jsonl",
-  "execution_time_seconds": 0,
+  "trace_id": "47ba25f0-bb54-4723-ac46-51e22c7156b6",
+  "log_file": "logs/trace-47ba25f0-bb54-4723-ac46-51e22c7156b6.jsonl",
+  "execution_time_seconds": 107,
   "status": "success",
   "output": {
     "game": {
@@ -163,18 +163,21 @@
       "passed_balls": 0
     },
     "pitcher_rest": [],
-    "headline": "A tough one, and a clear next step for practice.",
+    "headline": "Loss to Tallowmere: Build from process, not the scoreboard",
     "what_decided_it": [
-      "The other team's big inning (inning 1: 5; inning 3: 3; inning 5: 3).",
-      "7 strikeouts in 25 plate appearances."
+      "Tallowmere had big innings: 5 runs in inning 1, 3 runs in inning 3, and 3 runs in inning 5.",
+      "Wrenmoor committed 6 errors as a team.",
+      "We had 4 hits in 25 plate appearances with 7 strikeouts (28% of plate appearances), and our pitchers allowed 5 walks while recording 4 strikeouts."
     ],
     "strengths": [
-      "We kept competing to the last out."
+      "Team on-base rate of 44% with 5 walks and 4 hits in 25 plate appearances.",
+      "2 stolen bases on the basepaths.",
+      "0 passed balls and 52% strikes thrown by our pitchers."
     ],
     "priorities": [
       {
-        "title": "Two-strike approach",
-        "why": "3 of our 7 strikeouts were called third strikes: protect the zone with two strikes.",
+        "title": "Two-strike approach: protect the zone and put the ball in play",
+        "why": "11 plate appearances reached two strikes and 7 of 25 plate appearances ended in strikeouts, including 3 called third strikes.",
         "drills": [],
         "insights": [
           {
@@ -186,14 +189,21 @@
         ]
       },
       {
-        "title": "Clean up routine plays",
-        "why": "We made 6 errors.",
+        "title": "Defensive readiness and error reduction",
+        "why": "The team committed 6 errors in the game.",
         "drills": [],
-        "insights": []
+        "insights": [
+          {
+            "id": "C008",
+            "insight": "Focus on what you control: being ready, your approach, effort and how you respond. Hits and wins depend partly on luck; a good at-bat can still be an out.",
+            "source_url": "https://github.com/seanrugg/diamondagentiq",
+            "verified": false
+          }
+        ]
       },
       {
-        "title": "Throw strikes early in the count",
-        "why": "Our pitchers walked 5.",
+        "title": "Pitching efficiency: throw more first-pitch strikes and manage workload",
+        "why": "Pitchers allowed 5 walks, threw 52% strikes, and first-pitch strikes to 52% of batters across 103 pitches (22.1 per inning).",
         "drills": [],
         "insights": [
           {
@@ -211,9 +221,11 @@
       "principle": "In baseball, succeeding about 30% of the time at the plate can make a Hall of Fame career at the professional level. That's a 70% failure rate. You will not win every competition, and you will not lose every competition, but you will learn and grow through every competition.",
       "life_lesson": "Failing often on the way to success is normal in anything worth doing; what matters is learning from each try."
     },
-    "team_talk": "We lost that one as a team, and we'll get better as a team. Nobody here is defined by one game.",
+    "team_talk": "I’m proud of how you competed out there. Baseball is a game of failure, and every out and error is just information for the next time. Let’s keep believing in each other and get back to work.",
     "at_home": [
-      "Ten dry swings with a two-strike, choked-up grip."
+      "On the ride home, let the player talk first and say, “I love watching you play.”",
+      "Check bat weight: hold the bat by the handle with one arm straight out for 20–30 seconds; if the barrel drops, it may be too heavy.",
+      "Make sure the bat is legal for your league and fits your length and weight for control and bat speed."
     ],
     "sources": [
       {
@@ -230,6 +242,12 @@
       },
       {
         "table": "coaching_insights",
+        "id": "C008",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": false
+      },
+      {
+        "table": "coaching_insights",
         "id": "C014",
         "source_url": "https://www.mlb.com/pitch-smart/pitching-guidelines/ages-9-12",
         "verified": false
@@ -237,17 +255,17 @@
     ],
     "confidence": 0.7,
     "review": {
-      "drafts": 1,
+      "drafts": 2,
       "passed": true,
       "unresolved_issues": []
     },
     "synthetic_input": true,
-    "trace_id": "48833ab1-4141-4141-9ea7-73d360a69063",
+    "trace_id": "47ba25f0-bb54-4723-ac46-51e22c7156b6",
     "memory": {
       "recalled": [],
       "used": [],
       "saved": [
-        "mem-9"
+        "mem-14"
       ]
     }
   }
