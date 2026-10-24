@@ -223,7 +223,8 @@ function coaching(messages: Msg[]): SampleReply {
     if (/House rule makes it/.test(computed)) parts.push("The event's house rule is stricter than the league chart, so it governs at this event.");
   } else if (/^Situations \(strategy\):\n- /m.test(t)) {
     const sit = t.match(/^Situations \(strategy\):\n- (.+?)(?: \[draft\])?\. Offense: (.+?) Defense: (.+?)(?: Common mistakes: .*?)? \(Applies only/m);
-    if (sit) parts.push(`${sit[1]}. Offense: ${sit[2]} Defense: ${sit[3]} This applies only where your league uses the uncaught-third-strike rule.`);
+    // Point to the situation card rather than repeating it.
+    if (sit) parts.push(`${sit[1]}: the batter can run here, and both sides have a job. The situation card below has what the offense and defense should do, and what to watch for. This applies only where your league uses the uncaught-third-strike rule.`);
   } else if (/protest/i.test(question) && judgment) {
     parts.push("A strike call is the umpire's judgment, and judgment calls can't be protested: a protest is only for how a written rule was applied. Tell the coach that calmly and once, then get the game moving. If the coach believes a rule was misapplied, the league's protest procedure (in the sources) is the place for it, after the game.");
   } else if (callType === "coaching") {

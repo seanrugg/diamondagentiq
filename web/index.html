@@ -539,6 +539,45 @@ const firstSentence = (t) => {
 
 const card = (title, html, preview) => `<details class="card"><summary><span class="card-title">${esc(title)}</span><span class="card-preview">${esc(firstSentence(preview))}</span></summary>${html}</details>`;
 
+/**
+ * Each sentence appears once: going top to bottom (the main answer, then each
+ * card), drop any sentence already shown above. Text nodes are edited in place,
+ * so bold titles and links stay; items left empty are removed. Card titles,
+ * previews and tables are left alone.
+ */
+function dedupeSentences(root) {
+  const seen = new Set();
+  const norm = (x) => x.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+  const split = (t) => t.match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) ?? [];
+  const blocks = [root.querySelector(".verdict"), ...root.querySelectorAll("details.card")].filter(Boolean);
+  for (const block of blocks) {
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => n.parentElement.closest("summary, table, .meter") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    const added = [];
+    for (const node of nodes) {
+      const kept = split(node.nodeValue).filter((sentence) => {
+        // "Offense: First base is open." and "First base is open." are the same sentence.
+        const keys = [sentence, ...sentence.split(/:\s+/).slice(1)].map(norm).filter((k) => k.length >= 18);
+        if (keys.length === 0) return true; // short bits like titles or "Offense" stay
+        if (keys.some((k) => seen.has(k))) return false;
+        added.push(...keys);
+        return true;
+      });
+      node.nodeValue = kept.join("");
+    }
+    added.forEach((k) => seen.add(k));
+    block.querySelectorAll("li, dd, p").forEach((e) => {
+      if (e.textContent.trim() === "" || /^[^a-z0-9]*$/i.test(e.textContent)) {
+        if (e.tagName === "DD" && e.previousElementSibling?.tagName === "DT") e.previousElementSibling.remove();
+        e.remove();
+      }
+    });
+  }
+}
+
 function renderAnswer(a) {
   const stamp = { rule: "Rule", judgment: "Judgment", mixed: "Judgment + rule", coaching: "Coaching", pending: "Pending" }[a.call_type] ?? a.call_type;
   const parts = [];
@@ -582,6 +621,7 @@ function renderAnswer(a) {
     <p class="small">${whyPara}</p>`, why));
   const el = $("#answer");
   el.innerHTML = parts.join("");
+  dedupeSentences(el);
   el.hidden = false;
   $("#lineup-wrap").open = false;
 }
@@ -621,6 +661,7 @@ function renderReview(r) {
     <p class="small">${r.review.drafts} draft${r.review.drafts === 1 ? "" : "s"} reviewed${r.review.passed ? "" : "; the Critic still had concerns"}. Coaching notes are drafts until our coach reviews them. Trace ${esc(r.trace_id.slice(0, 8))}.</p>`, "Reviewed."));
   const el = $("#answer");
   el.innerHTML = parts.join("");
+  dedupeSentences(el);
   el.hidden = false;
   $("#lineup-wrap").open = false;
 }
