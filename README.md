@@ -6,12 +6,14 @@ Open Agent Hackathon 2026 · Track: **The Agent That Can Explain Why** · Team B
 
 Ask "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?" or "My son struck out to end the game. How do I help him?" and the agents:
 
-- work out whether it's the **umpire's judgment** or a **written rule** (and say so);
+- work out whether it's the **umpire's judgment**, a **written rule**, both, or **no call at all** (a skills or confidence question), and say so;
 - look up the rules that apply for that **sport, league, age and tournament** in Zetaris, and cite them;
 - let **code** do the math (pitch-count rest days, eligible dates, box-score stats), never the model;
 - check every draft before it goes out (code checks + a Critic agent), and send it back when it falls short;
 - end with a **teachable moment, a life lesson and an improvement plan**, from a coaching philosophy written by our team (a youth coach and a youth umpire);
-- **remember** the team across questions with the Meterless H-MEM engine.
+- **remember** the team across questions and games with the Meterless H-MEM engine.
+
+It answers each of its four users in their own terms: a parent gets "let your child talk first on the ride home", a coach gets practice plans, a player gets one thing to work on, and an umpire gets the ruling plus how to run the play (kill it loudly, crew conference, one calm explanation).
 
 A **post-game review** mode reads a box score or a play-by-play and acts like a member of the coaching staff: what decided the game, what went well, practice priorities with drills, and pitcher rest dates.
 
@@ -23,7 +25,7 @@ Every step is visible: a live "play by play" of the agent team on the page, a JS
 
 ## Quick start (no credentials): sample mode
 
-Runs the whole agent team from a fresh clone with an **empty `.env`**: the bundled rules and coaching data load into an in-process Postgres (PGlite), and model calls are answered by a labeled offline stand-in (`src/adapters/sampleModel.ts`) that builds each reply from the request in front of it. Orchestration, SQL, calculators, the critique loop and memory all run for real; answers are plainer than with Nemotron and are marked `sample_mode: true`.
+Runs the whole agent team from a fresh clone with an **empty `.env`** (no Zetaris, Nightshift or keys): the bundled rules and coaching data load into an in-process Postgres (PGlite), and model calls are answered by a labeled offline stand-in (`src/adapters/sampleModel.ts`) that builds each reply from the request in front of it. Orchestration, SQL, calculators, the critique loop and memory all run for real; answers are plainer than with Nemotron and are marked `sample_mode: true`.
 
 ```bash
 git clone https://github.com/seanrugg/diamondagentiq && cd diamondagentiq
@@ -86,8 +88,9 @@ Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST
 
 **Web page** (`npm start`): two tabs.
 
-- *Ask about a moment*: role (parent, coach, player, umpire), sport, league, age, optional tournament and team, and the question. Example buttons fill in real cases.
-- *Post-game review*: paste a box score or a play-by-play (or use the sample). The **play by play** panel fills in live as each agent works; the answer follows.
+- *Ask about a moment*: role (parent, coach, player, umpire), sport, league, age, optional tournament and team, and the question. Example buttons cover every role: a parent after a game-ending strikeout, a coach's pitch-count and dropped-third-strike questions, a scared hitter, a player asking for swing help or why a foul ball was fair, and an umpire sorting out a batted ball that hit a runner with the bases loaded.
+- The answer comes as a short verdict with a call-type stamp (Rule, Judgment, Judgment + rule, or Coaching), then expandable cards: who to talk to, the teachable moment, beyond the diamond, the game situation, the improvement plan (Player / Team / Home tabs), sources, memory and confidence. Each sentence appears once across the cards. "Show how the team worked it out" opens the agent timeline.
+- *Post-game review*: paste a box score or a play-by-play (or use a sample). The agent timeline fills in live while the team works, then folds under the answer. A play-by-play is counted entirely in code, and its rule moments (dropped third strikes, a balk, interference, courtesy runners, the run cap) come back as moments to teach.
 
 **API**
 
@@ -100,6 +103,9 @@ curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" \
 curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/05-post-game-review.json
 # The same review from a pasted play-by-play (counted in code; 14-18 summer league demo season)
 curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/06-post-game-play-by-play.json
+# An umpire's question, and a player's
+curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/07-umpire-batted-ball-hits-runner.json
+curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/08-player-foul-then-fair.json
 ```
 
 Returns `{run_id, status, mode, output | error, agents, trace_id, log_file, execution_time_seconds, sample_mode}`. Failures come back as a structured error naming the stage. `POST /run/stream` and `POST /review/stream` stream the same run as NDJSON (one line per agent step) for the page. `GET /healthz` reports models, sample mode and memory counts.
@@ -109,10 +115,10 @@ Returns `{run_id, status, mode, output | error, agents, trace_id, log_file, exec
 | Command | What it does |
 |---|---|
 | `npm run ask -- --role coach --sport baseball --sanction little_league --age 12 --event "Fall Classic 12U" --today 2026-10-18 "My 12U pitcher threw 68 pitches Friday. Can she pitch Sunday?"` | One question through the whole team (`--team`, `--no-memory`, `--save`) |
-| `npm run demo` | Every `input_examples/*.json` → `output_examples/` |
+| `npm run demo` | Every `input_examples/*.json` → `output_examples/`, with each run's trace in `output_examples/traces/` |
 | `npm run eval` | 11 test questions scored against checklists (not saved answers) |
 | `npm run memory` | What the team's H-MEM memory holds, with confidence and ledger counts |
-| `npm test` | 190 unit tests, no network |
+| `npm test` | 209 unit tests, no network |
 | `npm run test:hmem` | The vendored Meterless H-MEM reference tests |
 
 ## The agent team
@@ -124,7 +130,7 @@ flowchart LR
   M1 --> R[RulesAgent<br/>SQL via Zetaris] --> PR[[pitch-rest math<br/>in code]]
   M1 --> D[DevelopmentAgent<br/>lesson, situation, story, drills]
   PR --> D
-  D --> CT[CallTypeAgent<br/>judgment or rule]
+  D --> CT[CallTypeAgent<br/>judgment, rule or coaching]
   CT --> CO[CoachingAgent]
   CO --> CR{CriticAgent<br/>+ code checks}
   CR -- sent back --> CO
@@ -135,10 +141,10 @@ flowchart LR
 | Agent | Tier requested (Nightshift) | Job |
 |---|---|---|
 | ContextAgent | deep | Reads the question: sport, league, age, intent (ruling, development, equipment, general) |
-| MemoryAgent | fast (mining) + code | H-MEM recall before the team works; after, mines lasting facts from the question, saves the answer summary, and raises or lowers trust in memories the answer used, based on the Critic's verdict |
+| MemoryAgent | fast (mining) + code | H-MEM recall (per team) before the team works; after, mines lasting facts from the question, saves the answer summary, and raises or lowers trust in memories the answer used, based on the Critic's verdict. A post-game review recalls the team's earlier games |
 | RulesAgent | deep, with a read-only SQL tool | Queries `rules_facts` and `house_rules` through Zetaris (max 4 tool calls); may cite only rows its queries returned. Code then looks up the pitch-rest chart and computes rest days and the earliest eligible date, applying a stricter house rule |
 | DevelopmentAgent | fast | Picks from menus code fetched via Zetaris: the life lesson, game situation, coaching story, tips and drills. Ids not on the menu are dropped |
-| CallTypeAgent | fast (code decides pure rule cases) | Umpire's judgment, written rule, or both |
+| CallTypeAgent | fast (code decides pure rule cases) | Umpire's judgment, written rule, both, or coaching (no call involved) |
 | CoachingAgent | deep | Writes the answer, channel (who to talk to and how), teachable moment, life lesson and improvement plan |
 | CriticAgent | judge (falls back to fast) | Fails drafts that rule on judgment calls, blame anyone, give unsafe or age-inappropriate advice, or put winning above health. Code checks run first: computed date stated, draft data disclosed, no rule number that isn't cited, a life lesson present. Max 2 redrafts |
 | Play-by-play parser | code | Counts a pasted play-by-play (runs by inning, called third strikes, first-pitch takes, two-strike counts, steals, wild pitches, rule moments) and checks it against the line score. No model |
@@ -152,16 +158,18 @@ Bounded everywhere: max 4 tool calls per agent turn, max 2 critic retries, one b
 - **Judgment vs rule** is a first-class output, grounded in the `call_type` of every rules fact cited.
 - **Citations**: every rules fact has a `source_url`, edition and `verified` flag; answers list them, marked Reviewed or Draft. Rule numbers appear only as printed by the source, and the Critic removes any it can't match.
 - **Math in code**: rest days, eligible dates and box-score stats come from `src/calculators/`, and the timeline shows them as "calculated in code".
-- **Traces**: every agent step, handoff, critique, retry and Zetaris query is in `logs/trace-<run_id>.jsonl` (stdout too), with the model's reasoning and the Nightshift receipt; reasoning never reaches the user.
+- **Traces**: every agent step, handoff, critique, retry and Zetaris query is in `logs/trace-<run_id>.jsonl` (stdout too), with the model's reasoning and the Nightshift receipt; reasoning never reaches the user. The trace behind each committed example is in `output_examples/traces/`.
+- **Caught in the act**: in the committed live runs, the Critic sent the play-by-play review back for inventing a "16% batting average" that wasn't in the computed facts, and rejected both drafts of the box-score review (first a drill that wasn't on the menu, then a game ending the box score didn't show). The box-score review is saved as it ended: not passed, 50% confidence, with the open issue listed.
 
 ## The learning layer
 
 The app teaches from a philosophy and content written by our team (`src/agents/philosophy.ts`, `data/coaching/`, readable versions in [`docs/coaching/`](docs/coaching/README.md)):
 
 - **Lessons**: win as a team, lose as a team; everyone makes mistakes, forgive others and own yours; believe in your players before they believe in themselves; your value isn't your stat line; a game built on failure; today's opponents, tomorrow's teammates; and more.
-- **Situations**: dropped third strike with the bases loaded and two outs, runner on first and one out, runner on third and one out: what the offense and defense should do.
+- **Situations**: three dropped-third-strike cases (bases loaded and two outs, runner on first and one out, runner on third and one out); a fair batted ball that hits the runner with the bases loaded (one out, dead ball, forced runners move up); and a slow roller that rolls foul and back fair before first base (a fair ball). Each says what the offense and defense should do and what to watch for.
+- **Lessons for heated moments**: "Control the moment" (umpires kill the play loudly, get together and explain once; coaches and parents set the tone) and "Play until you hear 'foul'".
 - **Stories**: a real (anonymized) coaching moment, shown in the coach's words.
-- **Coaching tips**: plate coverage against pitchers who miss away, the youth "chins to shins" hit zone, two-strike approach, asking the umpire about the zone pregame, the car ride home.
+- **Coaching tips**: plate coverage against pitchers who miss away, the youth "chins to shins" hit zone, two-strike approach, asking the umpire about the zone pregame, the car ride home, run it out, and bat selection and care (reading a bat's drop, fitting the bat to the player today, care, softball certification).
 
 Every row is marked draft until our coach reviews it, and answers say so.
 
@@ -175,14 +183,14 @@ Every row is marked draft until our coach reviews it, and answers say so.
 
 **NVIDIA.** Every model call is answered by a Nemotron model through Nightshift: **Nemotron 3.5 Super VL 120B**, **Nemotron 3.5 Lightning 30B** and **Nemotron 3 Ultra 550B** race in Nightshift's Race row (with **Nemotron 3 Nano 30B** in Verify), and each trace line and timeline row names the model that answered, from the Nightshift receipt. Code was also generated with Claude Code running locally on Nemotron 3.5 Super via Ollama during the build.
 
-**Cursor.** The project scaffold and editing were done in Cursor; see the tooling note below.
+**Cursor.** The organizers dropped the Cursor requirement on day one (no Cursor credits were provided). The tools we used are listed in the tooling note below.
 
 **What's unique.** Nightshift isn't only a model endpoint here: each agent is its own Nightshift app stream and every step's receipt is on our timeline, so anyone can see which Nemotron model answered each step. H-MEM's trust ledger is driven by our Critic, so memories that lead to good answers are trusted more next time. And Zetaris holds a learning curriculum, not just rules: the agents pull lessons and game situations through it the same way they pull rules.
 
 ## Data, licensing and privacy
 
-- **Rules**: `data/rules/*.csv` (143 sources, 276 facts, 51 pitch-rest tiers) are our own one-line summaries of public pages from Little League, USA Baseball / Pitch Smart, USSSA, USA Softball, NSA, Babe Ruth / Cal Ripken, NFHS and WBSC, each with `source_url`, edition and `verified=false` until checked. No rulebook text is copied; licensed rulebooks stay outside the repo. Known gaps are listed in `data/rules/gaps.csv`.
-- **Coaching content**: written by our team (source `DIQ-SME`) or summarized from cited public guidance (USA Baseball's American Development Model, Little League parent resources, Pitch Smart).
+- **Rules**: `data/rules/*.csv` (150 sources, 276 facts, 51 pitch-rest tiers) are our own one-line summaries of public pages from Little League, USA Baseball / Pitch Smart, USSSA, USA Softball, NSA, Babe Ruth / Cal Ripken, NFHS and WBSC, each with `source_url`, edition and `verified=false` until checked. No rulebook text is copied; licensed rulebooks stay outside the repo. Known gaps are listed in `data/rules/gaps.csv`. Pitch Smart (MLB and USA Baseball) is a pitch-count guideline, not a sanctioning body; the page offers it as "Rec league (Pitch Smart)" for leagues that follow it.
+- **Coaching content**: 19 tips, 11 lessons, 5 situations and 1 story, written by our team (source `DIQ-SME`) or summarized from cited public guidance (USA Baseball's American Development Model, Little League parent resources, Pitch Smart). Bat selection and care tips also draw on JustBats' bat guides, cited as a retailer guide; whether a bat is legal always comes from the league or governing body.
 - **Synthetic data only**: tournament house rules, drills, the sample box score ("Demo Hawks" vs "Riverside Comets"), the 10-game demo season in `data/samples/season/` and all players are made up and labeled synthetic. Real GameChanger exports, rosters and minors' data never go in the repo; team memory stays in a local, gitignored folder.
 - No secrets in code, logs or traces; `.env` is gitignored and `.env.example` has placeholders only.
 
@@ -195,10 +203,11 @@ Every row is marked draft until our coach reviews it, and answers say so.
 ## Known limitations
 
 - **Draft data.** Rules and coaching content are unverified drafts; confidence is capped and answers say so.
-- **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score; screenshots work only where Nightshift can serve vision. Asking for a specific model by name isn't reliably honored either: Nightshift races the Race row, so the receipts, not our settings, say which Nemotron answered each step.
+- **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score or play-by-play; screenshots work only where Nightshift can serve vision (sample mode hides the screenshot button). Asking for a specific model by name isn't reliably honored either: Nightshift races the Race row, so the receipts, not our settings, say which Nemotron answered each step.
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
-- **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap.
-- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording.
+- **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap. The batted-ball-hits-runner and fair/foul situations are in our own words because the rulebook text for those rules isn't loaded yet (also listed in `gaps.csv`).
+- **Memory ranking.** H-MEM's reference scorer separates related and unrelated questions poorly, so recall offers a few of the team's memories at a low bar and the CoachingAgent lists the ones it actually used (`memory_used`); the answer shows both.
+- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. The example outputs for 07 and 08 are sample-mode runs until our next live run.
 
 ## Tooling disclosure and pre-existing work
 
@@ -212,12 +221,14 @@ src/
                  sampleData.ts + sampleModel.ts (SAMPLE_MODE)
   agents/        context, memory, rules, development, callType, coaching, critic,
                  scorebook, gameReview, philosophy
-  calculators/   pitchRest.ts, dates.ts, boxScore.ts (all the math)
+  calculators/   pitchRest.ts, dates.ts, boxScore.ts, playByPlay.ts (all the math)
   orchestrator.ts, gameReview.ts, runApi.ts, server.ts
   scripts/       ask, demo, eval, memory, start, check:* , rules:build/load
-data/            schema.sql, seed.sql (synthetic), rules/*.csv, coaching/*.csv, samples/
+data/            schema.sql, seed.sql (synthetic), rules/*.csv, coaching/*.csv,
+                 samples/ (box score, 10-game synthetic season), migrations/
 docs/coaching/   readable lessons, situations, stories, tips (generated)
-input_examples/  5 requests; output_examples/ written by npm run demo
+input_examples/  8 requests (every role, both review inputs);
+output_examples/ written by npm run demo, with traces/
 web/index.html   the page
 vendor/hmem/     Meterless H-MEM reference (pinned, unmodified)
 ```
