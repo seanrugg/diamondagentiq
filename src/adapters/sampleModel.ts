@@ -34,7 +34,7 @@ const json = (v: unknown): SampleReply => ({ content: JSON.stringify(v), toolCal
 // Balls and strikes, not "hit the ball".
 const JUDGMENT_WORDS = /\b(strikes?|strike-three|strike three|balls and strikes|ball four|outside|inside|called|safe|umpire|obstruct|interfer|missed a call)\b/i;
 // "Pitches" alone isn't a rule question ("hit by pitches"); a count or rest is.
-const RULE_WORDS = /\b(\d+\s*pitches|pitch count|eligible|rest days?|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule)\b/i;
+const RULE_WORDS = /\b(\d+\s*pitches|pitch count|eligible|rest days?|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule|dead ball|how many outs|infield fly)\b/i;
 
 // ---------- ContextAgent ----------
 function context(messages: Msg[]): SampleReply {
@@ -43,7 +43,7 @@ function context(messages: Msg[]): SampleReply {
   const q = question.toLowerCase();
   const intent = /\b(bat|glove|helmet|cleats|equipment)\b/.test(q) && !/pitch/.test(q)
     ? "equipment"
-    : /(\d+\s*pitches|\bpitch count|\beligible|\brest days|\bdropped third|\buncaught|\bprotest|\bbalk|\binfield fly|\bhouse rule|\ballowed to pitch|\bcan (he|she) pitch)/.test(q)
+    : /(\d+\s*pitches|\bpitch count|\beligible|\brest days|\bdropped third|\buncaught|\bprotest|\bbalk|\binfield fly|\bhouse rule|\ballowed to pitch|\bcan (he|she) pitch|\bhow many outs|\bhits? the runner|\bdead ball)/.test(q)
       ? "ruling"
       : /\b(struck out|strikeout|scared|confidence|error|lost|failure|help (him|her|me)|help with|blaming|handshake|0 for|worst|missed a call|yelled|swing|hit the ball|froze|nervous|throw|catch|field|practice)\b/.test(q)
         ? "development"
@@ -70,7 +70,7 @@ function rulesTopics(q: string): string[] {
   if (/pitch/.test(q)) return ["pitch_count", "pitch_rest", "workload", "pitching"];
   if (/dropped third|uncaught/.test(q)) return ["uncaught_third_strike"];
   if (/protest|appeal/.test(q)) return ["protest", "appeal", "channel"];
-  if (/obstruct|interfer/.test(q)) return ["obstruction", "judgment"];
+  if (/obstruct|interfer|hits? the runner|runner .*hit by/.test(q)) return ["obstruction", "judgment"];
   if (/balk/.test(q)) return ["balk", "judgment"];
   return ["judgment", "channel", "conduct"];
 }
@@ -146,6 +146,7 @@ const EXPAND: [RegExp, string][] = [
   [/handshake|rival|opponent/, "sportsmanship opponents respect handshake"],
   [/\d+\s*pitches|pitch count|\brest\b|\barm\b/, "pitch workload arm care depth pitching winning"],
   [/dropped third|uncaught/, "dropped third strike situation runner"],
+  [/hits? the runner|hit by the ball|dead ball|how many outs/, "runner batted ball dead umpire control moment crew conflict yelling coaches"],
   [/umpire|call/, "umpire mistake human respect"],
   [/worst|0 for|value/, "value failure stat line"],
   [/swing|hit the ball|hit it|far|power/, "bat weight check heavy control size tee balance"],
@@ -165,8 +166,10 @@ function development(messages: Msg[]): SampleReply {
   const situations = rank(menu(t, "Situations (strategy):", "SIT\\d+"), q)
     .filter((s) => s.score >= 3 && (!base || s.text.toLowerCase().includes(base)));
   const stories = rank(menu(t, "Stories (real coaching moments):", "ST\\d+"), q).filter((s) => s.score >= 3);
-  const insights = rank(menu(t, "Coaching insights:", "C\\d+"), q).filter((i, n) => i.score >= (n === 0 ? 1 : 2));
-  const drills = rank(menu(t, "Drills:", "[0-9a-f-]{8,}"), q).filter((d) => d.score > 0);
+  // Player tips and drills don't fit an umpire's question; the lesson's umpire angle does.
+  const forUmpire = /^Question \(umpire\)/m.test(t);
+  const insights = forUmpire ? [] : rank(menu(t, "Coaching insights:", "C\\d+"), q).filter((i, n) => i.score >= (n === 0 ? 1 : 2));
+  const drills = forUmpire ? [] : rank(menu(t, "Drills:", "[0-9a-f-]{8,}"), q).filter((d) => d.score > 0);
   const picks = lessons.slice(0, lessons[1] && lessons[1].score > 0 ? 2 : 1);
   const topic = insights[0]?.text.match(/^\[([a-z_]+);/)?.[1]?.replace(/_/g, " ");
   const focus = topic ?? picks[0]?.text.match(/"(.*?)"/)?.[1] ?? "one small step this week";
@@ -223,8 +226,9 @@ function coaching(messages: Msg[]): SampleReply {
     if (/House rule makes it/.test(computed)) parts.push("The event's house rule is stricter than the league chart, so it governs at this event.");
   } else if (/^Situations \(strategy\):\n- /m.test(t)) {
     const sit = t.match(/^Situations \(strategy\):\n- (.+?)(?: \[draft\])?\. Offense: (.+?) Defense: (.+?)(?: Common mistakes: .*?)? \(Applies only/m);
-    // Point to the situation card rather than repeating it.
-    if (sit) parts.push(`${sit[1]}: the batter can run here, and both sides have a job. The situation card below has what the offense and defense should do, and what to watch for. This applies only where your league uses the uncaught-third-strike rule.`);
+    // Lead with the first two sentences of the situation; the card below holds the rest.
+    const lead = (sit?.[2] ?? "").match(/[^.!?]+[.!?]+/g)?.slice(0, 2).join(" ").trim();
+    if (sit) parts.push(`${sit[1]}. ${lead ?? ""} The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).`.replace(/\s+/g, " "));
   } else if (/protest/i.test(question) && judgment) {
     parts.push("A strike call is the umpire's judgment, and judgment calls can't be protested: a protest is only for how a written rule was applied. Tell the coach that calmly and once, then get the game moving. If the coach believes a rule was misapplied, the league's protest procedure (in the sources) is the place for it, after the game.");
   } else if (callType === "coaching") {
@@ -254,11 +258,17 @@ function coaching(messages: Msg[]): SampleReply {
     what_happened: parts.join(" "),
     channel,
     teachable_moment: lessonLine ? `${lessonLine[1]}: ${lessonLine[2]}` : "Every game is a chance to learn something for the next one.",
-    improvement_plan: {
-      individual: tryLines.slice(0, 2).length ? tryLines.slice(0, 2) : ["Pick one small thing to practise this week."],
-      team: drillLines.slice(0, 1),
-      at_home: lessonLine?.[4] ? [lessonLine[4]] : [],
-    },
+    improvement_plan: role === "umpire"
+      ? {
+          individual: lessonLine?.[4] ? [lessonLine[4]] : ["Talk the play through with your partner after the game."],
+          team: ["Before the next game, walk through dead-ball mechanics with your partner: who calls it, the signal, and where you meet."],
+          at_home: [],
+        }
+      : {
+          individual: tryLines.slice(0, 2).length ? tryLines.slice(0, 2) : ["Pick one small thing to practise this week."],
+          team: drillLines.slice(0, 1),
+          at_home: lessonLine?.[4] ? [lessonLine[4]] : [],
+        },
     life_lesson: lessonLine ? `${lessonLine[3]}` : "",
     memory_used: memory?.[1] ? [memory[1]] : [],
   });

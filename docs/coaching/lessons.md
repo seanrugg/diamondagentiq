@@ -124,3 +124,17 @@ Your opponents today may be your teammates in the future. Treat them that way, e
 - **Umpire:** Treat both teams the same; respect for everyone on the field starts with the crew.
 
 Moments: `sportsmanship`, `opponents`, `respect`, `handshake`, `loss`, `win`. Draft, not yet reviewed.
+
+<a id="l010"></a>
+## L010: Control the moment
+
+When a play gets loud and confusing, the adults set the temperature. Umpires stop the play, get together and explain calmly; coaches lower their voices and wait for the explanation.
+
+**Beyond the diamond:** In any heated moment, slowing down and getting the facts straight before reacting keeps a mistake from turning into a fight.
+
+- **Player:** When the umpire calls time, stop and listen. Don't keep running or tagging because someone is yelling.
+- **Coach:** Yelling directions during a confusing play makes it harder for everyone, including your players. Wait for the umpires, then ask calmly what rule applies.
+- **Parent:** Stay in the stands and stay calm. The players take their cue from the adults.
+- **Umpire:** Kill it loudly: 'Time! Dead ball!' with both arms up. Get your partner, agree on what happened and where everyone goes, then explain once to each coach. Don't let the volume change the call: a misapplied rule can be corrected, and a judgment call stands.
+
+Moments: `umpire`, `conflict`, `de_escalation`, `dead_ball`, `interference`, `coaches`, `yelling`, `crew`. Draft, not yet reviewed.

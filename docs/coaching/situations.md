@@ -63,3 +63,20 @@ bases: third · outs: 1 · count: two strikes
 - F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
 
 Lessons: [Big moments aren't scripted](lessons.md#l005), [Believe in your players before they believe in themselves](lessons.md#l003). Draft, not yet reviewed.
+
+<a id="sit004"></a>
+## SIT004: Runner hit by a fair batted ball, bases loaded, no outs
+
+bases: loaded · outs: 0
+
+**Offense:** One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. Nothing after the dead ball counts. The batter is awarded first base and only forced runners move up one base, so with the bases loaded: the batter goes to first, the runner from first to second, the runner from second to third, and no run scores. Coaches: when you hear 'dead ball', stop calling for runners to go and let the umpires place them.
+
+**Defense:** Once the umpire calls dead ball, tags and throws don't count, however good they were: hold the ball and let the umpires place the runners. The key judgment is whether a fielder touched the ball before it hit the runner. If she did, the ball stays live and the runner isn't out unless she interfered on purpose, so the tags that followed would count.
+
+**Common mistakes:** The umpire calls the runner out but doesn't kill the play loudly, so everyone keeps playing; a second umpire calls more outs on a ball that was already dead; coaches yell players into extra running and tagging; the crew changes a call because of the noise instead of getting together. Fix: 'Time! Dead ball!' with both arms up, a quick crew conference, then one calm explanation to each coach.
+
+**Where the rule applies:**
+- F095 (usa_softball): In USA Softball, the call on whether interference or obstruction happened is the umpire's judgment and can't be protested.
+- F206 (nsa): In NSA fast pitch, the call on whether interference happened is the umpire's judgment and can't be protested.
+
+Lessons: [Control the moment](lessons.md#l010), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
