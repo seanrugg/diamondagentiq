@@ -148,7 +148,7 @@ Draft, not yet reviewed.
 
 Ages any-any · for player · both · source `DIQ-SME`
 
-Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!'. Fair or foul is the umpire's call, not the batter's.
+Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!' Fair or foul is the umpire's call, not the batter's.
 
 **Why:** A ground ball near the line can roll foul and come back fair. A batter who stops to judge it gives away an out that running would have saved.
 
