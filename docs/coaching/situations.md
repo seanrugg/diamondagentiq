@@ -80,3 +80,22 @@ bases: loaded · outs: 0
 - F206 (nsa): In NSA fast pitch, the call on whether interference happened is the umpire's judgment and can't be protested.
 
 Lessons: [Control the moment](lessons.md#l010), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+
+<a id="sit005"></a>
+## SIT005: Slow roller rolls foul, then back fair before first base
+
+bases: none
+
+**Offense:** It's a fair ball, so the batter is a runner and the out at first stands. A ground ball that hasn't reached first or third base isn't foul just because it crossed the line: it's judged where it stops or where a fielder first touches it. This one rolled foul, came back, and was picked up in fair territory, so it was fair and in play. Umpires usually signal a fair ball by pointing toward fair territory without saying anything; only foul is called out loud. Batter: run on every ball you hit until you hear 'Foul!' or 'Time!'
+
+**Defense:** Pick the ball up and make the play: step on first or throw there. A slow roller near the line that's still rolling can be left alone; if it stops or you touch it in foul territory before it reaches the base, it's foul. Fielders, like batters, play until the umpire stops it.
+
+**Common mistakes:** The batter stands at the plate because the ball crossed the line once; the fielder picks it up and freezes; the umpire's fair signal is late or small, so nobody sees it; coaches on both sides shout directions and the players try to learn the rule in the middle of the play. Fix: the plate umpire points fair clearly the moment the ball is touched in fair territory, and coaches teach 'run until you hear foul' at practice, not during the play.
+
+**Where the rule applies:**
+- F015 (little_league, regular season): Calls that rest on the umpire's judgment, such as balls and strikes or safe and out, are not protestable in Little League.
+- F087 (usa_softball): In USA Softball, the call on fair or foul is the umpire's judgment and can't be protested.
+- F199 (nsa): In NSA fast pitch, the call on fair or foul is the umpire's judgment and can't be protested.
+- F032 (usssa): In USSSA fastpitch, judgment calls such as fair or foul, ball or strike, and safe or out are final. A coach may ask for the correct ruling only when a call seems to conflict with a rule.
+
+Lessons: [Play until you hear 'foul'](lessons.md#l011), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.

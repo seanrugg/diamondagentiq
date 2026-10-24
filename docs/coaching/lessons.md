@@ -138,3 +138,17 @@ When a play gets loud and confusing, the adults set the temperature. Umpires sto
 - **Umpire:** Kill it loudly: 'Time! Dead ball!' with both arms up. Get your partner, agree on what happened and where everyone goes, then explain once to each coach. Don't let the volume change the call: a misapplied rule can be corrected, and a judgment call stands.
 
 Moments: `umpire`, `conflict`, `de_escalation`, `dead_ball`, `interference`, `coaches`, `yelling`, `crew`. Draft, not yet reviewed.
+
+<a id="l011"></a>
+## L011: Play until you hear 'foul'
+
+Every batted ball is live until the umpire says otherwise. Players don't decide fair or foul; the umpire does. So run hard and play the ball until you hear 'Foul!' or 'Time!'
+
+**Beyond the diamond:** Don't quit on something because you've already decided how it will turn out. Finish the job, and leave the call to the person whose call it is.
+
+- **Player:** Hit it, drop the bat and run, every time, until you hear 'Foul!'. Fielders: if the ball is in play, make the play.
+- **Coach:** Teach 'run until you hear foul' at practice with rollers that go foul and come back fair. During a play, one short word ('Run!') helps more than a dozen shouted directions.
+- **Parent:** If your player stood and watched, make it a learning moment on the ride home, not a criticism. 'Run until you hear foul' is a rule many players learn the hard way.
+- **Umpire:** Make the fair signal big and immediate: point toward fair territory as soon as the ball is touched or stops in fair territory. Call 'Foul!' loudly with both arms up. Clear signals stop the guessing and the yelling.
+
+Moments: `fair_foul`, `hustle`, `run`, `umpire_signal`, `ground_ball`, `batter`, `learning`. Draft, not yet reviewed.

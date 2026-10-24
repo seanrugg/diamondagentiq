@@ -142,6 +142,20 @@ Players improve with reps: up to age 12, aim for about three-quarters practice o
 
 Draft, not yet reviewed.
 
+## run it out
+
+### C015: Batter hits a ball near the line, or isn't sure it's fair
+
+Ages any-any · for player · both · source `DIQ-SME`
+
+Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!'. Fair or foul is the umpire's call, not the batter's.
+
+**Why:** A ground ball near the line can roll foul and come back fair. A batter who stops to judge it gives away an out that running would have saved.
+
+**Try this:** In practice, roll balls down the lines that go foul and come back fair. The batter runs every one; the fielder makes the play; a coach plays umpire and signals fair or calls foul.
+
+Draft, not yet reviewed.
+
 ## strike zone
 
 ### C002: Hitter takes close pitches for strikes

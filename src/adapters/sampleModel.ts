@@ -32,9 +32,9 @@ const overlap = (a: Set<string>, b: string) => [...words(b)].filter((w) => a.has
 const json = (v: unknown): SampleReply => ({ content: JSON.stringify(v), toolCalls: [] });
 
 // Balls and strikes, not "hit the ball".
-const JUDGMENT_WORDS = /\b(strikes?|strike-three|strike three|balls and strikes|ball four|outside|inside|called|safe|umpire|obstruct|interfer|missed a call)\b/i;
+const JUDGMENT_WORDS = /\b(strikes?|strike-three|strike three|balls and strikes|ball four|outside|inside|called|safe|umpire|obstruct|interfer|missed a call|fair|foul)\b/i;
 // "Pitches" alone isn't a rule question ("hit by pitches"); a count or rest is.
-const RULE_WORDS = /\b(\d+\s*pitches|pitch count|eligible|rest days?|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule|dead ball|how many outs|infield fly)\b/i;
+const RULE_WORDS = /\b(\d+\s*pitches|pitch count|eligible|rest days?|innings|protest|balk|dropped third|uncaught|courtesy runner|legal|rule|dead ball|how many outs|infield fly|foul ball|went foul|rolled foul|back fair)\b/i;
 
 // ---------- ContextAgent ----------
 function context(messages: Msg[]): SampleReply {
@@ -43,7 +43,7 @@ function context(messages: Msg[]): SampleReply {
   const q = question.toLowerCase();
   const intent = /\b(bat|glove|helmet|cleats|equipment)\b/.test(q) && !/pitch/.test(q)
     ? "equipment"
-    : /(\d+\s*pitches|\bpitch count|\beligible|\brest days|\bdropped third|\buncaught|\bprotest|\bbalk|\binfield fly|\bhouse rule|\ballowed to pitch|\bcan (he|she) pitch|\bhow many outs|\bhits? the runner|\bdead ball)/.test(q)
+    : /(\d+\s*pitches|\bpitch count|\beligible|\brest days|\bdropped third|\buncaught|\bprotest|\bbalk|\binfield fly|\bhouse rule|\ballowed to pitch|\bcan (he|she) pitch|\bhow many outs|\bhits? the runner|\bdead ball|\bfoul ball|\bwent foul|\brolled foul|\bback fair)/.test(q)
       ? "ruling"
       : /\b(struck out|strikeout|scared|confidence|error|lost|failure|help (him|her|me)|help with|blaming|handshake|0 for|worst|missed a call|yelled|swing|hit the ball|froze|nervous|throw|catch|field|practice)\b/.test(q)
         ? "development"
@@ -72,6 +72,7 @@ function rulesTopics(q: string): string[] {
   if (/protest|appeal/.test(q)) return ["protest", "appeal", "channel"];
   if (/obstruct|interfer|hits? the runner|runner .*hit by/.test(q)) return ["obstruction", "judgment"];
   if (/balk/.test(q)) return ["balk", "judgment"];
+  if (/\bfoul\b|\bfair\b/.test(q)) return ["judgment", "protest"];
   return ["judgment", "channel", "conduct"];
 }
 
@@ -146,6 +147,7 @@ const EXPAND: [RegExp, string][] = [
   [/handshake|rival|opponent/, "sportsmanship opponents respect handshake"],
   [/\d+\s*pitches|pitch count|\brest\b|\barm\b/, "pitch workload arm care depth pitching winning"],
   [/dropped third|uncaught/, "dropped third strike situation runner"],
+  [/\bfoul\b|\bfair\b|roller/, "fair foul ground ball roller line touched run hear hard every judge"],
   [/hits? the runner|hit by the ball|dead ball|how many outs/, "runner batted ball dead umpire control moment crew conflict yelling coaches"],
   [/umpire|call/, "umpire mistake human respect"],
   [/worst|0 for|value/, "value failure stat line"],
