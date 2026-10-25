@@ -16,7 +16,7 @@ No one wins or loses a game alone. Every player, the coaches and the people in t
 - **Parent:** Celebrate the team first. After a loss, don't let your child carry it alone or put it on a teammate.
 - **Umpire:** The crew works as a team too, and their calls are part of the game, never the reason a team lost.
 
-Moments: `team`, `loss`, `win`, `blame`, `last_out`, `error`. Draft, not yet reviewed.
+Moments: `team`, `loss`, `win`, `blame`, `last_out`, `error`. Reviewed by DIQ umpire.
 
 <a id="l002"></a>
 ## L002: Everyone makes mistakes: forgive others, own yours
@@ -30,7 +30,7 @@ Players, coaches, parents and umpires are all human, and we all make mistakes. F
 - **Parent:** Show your child how to own a mistake without beating themselves up, and never blame the umpire, the coach or a teammate in front of them.
 - **Umpire:** Umpires miss calls too. Owning that calmly earns respect; everyone else should give the same grace.
 
-Moments: `mistake`, `error`, `blame`, `umpire`, `responsibility`, `failure`, `forgiveness`. Draft, not yet reviewed.
+Moments: `mistake`, `error`, `blame`, `umpire`, `responsibility`, `failure`, `forgiveness`. Reviewed by DIQ umpire.
 
 <a id="l003"></a>
 ## L003: Believe in your players before they believe in themselves
@@ -43,7 +43,7 @@ Have confidence in your players even when they don't show it, even when their tr
 - **Coach:** Give players the chance to step up, including the ones without a great record yet, and tell them you believe in them before the result.
 - **Parent:** Your belief matters most when your child is struggling. Tell them you love watching them play, hit or no hit.
 
-Moments: `confidence`, `underdog`, `scared_hitter`, `slump`, `opportunity`, `pitching_depth`. Draft, not yet reviewed.
+Moments: `confidence`, `underdog`, `scared_hitter`, `slump`, `opportunity`, `pitching_depth`. Reviewed by DIQ umpire.
 
 <a id="l004"></a>
 ## L004: Winning comes from a winning formula
@@ -56,7 +56,7 @@ Winning is fun and feels great, but it doesn't happen without a winning formula:
 - **Coach:** Protect arms and build depth: give more pitchers reps in lower-pressure innings so they're ready when you need them. Rest your best arm when the rules or their body say so.
 - **Parent:** Measure the season by how your child grows and how the team plays together, not only by wins.
 
-Moments: `winning`, `pitching_depth`, `arm_care`, `pitch_count`, `development`, `playoffs`. Draft, not yet reviewed.
+Moments: `winning`, `pitching_depth`, `arm_care`, `pitch_count`, `development`, `playoffs`. Reviewed by DIQ umpire.
 
 <a id="l005"></a>
 ## L005: Big moments aren't scripted
@@ -69,7 +69,7 @@ The moments that matter most aren't planned. They happen because kids are put in
 - **Coach:** Put kids in situations where they can fail or succeed. That's where growth and team belief come from.
 - **Parent:** Let your child take on hard moments. The chance to fail is also the chance to shine.
 
-Moments: `opportunity`, `underdog`, `dropped_third_strike`, `new_rule`, `playoffs`, `first_year`. Draft, not yet reviewed.
+Moments: `opportunity`, `underdog`, `dropped_third_strike`, `new_rule`, `playoffs`, `first_year`. Reviewed by DIQ umpire.
 
 <a id="l006"></a>
 ## L006: Believe in your teammates, especially when they fail
@@ -82,7 +82,7 @@ Believe in your teammates, especially when they fail. The moment after a mistake
 - **Coach:** Teach players how to pick each other up, and praise it when you see it, as much as you praise a hit.
 - **Parent:** Cheer for every player on the team, especially the one who's struggling, and teach your child to do the same.
 
-Moments: `team`, `error`, `strikeout`, `failure`, `teammates`, `encouragement`. Draft, not yet reviewed.
+Moments: `team`, `error`, `strikeout`, `failure`, `teammates`, `encouragement`. Reviewed by DIQ umpire.
 
 <a id="l007"></a>
 ## L007: Your value isn't your stat line
@@ -96,7 +96,7 @@ Your value is not determined by your failures or your successes.
 - **Parent:** Love your child the same after an 0-for-4 as after a 3-for-4, and let them see it.
 - **Umpire:** One missed call doesn't define an umpire either.
 
-Moments: `failure`, `success`, `confidence`, `slump`, `identity`, `self_worth`. Draft, not yet reviewed.
+Moments: `failure`, `success`, `confidence`, `slump`, `identity`, `self_worth`. Reviewed by DIQ umpire.
 
 <a id="l008"></a>
 ## L008: A game built on failure
@@ -109,7 +109,7 @@ In baseball, succeeding about 30% of the time at the plate can make a Hall of Fa
 - **Coach:** Help players keep failure in perspective: celebrate good at-bats and hard effort, not just hits.
 - **Parent:** Remind your child that even the best hitters fail most of the time. A tough day is part of the game, not a sign they don't belong.
 
-Moments: `failure`, `strikeout`, `slump`, `perspective`, `hitting`, `loss`. Draft, not yet reviewed.
+Moments: `failure`, `strikeout`, `slump`, `perspective`, `hitting`, `loss`. Reviewed by DIQ umpire.
 
 <a id="l009"></a>
 ## L009: Today's opponents, tomorrow's teammates
@@ -123,7 +123,7 @@ Your opponents today may be your teammates in the future. Treat them that way, e
 - **Parent:** Cheer for good plays by both teams and speak well of opponents in front of your child. The other team's kids are someone's children too.
 - **Umpire:** Treat both teams the same; respect for everyone on the field starts with the crew.
 
-Moments: `sportsmanship`, `opponents`, `respect`, `handshake`, `loss`, `win`. Draft, not yet reviewed.
+Moments: `sportsmanship`, `opponents`, `respect`, `handshake`, `loss`, `win`. Reviewed by DIQ umpire.
 
 <a id="l010"></a>
 ## L010: Control the moment
@@ -137,7 +137,7 @@ When a play gets loud and confusing, the adults set the temperature. Umpires sto
 - **Parent:** Stay in the stands and stay calm. The players take their cue from the adults.
 - **Umpire:** Kill it loudly: 'Time! Dead ball!' with both arms up. Get your partner, agree on what happened and where everyone goes, then explain once to each coach. Don't let the volume change the call: a misapplied rule can be corrected, and a judgment call stands.
 
-Moments: `umpire`, `conflict`, `de_escalation`, `dead_ball`, `interference`, `coaches`, `yelling`, `crew`. Draft, not yet reviewed.
+Moments: `umpire`, `conflict`, `de_escalation`, `dead_ball`, `interference`, `coaches`, `yelling`, `crew`. Reviewed by DIQ umpire.
 
 <a id="l011"></a>
 ## L011: Play until you hear 'foul'
@@ -151,4 +151,4 @@ Every batted ball is live until the umpire says otherwise. Players don't decide 
 - **Parent:** If your player stood and watched, make it a learning moment on the ride home, not a criticism. 'Run until you hear foul' is a rule many players learn the hard way.
 - **Umpire:** Make the fair signal big and immediate: point toward fair territory as soon as the ball is touched or stops in fair territory. Call 'Foul!' loudly with both arms up. Clear signals stop the guessing and the yelling.
 
-Moments: `fair_foul`, `hustle`, `run`, `umpire_signal`, `ground_ball`, `batter`, `learning`. Draft, not yet reviewed.
+Moments: `fair_foul`, `hustle`, `run`, `umpire_signal`, `ground_ball`, `batter`, `learning`. Reviewed by DIQ umpire.

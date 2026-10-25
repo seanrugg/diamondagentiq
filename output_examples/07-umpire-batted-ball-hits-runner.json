@@ -49,13 +49,13 @@
   "sample_mode": true,
   "run_id": "example-07",
   "mode": "situation",
-  "trace_id": "101167b4-b281-423d-a0c1-e355e5ae1101",
-  "log_file": "logs/trace-101167b4-b281-423d-a0c1-e355e5ae1101.jsonl",
-  "execution_time_seconds": 1.7,
+  "trace_id": "1159a838-2d73-46fd-a22a-970ff9713ebc",
+  "log_file": "logs/trace-1159a838-2d73-46fd-a22a-970ff9713ebc.jsonl",
+  "execution_time_seconds": 2.1,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Runner hit by a fair batted ball, bases loaded, no outs. One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources). This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "summary": "Runner hit by a fair batted ball, bases loaded, no outs. One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
       "sources": [
         "rules_facts:F028",
         "rules_facts:F087",
@@ -82,13 +82,13 @@
       ],
       "at_home": []
     },
-    "confidence": 0.6,
+    "confidence": 0.9,
     "sources": [
       {
         "table": "rules_facts",
         "id": "F028",
         "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/02/February-2026-Plays-and-Clarification.pdf",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 8-7-J; Rule 1 Obstruction (as cited)",
         "edition": "2026-02",
         "synthetic": false
@@ -97,7 +97,7 @@
         "table": "rules_facts",
         "id": "F087",
         "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 9, Sec 2",
         "edition": "2026 (posted 2026-01-12)",
         "synthetic": false
@@ -106,7 +106,7 @@
         "table": "rules_facts",
         "id": "F088",
         "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 9, Sec 2",
         "edition": "2026 (posted 2026-01-12)",
         "synthetic": false
@@ -115,7 +115,7 @@
         "table": "rules_facts",
         "id": "F089",
         "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 9, Sec 2",
         "edition": "2026 (posted 2026-01-12)",
         "synthetic": false
@@ -124,7 +124,7 @@
         "table": "coaching_lessons",
         "id": "L010",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -133,7 +133,7 @@
         "table": "coaching_lessons",
         "id": "L011",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -142,16 +142,16 @@
         "table": "coaching_situations",
         "id": "SIT004",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
       }
     ],
     "missing_facts": [],
-    "trace_id": "101167b4-b281-423d-a0c1-e355e5ae1101",
+    "trace_id": "1159a838-2d73-46fd-a22a-970ff9713ebc",
     "computation": null,
-    "draft_data": true,
+    "draft_data": false,
     "intent": "ruling",
     "focus": "Control the moment",
     "life_lesson": {

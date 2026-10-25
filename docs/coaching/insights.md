@@ -16,7 +16,7 @@ Don't roll or shave a bat: it can void the warranty and make the bat illegal. Co
 
 **Try this:** Mark the label side and rotate a quarter turn each swing in batting practice; keep composite bats out of cold-weather games and cage machines.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## bat fit now
 
@@ -30,7 +30,7 @@ Don't buy a bat to grow into. A bat that's too long or too heavy hurts swing mec
 
 **Try this:** Use the maker's size chart for a starting length, then have the player try a teammate's bat one size up and one size down and compare the swings.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## bat weight check
 
@@ -44,7 +44,7 @@ Quick check: hold the bat by the handle with one arm straight out to the side fo
 
 **Try this:** Try the hold test and a few dry swings; if the player drops the barrel or is late, go lighter (a bigger drop) or shorter.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## confidence mindset
 
@@ -58,7 +58,7 @@ Focus on what you control: being ready, your approach, effort and how you respon
 
 **Try this:** After each at-bat, grade one controllable (Was I ready? Did I swing at my pitch?) instead of the result.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## drop weight
 
@@ -72,7 +72,7 @@ A bat's drop is its length minus its weight in ounces: a 30-inch bat at -10 weig
 
 **Try this:** Read the length and drop printed on the bat (for example 29-inch, -10), work out the weight, then check that the league's bat rule allows it before buying.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## equipment bat
 
@@ -86,7 +86,7 @@ Start with what's legal in the player's league (for example USABat, BBCOR or USS
 
 **Try this:** Check the league's bat rule, use a sizing chart for length, then do the weight check before buying.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## failure recovery
 
@@ -100,7 +100,7 @@ A strikeout, even one that ends the game, is one at-bat of information. Talk abo
 
 **Try this:** Pick one thing to work on (for example, plate coverage or the two-strike approach), practise it this week, and let the rest go.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## multi sport
 
@@ -114,7 +114,7 @@ Playing other sports helps young players develop and stay healthy; USA Baseball 
 
 **Try this:** Keep at least one other sport in the year, and take months off from throwing.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## parent support
 
@@ -128,7 +128,7 @@ On the ride home, let your child speak first. 'I love watching you play' and pra
 
 **Try this:** Wait until they bring it up or until a calm time the next day. Leave technique to the coach unless your child asks you.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ### C007: A parent wants to help with mechanics or playing time
 
@@ -140,7 +140,7 @@ Raise concerns with the coach at a time the coach sets, not right after a game, 
 
 **Try this:** Ask the coach for a short conversation later in the week, with your player there, and come with a question rather than a complaint.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## pitch workload
 
@@ -154,7 +154,7 @@ Follow pitch counts and rest days, don't pitch on three days in a row, avoid cat
 
 **Try this:** Track pitches every outing and plan the rotation before a tournament weekend.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## plate coverage
 
@@ -168,7 +168,7 @@ Many youth pitchers miss away from the batter on purpose, because they don't wan
 
 **Try this:** Before the at-bat, set your feet so the end of the bat covers the far edge of the plate. If the pitcher keeps missing away, inch closer.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## practice balance
 
@@ -182,7 +182,7 @@ Players improve with reps: up to age 12, aim for about three-quarters practice o
 
 **Try this:** Plan more short, active practices with stations rather than adding more games.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## run it out
 
@@ -196,7 +196,7 @@ Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!' Fair o
 
 **Try this:** In practice, roll balls down the lines that go foul and come back fair. The batter runs every one; the fielder makes the play; a coach plays umpire and signals fair or calls foul.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## softball bat certification
 
@@ -210,7 +210,7 @@ Softball has several governing bodies (for example USA Softball, USSSA, NSA, ISA
 
 **Try this:** Before buying or before a tournament, find out which body governs it and look the bat up on that body's certified list.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## strike zone
 
@@ -224,7 +224,7 @@ In youth games the zone is often called generously, roughly chins to shins and l
 
 **Try this:** In practice, call anything chins-to-shins a 'swing pitch' and react to it. Note how the umpire is calling it in the first inning and adjust.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## two strike approach
 
@@ -238,7 +238,7 @@ With two strikes, protect the zone: widen what you'll swing at, shorten the swin
 
 **Try this:** Two-strike rounds in batting practice: start every rep at 0-2, choke up, shorter swing, battle the outer half off a tee or soft toss.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## umpire communication
 
@@ -252,7 +252,7 @@ Before the game, a coach can politely ask the plate umpire how they're calling t
 
 **Try this:** At the plate meeting, ask once, briefly and respectfully, then adjust. Never argue balls and strikes during play: they're judgment calls and can't be protested.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## umpire respect
 
@@ -266,4 +266,4 @@ Umpires make judgment calls, and youth umpires are often volunteers. Adjusting t
 
 **Try this:** Model a calm reaction. If a rule (not a judgment) seems misapplied, the head coach can ask calmly at a stoppage.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.

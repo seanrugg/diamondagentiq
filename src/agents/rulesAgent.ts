@@ -406,7 +406,9 @@ export async function rulesAgent(
     }
   }
 
-  const draftData = sources.some((s) => !s.verified);
+  // A tournament house rule is the event's own text (synthetic in the demo), not a rulebook
+  // fact a reviewer can verify, so it doesn't make the answer "draft".
+  const draftData = sources.some((s) => !s.verified && s.table !== "house_rules");
   trace({
     agent_name: AGENT,
     action: "rules_result",

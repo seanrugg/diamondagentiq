@@ -1,52 +1,52 @@
 sanction,sport,age_min,age_max,pitches_min,pitches_max,rest_days,edition,source_url,verified,source_id
-little_league,baseball,6,8,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,6,8,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,6,8,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,9,10,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,9,10,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,9,10,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,9,10,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,9,10,66,75,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,11,12,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,11,12,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,11,12,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,11,12,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,11,12,66,85,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,13,14,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,13,14,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,13,14,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,13,14,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,13,14,66,95,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,15,16,1,30,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,15,16,31,45,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,15,16,46,60,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,15,16,61,75,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-little_league,baseball,15,16,76,95,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,false,LL-PITCH
-pitch_smart,baseball,7,8,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,7,8,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,7,8,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,9,10,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,9,10,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,9,10,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,9,10,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,9,10,66,75,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,11,12,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,11,12,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,11,12,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,11,12,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,11,12,66,85,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,13,14,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,13,14,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,13,14,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,13,14,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,13,14,66,95,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,15,16,1,30,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,15,16,31,45,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,15,16,46,60,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,15,16,61,75,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,15,16,76,95,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,17,18,1,30,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,17,18,31,45,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,17,18,46,60,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,17,18,61,80,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
-pitch_smart,baseball,17,18,81,105,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,false,PS-GUIDE
+little_league,baseball,6,8,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,6,8,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,6,8,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,9,10,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,9,10,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,9,10,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,9,10,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,9,10,66,75,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,11,12,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,11,12,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,11,12,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,11,12,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,11,12,66,85,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,13,14,1,20,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,13,14,21,35,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,13,14,36,50,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,13,14,51,65,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,13,14,66,95,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,15,16,1,30,0,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,15,16,31,45,1,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,15,16,46,60,2,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,15,16,61,75,3,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+little_league,baseball,15,16,76,95,4,page modified 2026-02-11,https://www.littleleague.org/playing-rules/pitch-count/,true,LL-PITCH
+pitch_smart,baseball,7,8,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,7,8,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,7,8,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,9,10,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,9,10,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,9,10,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,9,10,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,9,10,66,75,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,11,12,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,11,12,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,11,12,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,11,12,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,11,12,66,85,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,13,14,1,20,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,13,14,21,35,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,13,14,36,50,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,13,14,51,65,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,13,14,66,95,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,15,16,1,30,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,15,16,31,45,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,15,16,46,60,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,15,16,61,75,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,15,16,76,95,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,17,18,1,30,0,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,17,18,31,45,1,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,17,18,46,60,2,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,17,18,61,80,3,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE
+pitch_smart,baseball,17,18,81,105,4,"current page, retrieved 2026-10-22",https://www.mlb.com/pitch-smart/pitching-guidelines,true,PS-GUIDE

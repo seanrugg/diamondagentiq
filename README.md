@@ -19,7 +19,7 @@ A **post-game review** mode reads a box score or a play-by-play and acts like a 
 
 Every step is visible: a live "play by play" of the agent team on the page, a JSONL trace per run, and Meterless Nightshift receipts naming the Nemotron model behind each step.
 
-> This is a learning tool. The umpire is the authority on the field. Rule data is **draft** (our own summaries with source links) until a person verifies it, and answers say so.
+> This is a learning tool. The umpire is the authority on the field. Rule and coaching data are our own summaries with source links, and **our team's youth umpire reviewed every row** against its source on 25 Oct 2026. Any row not yet reviewed is marked draft, and answers that use one say so.
 
 ---
 
@@ -171,7 +171,7 @@ The app teaches from a philosophy and content written by our team (`src/agents/p
 - **Stories**: a real (anonymized) coaching moment, shown in the coach's words.
 - **Coaching tips**: plate coverage against pitchers who miss away, the youth "chins to shins" hit zone, two-strike approach, asking the umpire about the zone pregame, the car ride home, run it out, and bat selection and care (reading a bat's drop, fitting the bat to the player today, care, softball certification).
 
-Every row is marked draft until our coach reviews it, and answers say so.
+Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft, and answers that use one say so.
 
 ## Sponsor technology
 
@@ -189,7 +189,7 @@ Every row is marked draft until our coach reviews it, and answers say so.
 
 ## Data, licensing and privacy
 
-- **Rules**: `data/rules/*.csv` (150 sources, 276 facts, 51 pitch-rest tiers) are our own one-line summaries of public pages from Little League, USA Baseball / Pitch Smart, USSSA, USA Softball, NSA, Babe Ruth / Cal Ripken, NFHS and WBSC, each with `source_url`, edition and `verified=false` until checked. No rulebook text is copied; licensed rulebooks stay outside the repo. Known gaps are listed in `data/rules/gaps.csv`. Pitch Smart (MLB and USA Baseball) is a pitch-count guideline, not a sanctioning body; the page offers it as "Rec league (Pitch Smart)" for leagues that follow it.
+- **Rules**: `data/rules/*.csv` (150 sources, 276 facts, 51 pitch-rest tiers) are our own one-line summaries of public pages from Little League, USA Baseball / Pitch Smart, USSSA, USA Softball, NSA, Babe Ruth / Cal Ripken, NFHS and WBSC, each with `source_url`, edition and a `verified` flag; all reviewed by our umpire on 25 Oct 2026 (`verified_by`, `verify_note`). No rulebook text is copied; licensed rulebooks stay outside the repo. Known gaps are listed in `data/rules/gaps.csv`. Pitch Smart (MLB and USA Baseball) is a pitch-count guideline, not a sanctioning body; the page offers it as "Rec league (Pitch Smart)" for leagues that follow it.
 - **Coaching content**: 19 tips, 11 lessons, 5 situations and 1 story, written by our team (source `DIQ-SME`) or summarized from cited public guidance (USA Baseball's American Development Model, Little League parent resources, Pitch Smart). Bat selection and care tips also draw on JustBats' bat guides, cited as a retailer guide; whether a bat is legal always comes from the league or governing body.
 - **Synthetic data only**: tournament house rules, drills, the sample box score ("Demo Hawks" vs "Riverside Comets"), the 10-game demo season in `data/samples/season/` and all players are made up and labeled synthetic. Real GameChanger exports, rosters and minors' data never go in the repo; team memory stays in a local, gitignored folder.
 - No secrets in code, logs or traces; `.env` is gitignored and `.env.example` has placeholders only.
@@ -202,7 +202,7 @@ Every row is marked draft until our coach reviews it, and answers say so.
 
 ## Known limitations
 
-- **Draft data.** Rules and coaching content are unverified drafts; confidence is capped and answers say so.
+- **Reviewed, not licensed.** Our umpire checked each rule fact against its public source page; licensed rulebook text isn't loaded, and some facts rest on undated comparison sheets or diagrams (their notes say so, beside the sign-off). The live example outputs from 23 Oct were recorded before the review, so they still mention draft data.
 - **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score or play-by-play; screenshots work only where Nightshift can serve vision (sample mode hides the screenshot button). Asking for a specific model by name isn't reliably honored either: Nightshift races the Race row, so the receipts, not our settings, say which Nemotron answered each step.
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
 - **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap. The batted-ball-hits-runner and fair/foul situations are in our own words because the rulebook text for those rules isn't loaded yet (also listed in `gaps.csv`).

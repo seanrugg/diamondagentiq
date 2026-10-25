@@ -49,13 +49,13 @@
   "sample_mode": true,
   "run_id": "example-08",
   "mode": "situation",
-  "trace_id": "513dc250-c95f-4fa1-8e88-fa3f937d9150",
-  "log_file": "logs/trace-513dc250-c95f-4fa1-8e88-fa3f937d9150.jsonl",
+  "trace_id": "f6d39f23-a817-44df-a6fa-3ea4357cd2a5",
+  "log_file": "logs/trace-f6d39f23-a817-44df-a6fa-3ea4357cd2a5.jsonl",
   "execution_time_seconds": 1.8,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Slow roller rolls foul, then back fair before first base. It's a fair ball, so the batter is a runner and the out at first stands. A ground ball that hasn't reached first or third base isn't foul just because it crossed the line: it's judged where it stops or where a fielder first touches it. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources). This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "summary": "Slow roller rolls foul, then back fair before first base. It's a fair ball, so the batter is a runner and the out at first stands. A ground ball that hasn't reached first or third base isn't foul just because it crossed the line: it's judged where it stops or where a fielder first touches it. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
       "sources": [
         "rules_facts:F014",
         "rules_facts:F015",
@@ -87,13 +87,13 @@
         "Hit it, drop the bat and run, every time, until you hear 'Foul!'. Fielders: if the ball is in play, make the play."
       ]
     },
-    "confidence": 0.6,
+    "confidence": 0.9,
     "sources": [
       {
         "table": "rules_facts",
         "id": "F014",
         "source_url": "https://www.littleleague.org/university/articles/local-league-protest-committee/",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 4.19",
         "edition": "page modified 2018-11-15",
         "synthetic": false
@@ -102,7 +102,7 @@
         "table": "rules_facts",
         "id": "F015",
         "source_url": "https://www.littleleague.org/university/articles/local-league-protest-committee/",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 4.19",
         "edition": "page modified 2018-11-15",
         "synthetic": false
@@ -111,7 +111,7 @@
         "table": "rules_facts",
         "id": "F016",
         "source_url": "https://www.littleleague.org/university/articles/regular-season-to-tournament-rule-differences/",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 4.19(c)(1)",
         "edition": "page modified 2024-05-07",
         "synthetic": false
@@ -120,7 +120,7 @@
         "table": "rules_facts",
         "id": "F017",
         "source_url": "https://www.littleleague.org/university/articles/regular-season-to-tournament-rule-differences/",
-        "verified": false,
+        "verified": true,
         "rule_ref": "Rule 4.19(f)",
         "edition": "page modified 2024-05-07",
         "synthetic": false
@@ -129,7 +129,7 @@
         "table": "coaching_lessons",
         "id": "L011",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -138,7 +138,7 @@
         "table": "coaching_lessons",
         "id": "L002",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -147,7 +147,7 @@
         "table": "coaching_situations",
         "id": "SIT005",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -156,7 +156,7 @@
         "table": "coaching_insights",
         "id": "C015",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -165,16 +165,16 @@
         "table": "coaching_insights",
         "id": "C002",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
       }
     ],
     "missing_facts": [],
-    "trace_id": "513dc250-c95f-4fa1-8e88-fa3f937d9150",
+    "trace_id": "f6d39f23-a817-44df-a6fa-3ea4357cd2a5",
     "computation": null,
-    "draft_data": true,
+    "draft_data": false,
     "intent": "ruling",
     "focus": "run it out",
     "life_lesson": {

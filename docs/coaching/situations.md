@@ -22,7 +22,7 @@ bases: loaded · outs: 2 · count: two strikes
 - F217 (nsa, 8U coach pitch): In NSA 8U, an inning ends after 3 outs or 5 runs. Runners may leave on the release but can't steal home unless played on. There's no bunting, no dropped third strike, and no hit-by-pitch award until a second hit in the same at-bat.
 - F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
 
-Lessons: [Big moments aren't scripted](lessons.md#l005), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+Lessons: [Big moments aren't scripted](lessons.md#l005), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
 
 <a id="sit002"></a>
 ## SIT002: Dropped third strike, runner on first, 1 out
@@ -42,7 +42,7 @@ bases: first · outs: 1 · count: two strikes
 - F217 (nsa, 8U coach pitch): In NSA 8U, an inning ends after 3 outs or 5 runs. Runners may leave on the release but can't steal home unless played on. There's no bunting, no dropped third strike, and no hit-by-pitch award until a second hit in the same at-bat.
 - F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
 
-Lessons: [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+Lessons: [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
 
 <a id="sit003"></a>
 ## SIT003: Dropped third strike, runner on third, 1 out
@@ -62,7 +62,7 @@ bases: third · outs: 1 · count: two strikes
 - F217 (nsa, 8U coach pitch): In NSA 8U, an inning ends after 3 outs or 5 runs. Runners may leave on the release but can't steal home unless played on. There's no bunting, no dropped third strike, and no hit-by-pitch award until a second hit in the same at-bat.
 - F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
 
-Lessons: [Big moments aren't scripted](lessons.md#l005), [Believe in your players before they believe in themselves](lessons.md#l003). Draft, not yet reviewed.
+Lessons: [Big moments aren't scripted](lessons.md#l005), [Believe in your players before they believe in themselves](lessons.md#l003). Reviewed by DIQ umpire.
 
 <a id="sit004"></a>
 ## SIT004: Runner hit by a fair batted ball, bases loaded, no outs
@@ -79,7 +79,7 @@ bases: loaded · outs: 0
 - F095 (usa_softball): In USA Softball, the call on whether interference or obstruction happened is the umpire's judgment and can't be protested.
 - F206 (nsa): In NSA fast pitch, the call on whether interference happened is the umpire's judgment and can't be protested.
 
-Lessons: [Control the moment](lessons.md#l010), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+Lessons: [Control the moment](lessons.md#l010), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
 
 <a id="sit005"></a>
 ## SIT005: Slow roller rolls foul, then back fair before first base
@@ -98,4 +98,4 @@ bases: none
 - F199 (nsa): In NSA fast pitch, the call on fair or foul is the umpire's judgment and can't be protested.
 - F032 (usssa): In USSSA fastpitch, judgment calls such as fair or foul, ball or strike, and safe or out are final. A coach may ask for the correct ruling only when a call seems to conflict with a rule.
 
-Lessons: [Play until you hear 'foul'](lessons.md#l011), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+Lessons: [Play until you hear 'foul'](lessons.md#l011), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
