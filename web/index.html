@@ -221,6 +221,7 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 .meter { height: 10px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
 .meter span { display: block; height: 100%; background: var(--accent); }
 .small { font-size: 17px; color: var(--pencil); }
+.steps li.retry .what { color: var(--dirt); }
 .evidence { border: 1px solid var(--accent); border-radius: 12px; padding: 18px 20px; background: var(--card); box-shadow: 0 0 28px var(--glow); }
 .evidence h3 { margin-bottom: 12px; }
 .ev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
@@ -529,6 +530,12 @@ function rowFor(s) {
       catch { return "Reviews the draft"; }
     })(),
   }[s.action] ?? (s.action.startsWith("pick_") ? "Chooses the lesson, situation and drills that fit" : esc(s.action));
+  // A first reply in the wrong format is retried (bounded): show it as a retry, not a failure.
+  const attempt = /^attempt (\d+)\/(\d+)/.exec(s.input || "");
+  if (s.status === "error" && attempt && Number(attempt[1]) < Number(attempt[2])) {
+    const why = /^Invalid JSON/.test(out) ? "its reply wasn't valid JSON" : /^Schema error/.test(out) ? "its reply was missing required fields" : "its reply couldn't be used";
+    return { cls: "counted retry", who: name, role, what: `${doing}. Retry: ${why}, so the agent was asked again with the error.`, meta };
+  }
   return { cls: s.status === "error" ? "counted failed" : "counted", who: name, role, what: s.status === "error" ? `${doing}. ${esc(out.slice(0, 200))}` : doing, meta };
 }
 

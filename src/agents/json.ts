@@ -12,8 +12,6 @@ export type JsonResult =
   | { ok: true; value: unknown }
   | { ok: false; error: string };
 
-const FENCE_PATTERN = /```(?:json)?\s*([\s\S]*?)\s*```/i;
-
 /**
  * Index of the matching closing brace for the opening brace at openIndex,
  * scanning respecting string literals and escapes. Returns -1 when unclosed.
@@ -52,53 +50,48 @@ function matchingCloseBrace(text: string, openIndex: number): number {
 }
 
 /**
- * The first complete top-level JSON object substring in text, or null.
+ * Every complete top-level JSON object substring in text, in order. A brace
+ * that never closes is skipped, so prose like "use {curly} braces" before the
+ * real answer doesn't hide it.
  */
-function firstJsonObject(text: string): string | null {
+function jsonObjects(text: string): string[] {
+  const found: string[] = [];
   let searchFrom = 0;
   for (;;) {
     const open = text.indexOf("{", searchFrom);
-    if (open === -1) {
-      return null;
-    }
+    if (open === -1) return found;
     const close = matchingCloseBrace(text, open);
-    if (close !== -1) {
-      return text.slice(open, close + 1);
+    if (close === -1) {
+      searchFrom = open + 1;
+      continue;
     }
-    searchFrom = open + 1;
+    found.push(text.slice(open, close + 1));
+    searchFrom = close + 1;
   }
 }
 
 /**
- * Extract the text to parse: the contents of the first fenced block when one
- * is present, otherwise the whole text (surrounding prose is ignored by the
- * object scan below).
- */
-function extractBody(text: string): string {
-  const fence = text.match(FENCE_PATTERN);
-  return fence ? fence[1] : text;
-}
-
-/**
- * Parse a model's JSON reply. Strips markdown fences and surrounding prose,
- * extracts the first complete top-level JSON object, then JSON.parse.
+ * Parse a model's JSON reply. Reasoning models (Nemotron Ultra on Nightshift's
+ * deep lane) often think out loud first, sometimes quoting a fragment like
+ * "{...}" or an example object before the answer. So every top-level object in
+ * the reply is tried, fenced blocks included, and the largest one that parses
+ * wins (the answer is the full object; examples and fragments are smaller).
  */
 export function parseModelJson(text: string): JsonResult {
-  const body = extractBody(text);
-  const objectText = firstJsonObject(body);
-  if (objectText === null) {
+  const candidates = jsonObjects(text);
+  if (candidates.length === 0) {
     return { ok: false, error: "No JSON object found in model output" };
   }
-
-  let value: unknown;
-  try {
-    value = JSON.parse(objectText);
-  } catch (error) {
-    return {
-      ok: false,
-      error: `Invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
-    };
+  let best: { value: unknown; size: number } | null = null;
+  let firstError: string | null = null;
+  for (const candidate of candidates) {
+    try {
+      const value: unknown = JSON.parse(candidate);
+      if (!best || candidate.length >= best.size) best = { value, size: candidate.length };
+    } catch (error) {
+      firstError ??= error instanceof Error ? error.message : String(error);
+    }
   }
-
-  return { ok: true, value };
+  if (best) return { ok: true, value: best.value };
+  return { ok: false, error: `Invalid JSON: ${firstError}` };
 }

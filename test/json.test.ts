@@ -75,3 +75,12 @@ describe("parseModelJson", () => {
     }
   });
 });
+
+describe("parseModelJson with reasoning before the answer", () => {
+  it("skips a stray brace and an example object, and returns the full answer", () => {
+    const reply = 'The user wants a review. I must reply with { headline, priorities } only, like {"headline": "..."}.\n\n{"headline": "A tough one", "priorities": [{"title": "Two-strike approach"}]}';
+    const result = parseModelJson(reply);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value).toEqual({ headline: "A tough one", priorities: [{ title: "Two-strike approach" }] });
+  });
+});

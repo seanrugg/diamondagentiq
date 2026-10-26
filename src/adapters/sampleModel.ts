@@ -375,8 +375,8 @@ function gameReview(messages: Msg[]): SampleReply {
   const find = (items: MenuItem[], re: RegExp) => items.find((i) => re.test(i.text))?.id;
   const priorities: { title: string; why: string; drill_ids: string[]; insight_ids: string[] }[] = [];
   if (kRate >= 25 || calledKs >= 3) priorities.push({ title: "Two-strike approach", why: calledKs >= 3 ? `${calledKs} of our ${ks} strikeouts were called third strikes: protect the zone with two strikes.` : `We struck out in ${ks} of ${pa} plate appearances (${kRate}%).`, drill_ids: [find(drills, /two_strike/)].filter(Boolean) as string[], insight_ids: [find(insights, /two_strike_approach/), find(insights, /plate_coverage/)].filter(Boolean) as string[] });
-  if (errors >= 2) priorities.push({ title: "Clean up routine plays", why: `We made ${errors} errors.`, drill_ids: [find(drills, /catching|fielding|ground/)].filter(Boolean) as string[], insight_ids: [] });
-  if (walksAllowed >= 4) priorities.push({ title: "Throw strikes early in the count", why: `Our pitchers walked ${walksAllowed}.`, drill_ids: [], insight_ids: [find(insights, /pitch_workload/)].filter(Boolean) as string[] });
+  if (errors >= 2) priorities.push({ title: "Clean up routine plays", why: `We made ${errors} errors.`, drill_ids: [find(drills, /\[fielding/) ?? find(drills, /catching|fielding|ground/)].filter(Boolean) as string[], insight_ids: [] });
+  if (walksAllowed >= 4) priorities.push({ title: "Throw strikes early in the count", why: `Our pitchers walked ${walksAllowed}.`, drill_ids: [find(drills, /throwing_strikes/)].filter(Boolean) as string[], insight_ids: [find(insights, /pitch_workload/)].filter(Boolean) as string[] });
   if (priorities.length === 0) priorities.push({ title: "Quality at-bats", why: `We reached base and competed in ${pa} plate appearances; keep building on it.`, drill_ids: [], insight_ids: [] });
   const lesson = (result === "win" ? find(lessons, /Win as a team/) : find(lessons, /built on failure/) ?? find(lessons, /Win as a team/)) ?? lessons[0]?.id ?? "L001";
   return json({
