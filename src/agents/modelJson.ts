@@ -12,7 +12,7 @@ import type { ChatCompletionMessageParam } from "openai/resources/chat/completio
 import type { z } from "zod";
 import { generator, type GeneratorOpts, type GeneratorResult } from "../adapters/llm.js";
 import { trace } from "../trace.js";
-import { parseModelJson } from "./json.js";
+import { modelJsonCandidates, parseModelJson } from "./json.js";
 
 export type Tier = "super" | "lightning" | "judge";
 
@@ -64,11 +64,24 @@ export async function askJson<T>(
     const parsed = parseModelJson(content);
     let value: T | null = null;
     if (!parsed.ok) {
-      issue = `Invalid JSON: ${parsed.error}`;
+      // No whole object parses (often a reply cut short): an inner object may still be the answer.
+      for (const candidate of modelJsonCandidates(content)) {
+        const v = schema.safeParse(candidate);
+        if (v.success) { value = v.data; break; }
+      }
+      if (value === null) issue = `Invalid JSON: ${parsed.error}`;
     } else {
       const validation = schema.safeParse(parsed.value);
       if (validation.success) value = validation.data;
-      else issue = `Schema error: ${validation.error.message}`;
+      else {
+        // The largest object isn't the answer (cut short, wrapped, or a
+        // fragment of the model's reasoning): try every object in the reply.
+        for (const candidate of modelJsonCandidates(content)) {
+          const v = schema.safeParse(candidate);
+          if (v.success) { value = v.data; break; }
+        }
+        if (value === null) issue = `Schema error: ${validation.error.message}`;
+      }
     }
 
     trace({

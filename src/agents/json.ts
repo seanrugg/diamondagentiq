@@ -77,6 +77,28 @@ function jsonObjects(text: string): string[] {
  * the reply is tried, fenced blocks included, and the largest one that parses
  * wins (the answer is the full object; examples and fragments are smaller).
  */
+/**
+ * Every complete JSON object in text that parses, at any depth, largest first.
+ * Lets a caller with a schema pick the object that is actually the answer: the
+ * full reply, an answer wrapped in {"response": {...}}, or the answer that
+ * follows a reasoning preamble.
+ */
+export function modelJsonCandidates(text: string): unknown[] {
+  const found: { value: unknown; size: number }[] = [];
+  for (let open = text.indexOf("{"); open !== -1; open = text.indexOf("{", open + 1)) {
+    const close = matchingCloseBrace(text, open);
+    if (close === -1) continue;
+    const slice = text.slice(open, close + 1);
+    try {
+      found.push({ value: JSON.parse(slice), size: slice.length });
+    } catch {
+      /* not JSON on its own */
+    }
+    if (found.length >= 200) break;
+  }
+  return found.sort((a, b) => b.size - a.size).map((f) => f.value);
+}
+
 export function parseModelJson(text: string): JsonResult {
   const candidates = jsonObjects(text);
   if (candidates.length === 0) {

@@ -84,3 +84,13 @@ describe("parseModelJson with reasoning before the answer", () => {
     if (result.ok) expect(result.value).toEqual({ headline: "A tough one", priorities: [{ title: "Two-strike approach" }] });
   });
 });
+
+describe("modelJsonCandidates", () => {
+  it("finds an answer wrapped in another object, and inner objects of a reply cut short", async () => {
+    const { modelJsonCandidates } = await import("../src/agents/json.js");
+    const wrapped = 'Thinking... {"response": {"what_happened": "One out", "channel": {"who": "x"}}}';
+    expect(modelJsonCandidates(wrapped)).toContainEqual({ what_happened: "One out", channel: { who: "x" } });
+    const cut = '{"what_happened": "One out", "channel": {"who": "Your partner", "how": "Calmly"}, "teachable';
+    expect(modelJsonCandidates(cut)).toEqual([{ who: "Your partner", how: "Calmly" }]);
+  });
+});
