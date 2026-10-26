@@ -87,3 +87,17 @@ describe("play-by-play parser", () => {
     expect(() => parsePlayByPlay("[T1] Walk | Ball 1 | x | Outs: 0 | A 0 – B 0")).toThrow(/first line/);
   });
 });
+
+describe("play-by-play pasted from markdown", () => {
+  it("reads the same with headings, list markers, bold and escaped brackets", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { parsePlayByPlay, looksLikePlayByPlay } = await import("../src/calculators/playByPlay.js");
+    const plain = readFileSync("data/samples/season/play_by_play/G03_play_by_play.txt", "utf8");
+    const md = plain
+      .split(/\r?\n/)
+      .map((l, i) => (i === 0 ? `# **${l}**` : /^(TOP|BOTTOM)/.test(l) ? `## ${l}` : /^\[[TB]\d+\]/.test(l) ? `- ${l.replace("[", "\\[").replace("]", "\\]")}` : l))
+      .join("\n");
+    expect(looksLikePlayByPlay(md)).toBe(true);
+    expect(parsePlayByPlay(md)).toEqual(parsePlayByPlay(plain));
+  });
+});

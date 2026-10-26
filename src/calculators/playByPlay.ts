@@ -90,8 +90,24 @@ const HITS = new Set(["Single", "Double", "Triple", "Home Run"]);
 const NOT_PA = new Set(["Inning Ended", "Runner Out"]);
 
 /** True when the text looks like this play-by-play format. */
+/**
+ * Text pasted from a markdown file: drop headings, quotes, list markers, bold,
+ * italics and code marks around each line, so the same play-by-play reads the
+ * same whether it was saved as .txt or .md.
+ */
+export function stripMarkdown(text: string): string {
+  return text
+    .split(/\r?\n/)
+    .map((l) => l
+      .replace(/^\s*(?:#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+)/, "")
+      .replace(/\*\*|__|`/g, "")
+      .replace(/(^|\s)[*_](\S)/g, "$1$2")
+      .replace(/\\\[/g, "[").replace(/\\\]/g, "]"))
+    .join("\n");
+}
+
 export function looksLikePlayByPlay(text: string): boolean {
-  return text.split(/\r?\n/).filter((l) => /^\[[TB]\d+\]/.test(l.trim())).length >= 3;
+  return stripMarkdown(text).split("\n").filter((l) => /^\[[TB]\d+\]/.test(l.trim())).length >= 3;
 }
 
 type Pitch = "ball" | "called" | "swinging" | "foul" | "in_play";
@@ -153,7 +169,7 @@ function emptyTeam(name: string, abbr: string, side: "away" | "home"): PbpTeam {
 }
 
 export function parsePlayByPlay(text: string): PlayByPlay {
-  const lines = text.split(/\r?\n/).map((l) => l.trim());
+  const lines = stripMarkdown(text).split("\n").map((l) => l.trim());
   const header = lines.map((l) => HEADER.exec(l)).find((m) => m);
   if (!header) throw new Error("Play-by-play needs a first line like 'G01 — Away (AWY, away) at Home (HOM, home)'.");
   const [, game, awayName, awayAbbr, homeName, homeAbbr] = header as unknown as string[];

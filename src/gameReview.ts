@@ -112,7 +112,13 @@ async function run(request: GameReviewRequest, today: string, hmem: Hmem | null,
     facts = parsed;
   } else {
     const read = await scorebookAgent(request);
-    if (!read.ok) return fail("scorebookAgent", read.error.message);
+    if (!read.ok) {
+      // Pasted text that isn't a box score or our play-by-play: say so plainly.
+      if (request.text && !request.image) {
+        return fail("scorebookAgent", "This text didn't read as a box score or as a play-by-play in the supported format (one line per play: '[T1] Strikeout | pitches | description | Outs: 1 | AWY 0 – HOM 0', under a first line like 'G01 — Away (AWY, away) at Home (HOM, home)'). Try 'Paste the sample play-by-play' to see the format.");
+      }
+      return fail("scorebookAgent", read.error.message);
+    }
     const b = read.boxScore;
     facts = {
       game: { source: "box_score", away_team: b.away_team, home_team: b.home_team, our_team: b.stats_team, date: b.date, event: b.event, line_score: b.line_score },
