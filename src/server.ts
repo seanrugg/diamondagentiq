@@ -180,6 +180,10 @@ export const server = createServer((req, res) => {
       res.writeHead(200, { "content-type": "image/png", "cache-control": "public, max-age=3600" });
       return res.end(readFileSync(new URL(`../web/brand/${brand[1]}.png`, import.meta.url)));
     }
+    if (route === "GET /brand/banner.jpg") {
+      res.writeHead(200, { "content-type": "image/jpeg", "cache-control": "public, max-age=3600" });
+      return res.end(readFileSync(new URL("../web/brand/banner.jpg", import.meta.url)));
+    }
     if (route === "POST /review/stream") return handleReview(req, res);
     if (route === "POST /run") return handleRunEnvelope(req, res);
     if (route === "POST /run/stream") return handleRun(req, res, true);
