@@ -165,7 +165,7 @@ Before every pitch, a good runner knows how many outs there are, whether they're
 - **Parent:** On the ride home, ask about one decision on the bases ('What did you do with a runner on first and one out?'). Praise the good decision, even if the runner was out.
 - **Umpire:** Know the outs and the force situations before every pitch too, and signal the outs between batters so players and coaches stay with you.
 
-Moments: `base_running`, `outs`, `force`, `tag_up`, `fly_ball`, `ground_ball`, `preparation`, `situation`. Draft, not yet reviewed.
+Moments: `base_running`, `outs`, `force`, `tag_up`, `fly_ball`, `ground_ball`, `preparation`, `situation`. Reviewed by DIQ umpire.
 
 <a id="l013"></a>
 ## L013: Run hard through the finish
@@ -179,7 +179,7 @@ Run every ball out at full speed, through first base and until the play is over.
 - **Parent:** Cheer hustle on an out the same as a hit. A full-speed run is something your player controls every time.
 - **Umpire:** Close plays at first happen because runners hustle. Get a good angle, be set before the ball arrives, and sell the call.
 
-Moments: `base_running`, `hustle`, `run_through`, `first_base`, `overrun`, `effort`, `dropped_third_strike`. Draft, not yet reviewed.
+Moments: `base_running`, `hustle`, `run_through`, `first_base`, `overrun`, `effort`, `dropped_third_strike`. Reviewed by DIQ umpire.
 
 <a id="l014"></a>
 ## L014: Read the ball, then go
@@ -193,4 +193,4 @@ Good base running is a series of decisions. Watch where the ball goes and what t
 - **Parent:** Mistakes on the bases are how players learn to read the game. Ask what they saw, not why they did it.
 - **Umpire:** On fly balls with runners on, watch the catch and the runners' tags. In many codes a runner who leaves early is out only if the defense appeals, so know your league's appeal rules.
 
-Moments: `base_running`, `read`, `fly_ball`, `tag_up`, `halfway`, `line_drive`, `decision`, `defenders`. Draft, not yet reviewed.
+Moments: `base_running`, `read`, `fly_ball`, `tag_up`, `halfway`, `line_drive`, `decision`, `defenders`. Reviewed by DIQ umpire.

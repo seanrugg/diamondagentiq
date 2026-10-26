@@ -114,7 +114,7 @@ bases: first · outs: 0 or 1
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Reviewed by DIQ umpire.
 
 <a id="sit007"></a>
 ## SIT007: Fly ball with a runner on third, fewer than 2 outs
@@ -131,7 +131,7 @@ bases: third · outs: 0 or 1
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 - F155 (little_league): Little League softball allows only live-ball appeals. NFHS allows live or dead.
 
-Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Reviewed by DIQ umpire.
 
 <a id="sit008"></a>
 ## SIT008: Ground ball with a runner on first
@@ -147,7 +147,7 @@ bases: first · outs: 0 or 1
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.
 
 <a id="sit009"></a>
 ## SIT009: Ground ball with the bases loaded, fewer than 2 outs
@@ -163,7 +163,7 @@ bases: loaded · outs: 0 or 1
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.
 
 <a id="sit010"></a>
 ## SIT010: Ground ball with a runner on second, first base open
@@ -179,7 +179,7 @@ bases: second · outs: 0 or 1
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Reviewed by DIQ umpire.
 
 <a id="sit011"></a>
 ## SIT011: Two outs, ball in play with runners on
@@ -195,7 +195,7 @@ bases: any · outs: 2
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.
 
 <a id="sit012"></a>
 ## SIT012: Two runners end up on the same base
@@ -211,7 +211,7 @@ bases: any
 **Where the rule applies:**
 - (no rule facts linked)
 
-Lessons: [Know the play before the pitch](lessons.md#l012), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+Lessons: [Know the play before the pitch](lessons.md#l012), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
 
 <a id="sit013"></a>
 ## SIT013: Batter runs through first base
@@ -227,7 +227,7 @@ bases: none
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.
 
 <a id="sit014"></a>
 ## SIT014: Batter overruns first and turns toward second (umpire's judgment)
@@ -244,7 +244,7 @@ bases: none
 - F015 (little_league, regular season): Calls that rest on the umpire's judgment, such as balls and strikes or safe and out, are not protestable in Little League.
 - F032 (usssa): In USSSA fastpitch, judgment calls such as fair or foul, ball or strike, and safe or out are final. A coach may ask for the correct ruling only when a call seems to conflict with a rule.
 
-Lessons: [Run hard through the finish](lessons.md#l013), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002), [Control the moment](lessons.md#l010). Draft, not yet reviewed.
+Lessons: [Run hard through the finish](lessons.md#l013), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002), [Control the moment](lessons.md#l010). Reviewed by DIQ umpire.
 
 <a id="sit015"></a>
 ## SIT015: Fly ball that clearly won't be caught, runner on first
@@ -260,7 +260,7 @@ bases: first · outs: any
 **Where the rule applies:**
 - F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
 
-Lessons: [Read the ball, then go](lessons.md#l014), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Read the ball, then go](lessons.md#l014), [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.
 
 <a id="sit016"></a>
 ## SIT016: Dropped third strike, first base open
@@ -280,4 +280,4 @@ bases: none · outs: any · count: two strikes
 - F217 (nsa, 8U coach pitch): In NSA 8U, an inning ends after 3 outs or 5 runs. Runners may leave on the release but can't steal home unless played on. There's no bunting, no dropped third strike, and no hit-by-pitch award until a second hit in the same at-bat.
 - F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
 
-Lessons: [Big moments aren't scripted](lessons.md#l005), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+Lessons: [Big moments aren't scripted](lessons.md#l005), [Run hard through the finish](lessons.md#l013). Reviewed by DIQ umpire.

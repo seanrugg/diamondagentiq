@@ -16,7 +16,7 @@ Your job on base is to get to the next base. Take the same lead every time, set 
 
 **Try this:** Practice leads and first-step sprints while a pitcher goes through the motion.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## baserunning every practice
 
@@ -30,7 +30,7 @@ Do some base running every practice, right after warm-ups, with drills that look
 
 **Try this:** Ten minutes after warm-ups, rotating: leads and first steps one day, fly-ball reads the next, ground-ball forces the next.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## bat care
 
@@ -142,7 +142,7 @@ If the ball is plainly going to drop, run. A runner on first is forced the momen
 
 **Try this:** Hit or throw balls into gaps and over heads with runners on first. Runners call 'Down!' and go.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## fly ball halfway
 
@@ -156,7 +156,7 @@ With fewer than two outs, take a few steps off and read the ball. Go far enough 
 
 **Try this:** Hit or toss fly balls to outfielders with runners on first. Runners call 'halfway', 'tag' or 'go' before they move.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## ground ball force
 
@@ -170,7 +170,7 @@ On a fair ground ball, a runner on first has to run, and so does every runner wi
 
 **Try this:** Ground-ball station: a runner on first, the coach rolls grounders to the infield, and the runner sprints on contact. Then add a runner on second and ask 'force or no force?' before each rep.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## multi sport
 
@@ -266,7 +266,7 @@ Between pitches, have the base coach ask each runner the outs and their plan, an
 
 **Try this:** Hold up fingers for the outs every pitch and have runners answer. At practice, call a situation (runner on first, one out) before every rep.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## read defenders
 
@@ -280,7 +280,7 @@ Read the fielders, not only the ball: where they're playing, whether they can ge
 
 **Try this:** Read-and-react reps: the coach puts balls in play, runners decide to go or hold, and then they say what they saw.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## round bases
 
@@ -294,7 +294,7 @@ Swing out a little before the base, touch the inside corner, and keep your speed
 
 **Try this:** Base-rounding drill: runners take turns rounding first on a pretend single while the coach watches the angle and the foot on the inside corner.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## run it out
 
@@ -322,7 +322,7 @@ Run through first at full speed. Touch the front of the bag, keep sprinting a fe
 
 **Try this:** Put a cone 3 to 4 steps past first base. Runners must reach the cone at full speed.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## simple signs
 
@@ -336,7 +336,7 @@ Start with a simple red light/green light from the base coach. Add more signs on
 
 **Try this:** Use one sign per game situation until the whole team gets it right in practice.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## softball bat certification
 
@@ -378,7 +378,7 @@ Get back to third and tag. Leave the moment the fielder first touches the ball, 
 
 **Try this:** Practice with the coach saying 'Go!' at the touch, then without the coach while the runner watches the ball into the glove.
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## two outs run
 
@@ -392,7 +392,7 @@ With two outs, run on contact on everything: grounders, line drives and fly ball
 
 **Try this:** Before each pitch with two outs, runners tell the base coach: 'Two outs, I'm running.'
 
-Draft, not yet reviewed.
+Reviewed by DIQ umpire.
 
 ## two strike approach
 
