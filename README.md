@@ -205,12 +205,12 @@ Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft
 
 ## Known limitations
 
-- **Reviewed, not licensed.** Our umpire checked each rule fact against its public source page; licensed rulebook text isn't loaded, and some facts rest on undated comparison sheets or diagrams (their notes say so, beside the sign-off). The live example outputs from 23 Oct were recorded before the review, so they still mention draft data.
+- **Reviewed, not licensed.** Our umpire checked each rule fact against its public source page; licensed rulebook text isn't loaded, and some facts rest on undated comparison sheets or diagrams (their notes say so, beside the sign-off). Examples 01-03, 05 and 06 are live runs from 23 Oct, recorded before the review, so they still mention draft data; 04 and 07-09 are live runs from 25 Oct, after it.
 - **Nightshift capability gaps.** In our setup Nightshift refused image requests ("no lane carries the vision capability") and the `meterless/judge` route, even with capable Nemotron models seated. The post-game review therefore uses a pasted box score or play-by-play; screenshots work only where Nightshift can serve vision (sample mode hides the screenshot button). Asking for a specific model by name isn't reliably honored either: Nightshift races the Race row, so the receipts, not our settings, say which Nemotron answered each step.
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
 - **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap. The batted-ball-hits-runner, fair/foul and base-running rule logic (tag-ups, forces, two runners on a base, overrunning first) is in our own words because the rulebook text for those rules isn't loaded yet (also listed in `gaps.csv`).
 - **Memory ranking.** H-MEM's reference scorer separates related and unrelated questions poorly, so recall offers a few of the team's memories at a low bar and the CoachingAgent lists the ones it actually used (`memory_used`); the answer shows both.
-- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. The example outputs for 07, 08 and 09 are sample-mode runs until our next live run.
+- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. All nine committed example outputs are live runs on Nemotron through Nightshift, each with its trace.
 
 ## Tooling disclosure and pre-existing work
 
