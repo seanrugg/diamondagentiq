@@ -153,6 +153,15 @@ const EXPAND: [RegExp, string][] = [
   [/worst|0 for|value/, "value failure stat line"],
   [/swing|hit the ball|hit it|far|power/, "bat weight check heavy control size tee balance"],
   [/froze|frozen|taking|looking/, "two strike approach strike zone confidence"],
+  // Base running
+  [/base ?running|on the bases|doubled off|my runners/, "base running read outs plan"],
+  [/fly ball|pop.?up|doubled off|tag(ged|ging)? up|halfway|\bcaught/, "fly ball tag up halfway read runner"],
+  [/won.?t be caught|over (his|her|their) head|gap|dropped in|fell in/, "fly ball clearly drop forced run"],
+  [/ground ?ball|grounder|forced?\b/, "ground ball force run"],
+  [/two outs|2 outs/, "two outs run contact"],
+  [/same base|two runners|both runners/, "two runners same base"],
+  [/run(s|ning)? through|slow(s|ed)? down|stop(s|ped)? (at|on) (first|the base|the bag)|overr?un/, "batter runs through first base full speed hustle"],
+  [/turn(s|ed)? (toward|towards|to) second|attempt/, "overrun first turns toward second judgment"],
 ];
 function expand(text: string): string {
   const t = text.toLowerCase();
@@ -164,9 +173,13 @@ function development(messages: Msg[]): SampleReply {
   const question = t.match(/^Question \([a-z]+\): (.*)$/m)?.[1] ?? "";
   const q = words(expand(`${question} ${t.match(/Topic: (.*)$/m)?.[1] ?? ""}`));
   const lessons = rank(menu(t, "Lessons (philosophy):", "L\\d+"), q);
-  const base = (/runner on (first|second|third)|bases loaded/i.exec(question)?.[0] ?? "").toLowerCase();
-  const situations = rank(menu(t, "Situations (strategy):", "SIT\\d+"), q)
-    .filter((s) => s.score >= 3 && (!base || s.text.toLowerCase().includes(base)));
+  // "Runner on first", "I was on first", "bases loaded": keep situations for that base, or ones not tied to a base.
+  const onBase = /\b(?:runner|was|i'm|i am|stayed) on (first|second|third)\b/i.exec(question)?.[1]?.toLowerCase();
+  const base = /bases (loaded|full)/i.test(question) ? "bases loaded" : onBase ? `runner on ${onBase}` : "";
+  const situations = rank(menu(t, "Situations (strategy):", "SIT\\d+"), q).filter((s) => {
+    const name = s.text.toLowerCase();
+    return s.score >= 3 && (!base || name.includes(base) || !/runner on|bases loaded/.test(name));
+  });
   const stories = rank(menu(t, "Stories (real coaching moments):", "ST\\d+"), q).filter((s) => s.score >= 3);
   // Player tips and drills don't fit an umpire's question; the lesson's umpire angle does.
   const forUmpire = /^Question \(umpire\)/m.test(t);

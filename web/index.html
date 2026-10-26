@@ -294,7 +294,9 @@ details.lineup-wrap[open] > .lineup-toggle::before { content: "▾ "; }
       <p class="formnote" id="ex-label">Try one:</p>
       <div class="examples" aria-labelledby="ex-label">
         <button type="button" data-example="strikeout">Parent: struck out to end the game</button>
+        <button type="button" data-example="overrun">Parent: ran through first, tagged out</button>
         <button type="button" data-example="pitch">Coach: 68 pitches Friday, Sunday start?</button>
+        <button type="button" data-example="flyball">Coach: runner doubled off on a fly ball</button>
         <button type="button" data-example="scared">Coach: scared at the plate</button>
         <button type="button" data-example="d3k">Coach: dropped third strike, runner on third</button>
         <button type="button" data-example="swing">Player: help with my swing</button>
@@ -372,6 +374,8 @@ const EXAMPLES = {
   swing: { role: "player", sport: "baseball", sanction: "little_league", age: 13, event_name: "", team: "Demo Hawks", question: "I need help with my swing. I can't hit the ball very far." },
   foul: { role: "player", sport: "baseball", sanction: "little_league", age: 10, event_name: "", team: "Demo Hawks", question: "I hit a slow roller down the first base line. It rolled foul, then rolled back fair, and the first baseman picked it up and beat me to first. Both umpires called me out. Didn't the ball go foul? How is a foul ball fair?" },
   ump: { role: "umpire", sport: "softball", sanction: "usa_softball", age: 10, event_name: "", team: "Demo Hawks", question: "10U softball, bases loaded, no outs. A fly ball goes to the third baseman near the line; she misses it and the ball hits the runner on third in fair territory, then rolls foul. Play continues with coaches yelling to run and to tag. The plate umpire calls the runner on third out, then the field umpire calls two more runners out on tags. No infield fly at this age. How many outs are there, is the inning over, and where should the runners be?" },
+  flyball: { role: "coach", sport: "baseball", sanction: "little_league", age: 10, event_name: "", team: "Demo Hawks", question: "Runner on first, one out. My runner took off on a fly ball to center, it was caught, and he got doubled off at first. This keeps happening. How do I teach my runners what to do on fly balls and ground balls?" },
+  overrun: { role: "parent", sport: "baseball", sanction: "little_league", age: 11, event_name: "", team: "Demo Hawks", question: "My son ran through first base, turned toward second to look for the ball, and got tagged before he got back. The umpire called him out. I thought you were allowed to run past first?" },
   scared: { role: "coach", sport: "baseball", sanction: "little_league", age: 11, event_name: "", team: "Demo Hawks", question: "One of my hitters has been hit by pitches a few times, hasn't had a hit all year and is scared at the plate. How do I help him?" },
 };
 

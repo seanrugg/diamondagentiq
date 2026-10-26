@@ -152,3 +152,45 @@ Every batted ball is live until the umpire says otherwise. Players don't decide 
 - **Umpire:** Make the fair signal big and immediate: point toward fair territory as soon as the ball is touched or stops in fair territory. Call 'Foul!' loudly with both arms up. Clear signals stop the guessing and the yelling.
 
 Moments: `fair_foul`, `hustle`, `run`, `umpire_signal`, `ground_ball`, `batter`, `learning`. Reviewed by DIQ umpire.
+
+<a id="l012"></a>
+## L012: Know the play before the pitch
+
+Before every pitch, a good runner knows how many outs there are, whether they're forced, and what they'll do on a ground ball, a fly ball and a line drive. Decide before the ball is hit, so you react instead of think.
+
+**Beyond the diamond:** Preparation turns pressure into routine. People who think ahead stay calm when things get busy.
+
+- **Player:** Every pitch, ask yourself three things: How many outs? Am I forced? What do I do on a ground ball or a fly ball? Then look at your base coach.
+- **Coach:** Between pitches, ask runners out loud: 'How many outs? What do you do on a ground ball?' Make it a habit, not a quiz. At practice, call out a situation before every rep.
+- **Parent:** On the ride home, ask about one decision on the bases ('What did you do with a runner on first and one out?'). Praise the good decision, even if the runner was out.
+- **Umpire:** Know the outs and the force situations before every pitch too, and signal the outs between batters so players and coaches stay with you.
+
+Moments: `base_running`, `outs`, `force`, `tag_up`, `fly_ball`, `ground_ball`, `preparation`, `situation`. Draft, not yet reviewed.
+
+<a id="l013"></a>
+## L013: Run hard through the finish
+
+Run every ball out at full speed, through first base and until the play is over. Slowing down at the end costs more outs than speed ever gains.
+
+**Beyond the diamond:** Finish the job. Easing up at the end can undo all the good work that came before it.
+
+- **Player:** Run through first base, not to it: hit the front of the bag, keep sprinting a few steps past, then look right to find the ball. On a dropped third strike, run without waiting to be told.
+- **Coach:** Put a finish line a few steps past first base at practice. Praise full-speed effort on routine outs as much as on hits.
+- **Parent:** Cheer hustle on an out the same as a hit. A full-speed run is something your player controls every time.
+- **Umpire:** Close plays at first happen because runners hustle. Get a good angle, be set before the ball arrives, and sell the call.
+
+Moments: `base_running`, `hustle`, `run_through`, `first_base`, `overrun`, `effort`, `dropped_third_strike`. Draft, not yet reviewed.
+
+<a id="l014"></a>
+## L014: Read the ball, then go
+
+Good base running is a series of decisions. Watch where the ball goes and what the fielders do, then choose: go, go halfway, or get back. Don't guess, and don't freeze.
+
+**Beyond the diamond:** Take in what you can see, decide, and commit. Waiting for perfect certainty can cost as much as rushing.
+
+- **Player:** On a fly ball with fewer than two outs, go as far as you can while still being able to get back if it's caught. On a ball that's clearly going to drop, run. Watch the fielders, not only the ball.
+- **Coach:** Run read-and-react reps: you throw or hit a ball, runners decide, and you talk about the decision after each rep, not just the result.
+- **Parent:** Mistakes on the bases are how players learn to read the game. Ask what they saw, not why they did it.
+- **Umpire:** On fly balls with runners on, watch the catch and the runners' tags. In many codes a runner who leaves early is out only if the defense appeals, so know your league's appeal rules.
+
+Moments: `base_running`, `read`, `fly_ball`, `tag_up`, `halfway`, `line_drive`, `decision`, `defenders`. Draft, not yet reviewed.

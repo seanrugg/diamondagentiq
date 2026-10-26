@@ -99,3 +99,185 @@ bases: none
 - F032 (usssa): In USSSA fastpitch, judgment calls such as fair or foul, ball or strike, and safe or out are final. A coach may ask for the correct ruling only when a call seems to conflict with a rule.
 
 Lessons: [Play until you hear 'foul'](lessons.md#l011), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Reviewed by DIQ umpire.
+
+<a id="sit006"></a>
+## SIT006: Fly ball with a runner on first, fewer than 2 outs
+
+bases: first · outs: 0 or 1
+
+**Offense:** Take a few steps off the base and read the ball. With fewer than two outs, if it's caught you must get back and touch first before you can go anywhere, and the defense can throw behind you for a double play. If it drops, run hard: you're forced to second the moment it lands. On a very deep fly, you can tag up and try for second after the catch, but only if the throw can't beat you.
+
+**Defense:** Catch it, then look at the runner. If they're off the base, throw behind them to first for the double play. If they tagged and broke for second, hit the cutoff.
+
+**Common mistakes:** The runner sprints on contact and gets doubled off; the runner stays glued to first on a ball that drops and is forced out at second; the runner forgets to go back and touch first before trying to advance.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+
+<a id="sit007"></a>
+## SIT007: Fly ball with a runner on third, fewer than 2 outs
+
+bases: third · outs: 0 or 1
+
+**Offense:** Go back to third and tag up. Leave as soon as the fielder first touches the ball and sprint home. On a short fly or an infield pop-up, stay on the base unless your coach sends you. If you leave before the fielder touches the ball, the defense can appeal and you're out.
+
+**Defense:** Catch it and throw home through the cutoff. If the runner left early, tag third base or the runner and appeal to the umpire. Some leagues allow only live-ball appeals, so make the appeal before the next pitch.
+
+**Common mistakes:** The runner goes halfway from third on a deep fly and can't score after the catch; the runner leaves before the catch; the runner jogs home and is thrown out.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+- F155 (little_league): Little League softball allows only live-ball appeals. NFHS allows live or dead.
+
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+
+<a id="sit008"></a>
+## SIT008: Ground ball with a runner on first
+
+bases: first · outs: 0 or 1
+
+**Offense:** Run hard to second on contact. When the batter hits a fair ground ball, the batter needs first base, so you're forced to leave it. There's no waiting to see if it gets through, and there's no going back.
+
+**Defense:** Take the sure out. Older teams turn two, second base then first. Younger teams get the force at second or the out at first. Once the batter is out at first, the runner isn't forced any more, so a tag is needed to get them.
+
+**Common mistakes:** The runner waits to see if the ball gets through and is forced out easily; the runner goes back to first and ends up on the same base as the batter; the runner stops halfway thinking the ball was caught.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+
+<a id="sit009"></a>
+## SIT009: Ground ball with the bases loaded, fewer than 2 outs
+
+bases: loaded · outs: 0 or 1
+
+**Offense:** Everyone runs. With the bases full, every runner is forced as soon as the batter hits a fair ground ball. Runner on third: sprint home, wherever the ball is hit. Nobody stops to look and nobody goes back.
+
+**Defense:** The force is on at every base, so step on the base instead of chasing a tag. The easiest out is often at home or at first. Older teams can turn home to first.
+
+**Common mistakes:** The runner on third holds because the ball was hit to the left side; runners stop and watch; the catcher tries to tag the runner instead of stepping on home plate.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+
+<a id="sit010"></a>
+## SIT010: Ground ball with a runner on second, first base open
+
+bases: second · outs: 0 or 1
+
+**Offense:** You're not forced, so read where the ball goes. If it's hit in front of you (to the shortstop or third baseman), stay unless it gets through. If it's hit behind you (to the right side), run hard to third. With two outs, run on contact.
+
+**Defense:** Look the runner back to second before throwing to first. If the runner breaks on a ball to the left side, throw to third for the tag.
+
+**Common mistakes:** The runner runs into a tag on a ball hit right to the shortstop; the runner holds on a ball to the right side and gives up an easy base.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Read the ball, then go](lessons.md#l014), [Know the play before the pitch](lessons.md#l012). Draft, not yet reviewed.
+
+<a id="sit011"></a>
+## SIT011: Two outs, ball in play with runners on
+
+bases: any · outs: 2
+
+**Offense:** Run on contact, on everything: ground balls, line drives and fly balls. A catch ends the inning anyway, so there's nothing to tag up for. A runner on second should run hard and expect to score on a hit.
+
+**Defense:** Get the easiest out: a force at the nearest base or the out at first.
+
+**Common mistakes:** Runners go halfway or tag up out of habit; runners stop to watch a fly ball; nobody reminds the runners that there are two outs.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Know the play before the pitch](lessons.md#l012), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+
+<a id="sit012"></a>
+## SIT012: Two runners end up on the same base
+
+bases: any
+
+**Offense:** Stay on the base and look at your coach; don't walk off. The base belongs to the runner who was there first, unless that runner was forced to leave it, in which case it belongs to the runner behind. The runner who doesn't own the base can be tagged out even while standing on it. If you're the lead runner and the base behind you is open, your coach may send you back there.
+
+**Defense:** Tag both runners, then let the umpire rule. Only the runner who isn't entitled to the base is out.
+
+**Common mistakes:** Both runners step off thinking one is already out, and both are tagged; the fielder tags only one runner; coaches argue instead of asking the umpire which runner owns the base.
+
+**Where the rule applies:**
+- (no rule facts linked)
+
+Lessons: [Know the play before the pitch](lessons.md#l012), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002). Draft, not yet reviewed.
+
+<a id="sit013"></a>
+## SIT013: Batter runs through first base
+
+bases: none
+
+**Offense:** Run through first base at full speed. Touch the front edge of the bag, keep running a few steps past it, then slow down and look to your right, toward foul territory, to find the ball. Come back to first right away. You're allowed to run past first and come back without being tagged out, as long as you don't try to go to second.
+
+**Defense:** Stretch toward the throw with your foot on the base, then get out of the runner's path after the catch.
+
+**Common mistakes:** The runner slows down to stop on the bag and is out by a step; the runner dives or slides into first, which is slower; the runner jogs on a routine ground ball and can't take advantage of a wild throw.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+
+<a id="sit014"></a>
+## SIT014: Batter overruns first and turns toward second (umpire's judgment)
+
+bases: none
+
+**Offense:** After you run through first, come straight back and don't make any move toward second unless you're really going. If the umpire judges that you tried to go to second, you lose the protection for overrunning the base and can be tagged out before you get back. Which way you turn doesn't decide it by itself: the umpire judges whether you made an attempt to advance.
+
+**Defense:** If the runner makes a move toward second, tag them, then let the umpire make the call.
+
+**Common mistakes:** The runner drifts toward second while looking for the ball and is tagged; fans and coaches shout that the runner turned the wrong way, as if the direction alone decides it; players and coaches argue the call. Whether the runner tried to advance is the umpire's judgment, so the call stands.
+
+**Where the rule applies:**
+- F015 (little_league, regular season): Calls that rest on the umpire's judgment, such as balls and strikes or safe and out, are not protestable in Little League.
+- F032 (usssa): In USSSA fastpitch, judgment calls such as fair or foul, ball or strike, and safe or out are final. A coach may ask for the correct ruling only when a call seems to conflict with a rule.
+
+Lessons: [Run hard through the finish](lessons.md#l013), [Everyone makes mistakes: forgive others, own yours](lessons.md#l002), [Control the moment](lessons.md#l010). Draft, not yet reviewed.
+
+<a id="sit015"></a>
+## SIT015: Fly ball that clearly won't be caught, runner on first
+
+bases: first · outs: any
+
+**Offense:** If the ball is clearly going to drop (over the outfielder's head, into a gap, or far from every fielder), run right away. The moment it lands you're forced to second, so freezing at first can get you thrown out at second on a hit. Watch the fielder: one running hard with their back to the infield probably won't catch it.
+
+**Defense:** Field it and throw to the lead base. An outfielder can get a force out at second if the runner waited at first.
+
+**Common mistakes:** The runner waits at first on a ball over everyone's head and is forced out at second; the runner goes back to first while the batter also arrives, so two runners share one base; the runner goes halfway on a ball nobody could catch and only gets one base.
+
+**Where the rule applies:**
+- F250 (usa_baseball, Stage 2 (7-9)): For ages 7-9 the matrix adds learning the strike zone, loading and striding, front toss, backhands, hitting the cutoff, running through and rounding first, force outs, tagging up, and basic catcher stance and equipment.
+
+Lessons: [Read the ball, then go](lessons.md#l014), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.
+
+<a id="sit016"></a>
+## SIT016: Dropped third strike, first base open
+
+bases: none · outs: any · count: two strikes
+
+**Offense:** Run! When the catcher doesn't catch strike three cleanly and first base is open, or there are two outs, the batter can run to first. Drop the bat and sprint until you're tagged, thrown out or called out. Don't wait for someone to tell you. This applies only where your league uses the uncaught-third-strike rule; many younger divisions don't.
+
+**Defense:** Catcher: pick the ball up and tag the batter or throw to first right away. First baseman: get to the base and give a target.
+
+**Common mistakes:** The batter walks back toward the dugout; the batter waits for a coach to yell; the catcher rolls the ball back to the mound while the batter can still run.
+
+**Where the rule applies:**
+- F034 (usssa): In USSSA fastpitch, the batter may run on an uncaught third strike when first base is open or there are two outs. Coach-pitch travel ball is the exception.
+- F054 (usssa, 7U-8U kid pitch): In USSSA 7U-8U kid pitch, the batter is automatically out on a dropped third strike.
+- F148 (little_league, Majors/Junior/Senior): The dropped-third-strike rule applies in Little League Majors, Junior and Senior softball.
+- F217 (nsa, 8U coach pitch): In NSA 8U, an inning ends after 3 outs or 5 runs. Runners may leave on the release but can't steal home unless played on. There's no bunting, no dropped third strike, and no hit-by-pitch award until a second hit in the same at-bat.
+- F021 (little_league): New for 2026: with a double first base on an uncaught third strike, both the fielder and the runner may use either part of the base.
+
+Lessons: [Big moments aren't scripted](lessons.md#l005), [Run hard through the finish](lessons.md#l013). Draft, not yet reviewed.

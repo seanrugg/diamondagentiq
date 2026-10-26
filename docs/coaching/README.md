@@ -4,10 +4,10 @@
 
 What the agents teach from, as readable pages. The data lives in `data/coaching/*.csv`; see `data/coaching/README.md` to add or change material.
 
-- [Lessons](lessons.md) (11): the philosophy, with what it means for players, coaches, parents and umpires
-- [Situations](situations.md) (5): game states and how offense and defense react
+- [Lessons](lessons.md) (14): the philosophy, with what it means for players, coaches, parents and umpires
+- [Situations](situations.md) (16): game states and how offense and defense react
 - [Stories](stories.md) (1): real coaching moments
-- [Coaching insights](insights.md) (19): practical tips by topic
+- [Coaching insights](insights.md) (31): practical tips by topic
 
 ## Learning philosophy
 

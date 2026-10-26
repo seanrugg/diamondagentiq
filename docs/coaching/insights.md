@@ -4,6 +4,34 @@
 
 Practical tips by topic, with the ages and audience they're for.
 
+## always advance
+
+### C029: A runner on base has no plan to move up
+
+Ages 11-18 · for player · baseball · source `ABCA-BR`
+
+Your job on base is to get to the next base. Take the same lead every time, set in an athletic stance facing the field, and break when the pitcher commits to home, not when the catcher catches it. Check your league's rules first: some youth leagues don't allow leaving before the pitch reaches the batter.
+
+**Why:** A good lead shortens the distance to the next base and makes the defense deal with you.
+
+**Try this:** Practice leads and first-step sprints while a pitcher goes through the motion.
+
+Draft, not yet reviewed.
+
+## baserunning every practice
+
+### C028: Base running gets skipped at practice
+
+Ages 7-18 · for coach · both · source `ABCA-BR`
+
+Do some base running every practice, right after warm-ups, with drills that look like game situations.
+
+**Why:** Good base-running teams don't need complicated drills. They need a clear philosophy and regular reps.
+
+**Try this:** Ten minutes after warm-ups, rotating: leads and first steps one day, fly-ball reads the next, ground-ball forces the next.
+
+Draft, not yet reviewed.
+
 ## bat care
 
 ### C018: Taking care of a bat
@@ -102,6 +130,48 @@ A strikeout, even one that ends the game, is one at-bat of information. Talk abo
 
 Reviewed by DIQ umpire.
 
+## fly ball drop
+
+### C031: A fly ball is clearly going to drop (over a fielder's head or into a gap)
+
+Ages 8-18 · for player · both · source `BR-SIT-PRACTICE`
+
+If the ball is plainly going to drop, run. A runner on first is forced the moment it lands, so waiting at the base can mean being thrown out at second on a hit.
+
+**Why:** When a fair fly ball isn't caught, the batter becomes a runner and the force is on.
+
+**Try this:** Hit or throw balls into gaps and over heads with runners on first. Runners call 'Down!' and go.
+
+Draft, not yet reviewed.
+
+## fly ball halfway
+
+### C021: A runner on first or second sprints on a fly ball with fewer than two outs and gets doubled off
+
+Ages 8-18 · for all · both · source `BR-SIT-PRACTICE`
+
+With fewer than two outs, take a few steps off and read the ball. Go far enough to advance if it drops, but stay close enough to get back if it's caught. Tag up only when the catch is deep enough to advance after it.
+
+**Why:** After a catch with fewer than two outs, every runner has to get back to their base. If the throw beats them, they're out.
+
+**Try this:** Hit or toss fly balls to outfielders with runners on first. Runners call 'halfway', 'tag' or 'go' before they move.
+
+Draft, not yet reviewed.
+
+## ground ball force
+
+### C024: Runner on first, or the bases loaded, and the batter hits a ground ball
+
+Ages 7-14 · for player · both · source `BR-SIT-PRACTICE`
+
+On a fair ground ball, a runner on first has to run, and so does every runner with all the bases filled behind them. Sprint to the next base; there's no going back.
+
+**Why:** The batter needs first base, so the runner there is forced off it. Standing still gives the defense an easy force or double play, or leaves two runners on one base.
+
+**Try this:** Ground-ball station: a runner on first, the coach rolls grounders to the infield, and the runner sprints on contact. Then add a runner on second and ask 'force or no force?' before each rep.
+
+Draft, not yet reviewed.
+
 ## multi sport
 
 ### C011: Questions about year-round baseball or softball
@@ -184,6 +254,48 @@ Players improve with reps: up to age 12, aim for about three-quarters practice o
 
 Reviewed by DIQ umpire.
 
+## pre pitch check
+
+### C020: Runners forget the outs or what to do on a ground ball or a fly ball
+
+Ages 7-18 · for coach · both · source `BR-SIT-PRACTICE`
+
+Between pitches, have the base coach ask each runner the outs and their plan, and get an answer back: 'Two outs, run on anything' or 'One out: ground ball I go, fly ball halfway.'
+
+**Why:** A decision made before the pitch becomes a reaction during it. Most youth base-running mistakes come from deciding after the ball is hit.
+
+**Try this:** Hold up fingers for the outs every pitch and have runners answer. At practice, call a situation (runner on first, one out) before every rep.
+
+Draft, not yet reviewed.
+
+## read defenders
+
+### C027: The runner stares at the ball and misses what the fielders are doing
+
+Ages 9-18 · for all · both · source `AU-BR-DRILLS`
+
+Read the fielders, not only the ball: where they're playing, whether they can get to it, and where they're throwing.
+
+**Why:** Where the ball goes and where the fielders are decide whether you can take the base. Watching only the ball is a common mistake.
+
+**Try this:** Read-and-react reps: the coach puts balls in play, runners decide to go or hold, and then they say what they saw.
+
+Draft, not yet reviewed.
+
+## round bases
+
+### C026: Rounding a base on a hit to the outfield
+
+Ages 8-18 · for player · both · source `AU-BR-DRILLS`
+
+Swing out a little before the base, touch the inside corner, and keep your speed through the turn.
+
+**Why:** Good angles save steps and keep your momentum.
+
+**Try this:** Base-rounding drill: runners take turns rounding first on a pretend single while the coach watches the angle and the foot on the inside corner.
+
+Draft, not yet reviewed.
+
 ## run it out
 
 ### C015: Batter hits a ball near the line, or isn't sure it's fair
@@ -197,6 +309,34 @@ Run hard to first on every ball you hit until you hear 'Foul!' or 'Time!' Fair o
 **Try this:** In practice, roll balls down the lines that go foul and come back fair. The batter runs every one; the fielder makes the play; a coach plays umpire and signals fair or calls foul.
 
 Reviewed by DIQ umpire.
+
+## run through first
+
+### C025: The batter slows down or stops on first base
+
+Ages 7-18 · for player · both · source `DIQ-SME`
+
+Run through first at full speed. Touch the front of the bag, keep sprinting a few steps, then slow down and look right, toward foul ground, for the ball.
+
+**Why:** Slowing down to stop on the bag costs time at the exact moment the play is closest. You're allowed to run past first and come back if you return right away.
+
+**Try this:** Put a cone 3 to 4 steps past first base. Runners must reach the cone at full speed.
+
+Draft, not yet reviewed.
+
+## simple signs
+
+### C030: Too many signs confuse young runners
+
+Ages 7-14 · for coach · both · source `ABCA-BR`
+
+Start with a simple red light/green light from the base coach. Add more signs only after the basics are solid.
+
+**Why:** Young runners can't execute a sign they're still decoding.
+
+**Try this:** Use one sign per game situation until the whole team gets it right in practice.
+
+Draft, not yet reviewed.
 
 ## softball bat certification
 
@@ -225,6 +365,34 @@ In youth games the zone is often called generously, roughly chins to shins and l
 **Try this:** In practice, call anything chins-to-shins a 'swing pitch' and react to it. Note how the umpire is calling it in the first inning and adjust.
 
 Reviewed by DIQ umpire.
+
+## tag up third
+
+### C022: Runner on third, fly ball, fewer than two outs
+
+Ages 8-18 · for player · both · source `BR-SIT-PRACTICE`
+
+Get back to third and tag. Leave the moment the fielder first touches the ball, not when the catch is finished, and run hard home. Leaving early lets the defense appeal for an out.
+
+**Why:** The tag-up is the runner's best chance to score without a hit.
+
+**Try this:** Practice with the coach saying 'Go!' at the touch, then without the coach while the runner watches the ball into the glove.
+
+Draft, not yet reviewed.
+
+## two outs run
+
+### C023: Two outs and the ball is hit
+
+Ages 7-18 · for player · both · source `BR-SIT-PRACTICE`
+
+With two outs, run on contact on everything: grounders, line drives and fly balls. A catch ends the inning anyway, so there's nothing to tag up for.
+
+**Why:** Every step counts if the ball drops or a fielder misplays it.
+
+**Try this:** Before each pitch with two outs, runners tell the base coach: 'Two outs, I'm running.'
+
+Draft, not yet reviewed.
 
 ## two strike approach
 
