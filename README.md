@@ -106,6 +106,7 @@ curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d
 # An umpire's question, and a player's
 curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/07-umpire-batted-ball-hits-runner.json
 curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/08-player-foul-then-fair.json
+curl -s -X POST http://127.0.0.1:8787/run -H "Content-Type: application/json" -d @input_examples/09-coach-baserunning-fly-ball.json
 ```
 
 Returns `{run_id, status, mode, output | error, agents, trace_id, log_file, execution_time_seconds, sample_mode}`. Failures come back as a structured error naming the stage. `POST /run/stream` and `POST /review/stream` stream the same run as NDJSON (one line per agent step) for the page. `GET /healthz` reports models, sample mode and memory counts.
@@ -207,7 +208,7 @@ Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
 - **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap. The batted-ball-hits-runner, fair/foul and base-running rule logic (tag-ups, forces, two runners on a base, overrunning first) is in our own words because the rulebook text for those rules isn't loaded yet (also listed in `gaps.csv`).
 - **Memory ranking.** H-MEM's reference scorer separates related and unrelated questions poorly, so recall offers a few of the team's memories at a low bar and the CoachingAgent lists the ones it actually used (`memory_used`); the answer shows both.
-- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. The example outputs for 07 and 08 are sample-mode runs until our next live run.
+- **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. The example outputs for 07, 08 and 09 are sample-mode runs until our next live run.
 
 ## Tooling disclosure and pre-existing work
 
@@ -227,7 +228,7 @@ src/
 data/            schema.sql, seed.sql (synthetic), rules/*.csv, coaching/*.csv,
                  samples/ (box score, 10-game synthetic season), migrations/
 docs/coaching/   readable lessons, situations, stories, tips (generated)
-input_examples/  8 requests (every role, both review inputs);
+input_examples/  9 requests (every role, both review inputs);
 output_examples/ written by npm run demo, with traces/
 web/index.html   the page
 vendor/hmem/     Meterless H-MEM reference (pinned, unmodified)

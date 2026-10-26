@@ -1,0 +1,177 @@
+{
+  "agents": [
+    {
+      "name": "ContextAgent",
+      "role": "Reads the question: sport, league, age, what kind of help is needed",
+      "model": "sample-offline"
+    },
+    {
+      "name": "MemoryAgent",
+      "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
+      "model": "sample-offline"
+    },
+    {
+      "name": "RulesAgent",
+      "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
+      "model": "sample-offline"
+    },
+    {
+      "name": "DevelopmentAgent",
+      "role": "Picks the lesson, game situation, story, coaching tips and drills",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CallTypeAgent",
+      "role": "Umpire's judgment, written rule, or both",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CoachingAgent",
+      "role": "Writes the answer, teachable moment, life lesson and improvement plan",
+      "model": "sample-offline"
+    },
+    {
+      "name": "CriticAgent",
+      "role": "Reviews every draft (with code checks) and sends it back when it falls short",
+      "model": "sample-offline"
+    },
+    {
+      "name": "ScorebookAgent",
+      "role": "Transcribes a box score; code checks the totals and asks for a re-read",
+      "model": "sample-offline"
+    },
+    {
+      "name": "GameReviewAgent",
+      "role": "Post-game: what decided the game and the practice priorities",
+      "model": "sample-offline"
+    }
+  ],
+  "sample_mode": true,
+  "run_id": "example-09",
+  "mode": "situation",
+  "trace_id": "b4713fab-3d21-4b98-80c5-156de6ea1fd2",
+  "log_file": "logs/trace-b4713fab-3d21-4b98-80c5-156de6ea1fd2.jsonl",
+  "execution_time_seconds": 1.7,
+  "status": "success",
+  "output": {
+    "what_happened": {
+      "summary": "Fly ball with a runner on first, fewer than 2 outs. Take a few steps off the base and read the ball. With fewer than two outs, if it's caught you must get back and touch first before you can go anywhere, and the defense can throw behind you for a double play. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
+      "sources": [
+        "coaching_lessons:L012",
+        "coaching_lessons:L014",
+        "coaching_situations:SIT006",
+        "coaching_insights:C020",
+        "coaching_insights:C021"
+      ]
+    },
+    "call_type": "coaching",
+    "call_type_rationale": "No umpire call or rule is in question here: this is about skills, confidence and the next step.",
+    "channel": {
+      "who": "The player, one-on-one",
+      "how": "A short, calm talk at practice: one thing to work on, plenty of encouragement, and let the player tell you how it feels."
+    },
+    "teachable_moment": "Know the play before the pitch: Before every pitch, a good runner knows how many outs there are, whether they're forced, and what they'll do on a ground ball, a fly ball and a line drive. Decide before the ball is hit, so you react instead of think.",
+    "improvement_plan": {
+      "individual": [
+        "Hold up fingers for the outs every pitch and have runners answer. At practice, call a situation (runner on first, one out) before every rep.",
+        "Hit or toss fly balls to outfielders with runners on first. Runners call 'halfway', 'tag' or 'go' before they move."
+      ],
+      "team": [
+        "First-to-third reads: Runner at first on a ball in the outfield gap. Read the fielder’s angle and the cutoff, then decide stay-at-second vs. third without watching the ball bounce twice. Safety: No slides into unprotected coaches. Clear the rundown lane before the next rep."
+      ],
+      "at_home": [
+        "Between pitches, ask runners out loud: 'How many outs? What do you do on a ground ball?' Make it a habit, not a quiz. At practice, call out a situation before every rep."
+      ]
+    },
+    "confidence": 0.9,
+    "sources": [
+      {
+        "table": "coaching_lessons",
+        "id": "L012",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_lessons",
+        "id": "L014",
+        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_situations",
+        "id": "SIT006",
+        "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C020",
+        "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C021",
+        "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      }
+    ],
+    "missing_facts": [],
+    "trace_id": "b4713fab-3d21-4b98-80c5-156de6ea1fd2",
+    "computation": null,
+    "draft_data": false,
+    "intent": "general",
+    "focus": "pre pitch check",
+    "life_lesson": {
+      "text": "Preparation turns pressure into routine. People who think ahead stay calm when things get busy.",
+      "lessons": [
+        {
+          "id": "L012",
+          "title": "Know the play before the pitch",
+          "principle": "Before every pitch, a good runner knows how many outs there are, whether they're forced, and what they'll do on a ground ball, a fly ball and a line drive. Decide before the ball is hit, so you react instead of think."
+        },
+        {
+          "id": "L014",
+          "title": "Read the ball, then go",
+          "principle": "Good base running is a series of decisions. Watch where the ball goes and what the fielders do, then choose: go, go halfway, or get back. Don't guess, and don't freeze."
+        }
+      ]
+    },
+    "situations": [
+      {
+        "id": "SIT006",
+        "name": "Fly ball with a runner on first, fewer than 2 outs",
+        "offense": "Take a few steps off the base and read the ball. With fewer than two outs, if it's caught you must get back and touch first before you can go anywhere, and the defense can throw behind you for a double play. If it drops, run hard: you're forced to second the moment it lands. On a very deep fly, you can tag up and try for second after the catch, but only if the throw can't beat you.",
+        "defense": "Catch it, then look at the runner. If they're off the base, throw behind them to first for the double play. If they tagged and broke for second, hit the cutoff.",
+        "common_mistakes": "The runner sprints on contact and gets doubled off; the runner stays glued to first on a ball that drops and is forced out at second; the runner forgets to go back and touch first before trying to advance."
+      }
+    ],
+    "review": {
+      "drafts": 1,
+      "passed": true,
+      "unresolved_issues": []
+    },
+    "memory": {
+      "recalled": [],
+      "used": [],
+      "saved": [
+        "mem-1"
+      ]
+    }
+  }
+}

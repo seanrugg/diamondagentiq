@@ -1,0 +1,12 @@
+{
+  "run_id": "example-09",
+  "mode": "situation",
+  "input": {
+    "role": "coach",
+    "sport": "baseball",
+    "sanction": "little_league",
+    "age": 10,
+    "team": "Demo Hawks",
+    "question": "Runner on first, one out. My runner took off on a fly ball to center, it was caught, and he got doubled off at first. This keeps happening. How do I teach my runners what to do on fly balls and ground balls?"
+  }
+}
