@@ -50,6 +50,11 @@ export function publicStep(r: TraceRecord) {
         provider: r.receipt.winning_route?.provider ?? null,
         ms: r.receipt.phases?.reduce((sum, p) => sum + (p.ms ?? 0), 0) ?? null,
         tokens_out: r.receipt.phases?.reduce((sum, p) => sum + (p.tokensOut ?? 0), 0) ?? null,
+        // Nightshift routing evidence, only when the receipt carries it.
+        ...(r.receipt.app ? { app: r.receipt.app } : {}),
+        ...(r.receipt.app_policy?.routed_mode ? { mode: r.receipt.app_policy.routed_mode } : {}),
+        ...(r.receipt.routing?.width && r.receipt.routing?.of ? { raced: `${r.receipt.routing.width} of ${r.receipt.routing.of}` } : {}),
+        ...(r.receipt.cross_check?.status ? { cross_check: r.receipt.cross_check.status } : {}),
       }
     : null;
   return {

@@ -171,6 +171,33 @@ describe("generator meterless receipt", () => {
     expect(result.receipt).toEqual(expectedReceipt);
   });
 
+  it("keeps Nightshift routing evidence (app, mode, race, cross-check) when present", async () => {
+    setFixture({
+      ...meterlessResponse,
+      meterless: {
+        ...meterlessResponse.meterless,
+        app: "diamondagentiq-critic",
+        app_policy: { requested_mode: "fast", routed_mode: "auto", race_width: 6 },
+        routing: { policy: "learned-router", width: 2, of: 6, winner: "nvidia/nemotron-3-ultra-550b-a55b" },
+        cross_check: { status: "passed", checks: [] },
+        consensus: { label: "frontier answer", raced: 1 },
+        cache: { status: "miss" },
+        host_pressure: { thermal: "nominal" },
+      },
+    });
+    const { generator } = await loadGenerator();
+    const result = await generator([{ role: "user", content: "Say hello." }]);
+    expect(result.receipt).toEqual({
+      ...expectedReceipt,
+      app: "diamondagentiq-critic",
+      app_policy: { requested_mode: "fast", routed_mode: "auto" },
+      routing: { width: 2, of: 6, winner: "nvidia/nemotron-3-ultra-550b-a55b" },
+      cross_check: { status: "passed" },
+      consensus: { label: "frontier answer" },
+      cache: { status: "miss" },
+    });
+  });
+
   it("omits the receipt when the meterless response has no meterless object", async () => {
     const { meterless, ...responseWithoutReceipt } = meterlessResponse;
     setFixture(responseWithoutReceipt);

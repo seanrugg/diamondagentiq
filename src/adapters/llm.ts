@@ -67,6 +67,13 @@ export type MeterlessReceipt = {
     tokensIn: number;
     tokensOut: number;
   }[];
+  /** Optional routing evidence: present in Nightshift receipts, kept small. */
+  app?: string;
+  app_policy?: { requested_mode?: string | null; routed_mode?: string | null };
+  routing?: { width?: number | null; of?: number | null; winner?: string | null };
+  cross_check?: { status?: string | null };
+  consensus?: { label?: string | null };
+  cache?: { status?: string | null };
 };
 
 // meterless.compute_receipt.v1: keep only the fields the trace needs.
@@ -89,6 +96,14 @@ const MeterlessReceiptSchema = z.object({
       tokensOut: z.number(),
     }),
   ),
+  // Routing evidence (which app, which mode, how many lanes raced, the
+  // cross-check verdict). Optional: older receipts and other runtimes omit it.
+  app: z.string().optional().catch(undefined),
+  app_policy: z.object({ requested_mode: z.string().nullish(), routed_mode: z.string().nullish() }).optional().catch(undefined),
+  routing: z.object({ width: z.number().nullish(), of: z.number().nullish(), winner: z.string().nullish() }).optional().catch(undefined),
+  cross_check: z.object({ status: z.string().nullish() }).optional().catch(undefined),
+  consensus: z.object({ label: z.string().nullish() }).optional().catch(undefined),
+  cache: z.object({ status: z.string().nullish() }).optional().catch(undefined),
 });
 
 export type GeneratorResult = {

@@ -23,6 +23,13 @@ describe("server publicStep", () => {
     expect(JSON.stringify(step)).not.toContain("private chain of thought");
     expect(JSON.stringify(step)).not.toContain("secret-token");
     expect(step.receipt).toEqual({ receipt_id: "x", requested_model: "lightning", routed_model: "super", provider: "nvidia", ms: 45000, tokens_out: 20 });
+    const routed = publicStep({
+      timestamp: "t", run_id: "r", agent_name: "criticAgent", action: "review_draft", input_summary: "in", output_summary: "out",
+      model: "m", provider: "meterless", reasoning: null, status: "ok",
+      receipt: { receipt_id: "y", requested_model: "meterless/text.fast", routed_model: "m", winning_route: { model: "m", provider: "nvidia" }, phases: [],
+        app: "diamondagentiq-critic", app_policy: { requested_mode: "fast", routed_mode: "auto" }, routing: { width: 2, of: 6 }, cross_check: { status: "passed" } },
+    });
+    expect(routed.receipt).toMatchObject({ app: "diamondagentiq-critic", mode: "auto", raced: "2 of 6", cross_check: "passed" });
     vi.unstubAllEnvs();
   });
 });

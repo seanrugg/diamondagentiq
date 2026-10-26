@@ -570,6 +570,12 @@ async function appendEvidence() {
   const calls = steps.filter((s) => s.receipt);
   const models = new Map();
   for (const s of calls) { const m = shortModel(s.receipt.routed_model || s.model); models.set(m, (models.get(m) || 0) + 1); }
+  const apps = [...new Set(calls.map((s) => s.receipt.app).filter(Boolean))];
+  const modes = new Map();
+  for (const s of calls) if (s.receipt.mode) modes.set(s.receipt.mode, (modes.get(s.receipt.mode) || 0) + 1);
+  const checked = calls.filter((s) => s.receipt.cross_check);
+  const passed = checked.filter((s) => s.receipt.cross_check === "passed").length;
+  const raced = calls.map((s) => s.receipt.raced).filter(Boolean);
   const count = (txt) => (String(txt).match(/mem-\d+/g) || []).length;
   const recalled = steps.filter((s) => s.agent === "memoryAgent" && s.action === "recall").reduce((n, s) => n + count(s.output), 0);
   const saved = steps.filter((s) => s.agent === "memoryAgent" && s.action === "remember").reduce((n, s) => n + count(s.output), 0);
@@ -580,7 +586,12 @@ async function appendEvidence() {
   const zetaris = `<div class="ev"><h4>Zetaris</h4><p class="big">${sql.length}</p><p>SQL ${sql.length === 1 ? "query" : "queries"} ${sampleMode ? "on the bundled copy of the tables (sample mode)" : "sent through Zetaris to <code>diq_pg</code>"}</p>${li([...tables].map(([t, r]) => `<li>${esc(t.replace(/_/g, " "))}: ${r} ${r === 1 ? "row" : "rows"}</li>`))}</div>`;
   const nightshift = sampleMode
     ? `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">0</p><p>Sample mode: an offline stand-in answered, so no model calls or receipts.</p></div>`
-    : `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">${calls.length}</p><p>model ${calls.length === 1 ? "call" : "calls"}, each with a Nightshift receipt</p>${li([...models].map(([m, n]) => `<li>${esc(m)} × ${n}</li>`))}<p class="ids" title="Receipt ids: search these in Nightshift">${calls.map((s) => esc(s.receipt.receipt_id)).join(" · ")}</p></div>`;
+    : `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">${calls.length}</p><p>model ${calls.length === 1 ? "call" : "calls"}, each with a Nightshift receipt</p>${li([...models].map(([m, n]) => `<li>${esc(m)} × ${n}</li>`))}${li([
+      apps.length ? `<li>${apps.length} Nightshift ${apps.length === 1 ? "app" : "apps"}, one per agent: ${esc(apps.map((a) => a.replace(/^diamondagentiq-/, "")).join(", "))}</li>` : "",
+      modes.size ? `<li>Modes served: ${esc([...modes].map(([m, n]) => `${m.replace(/^meterless\//, "")} × ${n}`).join(", "))}</li>` : "",
+      raced.length ? `<li>Lanes raced per call: ${esc([...new Set(raced)].join(", "))}</li>` : "",
+      checked.length ? `<li>Nightshift cross-check passed on ${passed} of ${checked.length}</li>` : "",
+    ].filter(Boolean))}<p class="ids" title="Receipt ids: search these in Nightshift">${calls.map((s) => esc(s.receipt.receipt_id)).join(" · ")}</p></div>`;
   const hmem = `<div class="ev"><h4>Meterless H-MEM</h4><p class="big">${saved}</p><p>${saved === 1 ? "memory" : "memories"} saved for this team</p><ul><li>${recalled} recalled before answering</li><li>${trust} trust ${trust === 1 ? "update" : "updates"} from the Critic's verdict</li>${total !== null ? `<li>${total} memories stored in all</li>` : ""}</ul></div>`;
   const sec = document.createElement("section");
   sec.className = "evidence";
