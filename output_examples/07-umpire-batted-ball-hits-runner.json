@@ -3,96 +3,89 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-07",
   "mode": "situation",
-  "trace_id": "1159a838-2d73-46fd-a22a-970ff9713ebc",
-  "log_file": "logs/trace-1159a838-2d73-46fd-a22a-970ff9713ebc.jsonl",
-  "execution_time_seconds": 2.1,
+  "trace_id": "3b694d4d-daae-463f-ae3a-a2aa26a4d125",
+  "log_file": "logs/trace-3b694d4d-daae-463f-ae3a-a2aa26a4d125.jsonl",
+  "execution_time_seconds": 227,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Runner hit by a fair batted ball, bases loaded, no outs. One out, and the inning isn't over. A runner hit by a fair batted ball that no fielder has touched is out, and the ball is dead at that moment, even if it later rolls foul. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
+      "summary": "One out, and the inning is not over. When the fair batted ball hit the runner on third before a fielder touched it, that runner was out and the ball became dead immediately, so the later tag calls do not count. With the bases loaded, the batter goes to first, the runner from first goes to second, and the runner from second goes to third; no run scores. Fair/foul, safe/out, and interference calls are umpire judgment calls under Rule 9, Section 2 and cannot be protested.",
       "sources": [
-        "rules_facts:F028",
         "rules_facts:F087",
         "rules_facts:F088",
         "rules_facts:F089",
+        "rules_facts:F095",
         "coaching_lessons:L010",
-        "coaching_lessons:L011",
+        "coaching_lessons:L002",
         "coaching_situations:SIT004"
       ]
     },
     "call_type": "mixed",
-    "call_type_rationale": "The umpire's judgment decides what happened; a written rule then sets what follows.",
+    "call_type_rationale": "The umpire must first judge whether the batted ball hit the runner in fair territory and whether the subsequent tags were legal; once those facts are settled, the rulebook dictates the outs, dead-ball status, and placement of the other runners.",
     "channel": {
-      "who": "Your partner or umpire-in-chief",
-      "how": "Talk it through after the game, calmly; between innings, keep your focus on the next play."
+      "who": "the head coach",
+      "how": "calmly, between innings or after the game"
     },
-    "teachable_moment": "Control the moment: When a play gets loud and confusing, the adults set the temperature. Umpires stop the play, get together and explain calmly; coaches lower their voices and wait for the explanation.",
+    "teachable_moment": "A dead ball ends the play right then, so nothing after it counts and only forced runners advance.",
     "improvement_plan": {
       "individual": [
-        "Kill it loudly: 'Time! Dead ball!' with both arms up. Get your partner, agree on what happened and where everyone goes, then explain once to each coach. Don't let the volume change the call: a misapplied rule can be corrected, and a judgment call stands."
+        "Practice killing the play loudly: say 'Time! Dead ball!' with both arms up so everyone stops immediately."
       ],
       "team": [
-        "Before the next game, walk through dead-ball mechanics with your partner: who calls it, the signal, and where you meet."
+        "Hold a quick crew conference after a confusing play to agree on what happened before explaining it to either coach."
       ],
-      "at_home": []
+      "at_home": [
+        "Review the USA Softball rule on a runner hit by a fair batted ball so you know exactly when the ball becomes dead."
+      ]
     },
-    "confidence": 0.9,
+    "confidence": 0.8,
     "sources": [
-      {
-        "table": "rules_facts",
-        "id": "F028",
-        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/02/February-2026-Plays-and-Clarification.pdf",
-        "verified": true,
-        "rule_ref": "Rule 8-7-J; Rule 1 Obstruction (as cited)",
-        "edition": "2026-02",
-        "synthetic": false
-      },
       {
         "table": "rules_facts",
         "id": "F087",
@@ -121,6 +114,15 @@
         "synthetic": false
       },
       {
+        "table": "rules_facts",
+        "id": "F095",
+        "source_url": "https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf",
+        "verified": true,
+        "rule_ref": "Rule 9, Sec 2",
+        "edition": "2026 (posted 2026-01-12)",
+        "synthetic": false
+      },
+      {
         "table": "coaching_lessons",
         "id": "L010",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
@@ -131,7 +133,7 @@
       },
       {
         "table": "coaching_lessons",
-        "id": "L011",
+        "id": "L002",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
         "verified": true,
         "rule_ref": null,
@@ -148,14 +150,16 @@
         "synthetic": false
       }
     ],
-    "missing_facts": [],
-    "trace_id": "1159a838-2d73-46fd-a22a-970ff9713ebc",
+    "missing_facts": [
+      "Specific rule reference for runner hit by batted ball interference in USA Softball (Rule 8, Section 7)"
+    ],
+    "trace_id": "3b694d4d-daae-463f-ae3a-a2aa26a4d125",
     "computation": null,
     "draft_data": false,
     "intent": "ruling",
-    "focus": "Control the moment",
+    "focus": "Umpires confer, enforce dead ball, place runners correctly",
     "life_lesson": {
-      "text": "In any heated moment, slowing down and getting the facts straight before reacting keeps a mistake from turning into a fight.",
+      "text": "Slowing down and getting the facts straight before reacting keeps a mistake from turning into a fight, on or off the diamond. Umpires miss calls too, and owning a mistake calmly earns respect.",
       "lessons": [
         {
           "id": "L010",
@@ -163,9 +167,9 @@
           "principle": "When a play gets loud and confusing, the adults set the temperature. Umpires stop the play, get together and explain calmly; coaches lower their voices and wait for the explanation."
         },
         {
-          "id": "L011",
-          "title": "Play until you hear 'foul'",
-          "principle": "Every batted ball is live until the umpire says otherwise. Players don't decide fair or foul; the umpire does. So run hard and play the ball until you hear 'Foul!' or 'Time!'"
+          "id": "L002",
+          "title": "Everyone makes mistakes: forgive others, own yours",
+          "principle": "Players, coaches, parents and umpires are all human, and we all make mistakes. Forgive the mistakes of others, and take responsibility for your own so you can learn from them and grow. We strive to be perfect, but nobody is."
         }
       ]
     },

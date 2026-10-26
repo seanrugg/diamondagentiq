@@ -49,49 +49,51 @@
   "sample_mode": false,
   "run_id": "example-04",
   "mode": "situation",
-  "trace_id": "5474de68-78db-4dca-90c7-31021f3daa62",
-  "log_file": "logs/trace-5474de68-78db-4dca-90c7-31021f3daa62.jsonl",
-  "execution_time_seconds": 86.9,
+  "trace_id": "6f0f163a-76ca-4593-8e14-e09e79248187",
+  "log_file": "logs/trace-6f0f163a-76ca-4593-8e14-e09e79248187.jsonl",
+  "execution_time_seconds": 98.3,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Being hit by a pitch and going hitless can feel scary and heavy for an 11-year-old, but those moments are information, not a definition of who he is. The one focus this week is building confidence through safe contact reps and praising what he controls: being ready, his approach, and his effort rather than hits. This guidance comes from draft coaching notes that haven't been reviewed yet.",
+      "summary": "It makes sense he feels scared after being hit a few times and going hitless. Those moments are information about his approach, not a measure of his value. The one focus this week is building confidence at the plate before worrying about hits.",
       "sources": [
         "coaching_lessons:L003",
         "coaching_lessons:L007",
-        "coaching_insights:C008",
         "coaching_insights:C005",
-        "coaching_insights:C003"
+        "coaching_insights:C008"
       ]
     },
-    "call_type": "rule",
-    "call_type_rationale": "The appropriate response follows from baseball rules and coaching guidelines once the facts of the hit-by-pitch occurrences and the player's fear are known, rather than relying on an umpire's real-time judgment.",
+    "call_type": "coaching",
+    "call_type_rationale": "This is purely a player development question about rebuilding confidence and addressing fear at the plate — no umpire judgment or rule application is involved.",
     "channel": {
-      "who": "You, the head coach, and the player's parents",
-      "how": "Talk to the player one-on-one calmly before or after practice, not mid-game; ask parents to let the player talk first after games, praise effort and approach, and leave hitting mechanics to you at a calm, agreed time."
+      "who": "The head coach, with the player one-on-one.",
+      "how": "Talk calmly after practice or between innings, ask how he feels, remind him you believe in him, and shift attention to being ready and his approach rather than the result."
     },
-    "teachable_moment": "A hit by pitch or an out doesn't determine his value; what matters is how he prepares, competes, and responds one pitch at a time.",
+    "teachable_moment": "His worth isn't tied to hits or hit-by-pitches, and your belief in him matters more than his stat line. When he sees you believe before he does, confidence can grow.",
     "improvement_plan": {
       "individual": [
-        "Take five quality two-strike tee reps on the outer half each practice, driving the ball the other way with a helmet on every swing.",
-        "After each at-bat, name one controllable he did well ready, approach, effort before talking about the result."
+        "Pick one controllable to grade after each at-bat, such as 'Was I ready?' or 'Did I swing at my pitch?'",
+        "Practise plate coverage or a two-strike approach this week, one thing at a time",
+        "Use a calm breathing routine before stepping in to reset fear and focus"
       ],
       "team": [
-        "Run tee and soft-toss rounds in a safe net so he gets confident contact reps without live pitching at first.",
-        "Praise process out loud in practice great approach, you were ready instead of only celebrating hits."
+        "Run soft-toss or short-distance BP where hitters can succeed and build trust",
+        "Praise effort and process, not hits, in front of the team",
+        "Keep the mood fun and low-pressure so he wants to keep stepping up"
       ],
       "at_home": [
-        "Ask him how the at-bat felt and what he learned, praise his effort and courage, and leave swing mechanics to the coach.",
-        "Keep it low-pressure and fun; let him talk first after a tough game."
+        "Let him talk first about the game and listen without fixing",
+        "Praise his effort and attitude, not whether he got a hit",
+        "Leave batting technique to the coach and bring it up at a calm, agreed time"
       ]
     },
-    "confidence": 0.6,
+    "confidence": 0.9,
     "sources": [
       {
         "table": "coaching_lessons",
         "id": "L003",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -100,16 +102,7 @@
         "table": "coaching_lessons",
         "id": "L007",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
-        "rule_ref": null,
-        "edition": null,
-        "synthetic": false
-      },
-      {
-        "table": "coaching_insights",
-        "id": "C008",
-        "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
@@ -118,29 +111,29 @@
         "table": "coaching_insights",
         "id": "C005",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
       },
       {
         "table": "coaching_insights",
-        "id": "C003",
+        "id": "C008",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
-        "verified": false,
+        "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
       }
     ],
     "missing_facts": [],
-    "trace_id": "5474de68-78db-4dca-90c7-31021f3daa62",
+    "trace_id": "6f0f163a-76ca-4593-8e14-e09e79248187",
     "computation": null,
-    "draft_data": true,
+    "draft_data": false,
     "intent": "development",
-    "focus": "Build confidence through safe contact reps and process praise",
+    "focus": "Build confidence at the plate before results",
     "life_lesson": {
-      "text": "Believe in him before he believes in himself, and remind him his worth isn't his stat line. That steady belief helps a player at school, at work, and at home, not just on the diamond.",
+      "text": "Players rise to the belief adults show in them, on the diamond and later at school, work and home. Remind him that who he is matters far more than today's box score.",
       "lessons": [
         {
           "id": "L003",
@@ -160,34 +153,13 @@
       "unresolved_issues": []
     },
     "memory": {
-      "recalled": [
-        {
-          "id": "mem-6",
-          "content": "The player is working on recovering from a game-ending strikeout.",
-          "relevance": 0.165,
-          "confidence": 0.7
-        },
-        {
-          "id": "mem-1",
-          "content": "12U pitcher threw 68 pitches on Friday",
-          "relevance": 0.156,
-          "confidence": 0.7
-        },
-        {
-          "id": "mem-5",
-          "content": "The player is age 10 and plays baseball.",
-          "relevance": 0.146,
-          "confidence": 0.7
-        }
-      ],
-      "used": [
-        "mem-6"
-      ],
+      "recalled": [],
+      "used": [],
       "saved": [
-        "mem-9",
-        "mem-10",
-        "mem-11",
-        "mem-12"
+        "mem-1",
+        "mem-2",
+        "mem-3",
+        "mem-4"
       ]
     }
   }

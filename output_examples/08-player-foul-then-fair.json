@@ -3,101 +3,90 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-08",
   "mode": "situation",
-  "trace_id": "f6d39f23-a817-44df-a6fa-3ea4357cd2a5",
-  "log_file": "logs/trace-f6d39f23-a817-44df-a6fa-3ea4357cd2a5.jsonl",
-  "execution_time_seconds": 1.8,
+  "trace_id": "a4c7067d-0c1a-440b-b298-ad82e22a2adc",
+  "log_file": "logs/trace-a4c7067d-0c1a-440b-b298-ad82e22a2adc.jsonl",
+  "execution_time_seconds": 297.1,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Slow roller rolls foul, then back fair before first base. It's a fair ball, so the batter is a runner and the out at first stands. A ground ball that hasn't reached first or third base isn't foul just because it crossed the line: it's judged where it stops or where a fielder first touches it. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
+      "summary": "A grounder that rolls down the first base line, goes foul, then rolls back into fair territory is still live. If the first baseman touched it in fair territory before it settled, the umpires treat it as fair, so the out at first stands. Safe and out calls are judgment calls in Little League, so they cannot be protested and the call stays.",
       "sources": [
-        "rules_facts:F014",
         "rules_facts:F015",
-        "rules_facts:F016",
-        "rules_facts:F017",
         "coaching_lessons:L011",
-        "coaching_lessons:L002",
+        "coaching_lessons:L013",
         "coaching_situations:SIT005",
         "coaching_insights:C015",
-        "coaching_insights:C002"
+        "coaching_insights:C009"
       ]
     },
     "call_type": "mixed",
-    "call_type_rationale": "The umpire's judgment decides what happened; a written rule then sets what follows.",
+    "call_type_rationale": "The umpire must first judge where the ball was when touched or where it settled, then the written fair-ball rule decides whether that makes the ball fair and the batter out.",
     "channel": {
-      "who": "Your coach",
-      "how": "Ask at the start or end of practice for one thing to work on, then practise it with a parent or teammate between practices."
+      "who": "head coach",
+      "how": "Ask calmly between innings or after the game if you want to understand the fair-or-foul call; do not argue with the umpire during the game."
     },
-    "teachable_moment": "Play until you hear 'foul': Every batted ball is live until the umpire says otherwise. Players don't decide fair or foul; the umpire does. So run hard and play the ball until you hear 'Foul!' or 'Time!'",
+    "teachable_moment": "Run every ball you hit until you hear the umpire say Foul or Time, because a ball near the line can come back fair.",
     "improvement_plan": {
       "individual": [
-        "In practice, roll balls down the lines that go foul and come back fair. The batter runs every one; the fielder makes the play; a coach plays umpire and signals fair or calls foul.",
-        "In practice, call anything chins-to-shins a 'swing pitch' and react to it. Note how the umpire is calling it in the first inning and adjust."
+        "Run hard to first on every batted ball until you hear Foul or Time.",
+        "Practice running through first base and taking a few steps past the bag before looking for the ball."
       ],
       "team": [
-        "First-to-third reads: Runner at first on a ball in the outfield gap. Read the fielder’s angle and the cutoff, then decide stay-at-second vs. third without watching the ball bounce twice. Safety: No slides into unprotected coaches. Clear the rundown lane before the next rep."
+        "At practice, roll balls down the first base line that go foul and come back fair so everyone learns the rule.",
+        "Have a coach act as umpire and signal fair or call foul while batters and fielders play the ball out."
       ],
       "at_home": [
-        "Hit it, drop the bat and run, every time, until you hear 'Foul!'. Fielders: if the ball is in play, make the play."
+        "With a parent, roll a ball along a line in the yard or driveway and shout fair or foul so you keep running until you hear the call."
       ]
     },
-    "confidence": 0.9,
+    "confidence": 0.8,
     "sources": [
-      {
-        "table": "rules_facts",
-        "id": "F014",
-        "source_url": "https://www.littleleague.org/university/articles/local-league-protest-committee/",
-        "verified": true,
-        "rule_ref": "Rule 4.19",
-        "edition": "page modified 2018-11-15",
-        "synthetic": false
-      },
       {
         "table": "rules_facts",
         "id": "F015",
@@ -105,24 +94,6 @@
         "verified": true,
         "rule_ref": "Rule 4.19",
         "edition": "page modified 2018-11-15",
-        "synthetic": false
-      },
-      {
-        "table": "rules_facts",
-        "id": "F016",
-        "source_url": "https://www.littleleague.org/university/articles/regular-season-to-tournament-rule-differences/",
-        "verified": true,
-        "rule_ref": "Rule 4.19(c)(1)",
-        "edition": "page modified 2024-05-07",
-        "synthetic": false
-      },
-      {
-        "table": "rules_facts",
-        "id": "F017",
-        "source_url": "https://www.littleleague.org/university/articles/regular-season-to-tournament-rule-differences/",
-        "verified": true,
-        "rule_ref": "Rule 4.19(f)",
-        "edition": "page modified 2024-05-07",
         "synthetic": false
       },
       {
@@ -136,7 +107,7 @@
       },
       {
         "table": "coaching_lessons",
-        "id": "L002",
+        "id": "L013",
         "source_url": "https://github.com/seanrugg/diamondagentiq",
         "verified": true,
         "rule_ref": null,
@@ -163,22 +134,24 @@
       },
       {
         "table": "coaching_insights",
-        "id": "C002",
-        "source_url": "https://github.com/seanrugg/diamondagentiq",
+        "id": "C009",
+        "source_url": "https://www.littleleague.org/downloads/league-resource-guide/",
         "verified": true,
         "rule_ref": null,
         "edition": null,
         "synthetic": false
       }
     ],
-    "missing_facts": [],
-    "trace_id": "f6d39f23-a817-44df-a6fa-3ea4357cd2a5",
+    "missing_facts": [
+      "fair/foul determination rule for a batted ball that rolls foul then back fair before being touched by a fielder"
+    ],
+    "trace_id": "a4c7067d-0c1a-440b-b298-ad82e22a2adc",
     "computation": null,
     "draft_data": false,
     "intent": "ruling",
-    "focus": "run it out",
+    "focus": "Run hard until you hear 'Foul!'",
     "life_lesson": {
-      "text": "Don't quit on something because you've already decided how it will turn out. Finish the job, and leave the call to the person whose call it is.",
+      "text": "Finish the job even when you think the play is over. Keeping going until the umpire stops you helps on the diamond and in school and life.",
       "lessons": [
         {
           "id": "L011",
@@ -186,9 +159,9 @@
           "principle": "Every batted ball is live until the umpire says otherwise. Players don't decide fair or foul; the umpire does. So run hard and play the ball until you hear 'Foul!' or 'Time!'"
         },
         {
-          "id": "L002",
-          "title": "Everyone makes mistakes: forgive others, own yours",
-          "principle": "Players, coaches, parents and umpires are all human, and we all make mistakes. Forgive the mistakes of others, and take responsibility for your own so you can learn from them and grow. We strive to be perfect, but nobody is."
+          "id": "L013",
+          "title": "Run hard through the finish",
+          "principle": "Run every ball out at full speed, through first base and until the play is over. Slowing down at the end costs more outs than speed ever gains."
         }
       ]
     },

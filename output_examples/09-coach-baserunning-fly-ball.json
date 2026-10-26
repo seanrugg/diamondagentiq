@@ -3,84 +3,91 @@
     {
       "name": "ContextAgent",
       "role": "Reads the question: sport, league, age, what kind of help is needed",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "MemoryAgent",
       "role": "Recalls and saves what we know about this team (Meterless H-MEM)",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "RulesAgent",
       "role": "Queries the rules knowledge base through Zetaris; code does the pitch-rest math",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "DevelopmentAgent",
       "role": "Picks the lesson, game situation, story, coaching tips and drills",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CallTypeAgent",
       "role": "Umpire's judgment, written rule, or both",
-      "model": "sample-offline"
+      "model": "meterless/text.fast"
     },
     {
       "name": "CoachingAgent",
       "role": "Writes the answer, teachable moment, life lesson and improvement plan",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "CriticAgent",
       "role": "Reviews every draft (with code checks) and sends it back when it falls short",
-      "model": "sample-offline"
+      "model": "meterless/text.fusion"
     },
     {
       "name": "ScorebookAgent",
       "role": "Transcribes a box score; code checks the totals and asks for a re-read",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     },
     {
       "name": "GameReviewAgent",
       "role": "Post-game: what decided the game and the practice priorities",
-      "model": "sample-offline"
+      "model": "meterless/text.deep"
     }
   ],
-  "sample_mode": true,
+  "sample_mode": false,
   "run_id": "example-09",
   "mode": "situation",
-  "trace_id": "b4713fab-3d21-4b98-80c5-156de6ea1fd2",
-  "log_file": "logs/trace-b4713fab-3d21-4b98-80c5-156de6ea1fd2.jsonl",
-  "execution_time_seconds": 1.7,
+  "trace_id": "1743e2d0-0d10-41d9-9fd2-349f7520c107",
+  "log_file": "logs/trace-1743e2d0-0d10-41d9-9fd2-349f7520c107.jsonl",
+  "execution_time_seconds": 99.3,
   "status": "success",
   "output": {
     "what_happened": {
-      "summary": "Fly ball with a runner on first, fewer than 2 outs. Take a few steps off the base and read the ball. With fewer than two outs, if it's caught you must get back and touch first before you can go anywhere, and the defense can throw behind you for a double play. The situation card below has what the offense and defense should do, and what to watch for. Check how your league's rulebook applies this (see the rule sources).",
+      "summary": "Getting doubled off on a caught fly ball feels tough, but it is just information for the next play. At age ten, base running is about deciding before the pitch what to do on a ground ball or a fly ball. The one focus this week is a pre-pitch plan: one out means go on a grounder and take a few steps off and read the ball on a fly.",
       "sources": [
         "coaching_lessons:L012",
         "coaching_lessons:L014",
         "coaching_situations:SIT006",
+        "coaching_situations:SIT008",
         "coaching_insights:C020",
-        "coaching_insights:C021"
+        "coaching_insights:C021",
+        "coaching_insights:C024"
       ]
     },
     "call_type": "coaching",
-    "call_type_rationale": "No umpire call or rule is in question here: this is about skills, confidence and the next step.",
+    "call_type_rationale": "The coach is asking for teaching advice on base-running decisions (tagging up on fly balls versus running on ground balls), which is a skills and development issue. No umpire call or written rule is being questioned.",
     "channel": {
-      "who": "The player, one-on-one",
-      "how": "A short, calm talk at practice: one thing to work on, plenty of encouragement, and let the player tell you how it feels."
+      "who": "The head coach or base coach",
+      "how": "Ask between innings or after practice to review the pre-pitch plan with runners, using quick out-loud checks before each pitch."
     },
-    "teachable_moment": "Know the play before the pitch: Before every pitch, a good runner knows how many outs there are, whether they're forced, and what they'll do on a ground ball, a fly ball and a line drive. Decide before the ball is hit, so you react instead of think.",
+    "teachable_moment": "Before the pitch, know the outs and your plan. On a ground ball, run. On a fly ball with fewer than two outs, take a few steps off, watch the ball, and be ready to get back if it is caught.",
     "improvement_plan": {
       "individual": [
-        "Hold up fingers for the outs every pitch and have runners answer. At practice, call a situation (runner on first, one out) before every rep.",
-        "Hit or toss fly balls to outfielders with runners on first. Runners call 'halfway', 'tag' or 'go' before they move."
+        "Before every pitch, say the outs and your plan out loud: 'One out: ground ball I go, fly ball halfway.'",
+        "On a fly ball, take a few steps off the base, read where the ball goes, and get back quickly if it is caught.",
+        "On a ground ball, sprint to second the moment it is hit; do not wait to see if it gets through."
       ],
       "team": [
-        "First-to-third reads: Runner at first on a ball in the outfield gap. Read the fielder’s angle and the cutoff, then decide stay-at-second vs. third without watching the ball bounce twice. Safety: No slides into unprotected coaches. Clear the rundown lane before the next rep."
+        "Between pitches, the base coach asks each runner the outs and the plan and waits for an answer.",
+        "Run read-and-react reps with fly balls and grounders so runners call 'go,' 'halfway,' or 'get back' before moving.",
+        "Use a ground-ball station: the coach rolls grounders with a runner on first, and the runner sprints on contact."
       ],
       "at_home": [
-        "Between pitches, ask runners out loud: 'How many outs? What do you do on a ground ball?' Make it a habit, not a quiz. At practice, call out a situation before every rep."
+        "Ask your player to explain the plan before the game: how many outs, what to do on a grounder, what to do on a fly.",
+        "Play catch in the yard and practice taking a few steps off a base marker, then deciding to stay or go.",
+        "Cheer effort and smart decisions, not the result, and leave base-running technique to the coach."
       ]
     },
     "confidence": 0.9,
@@ -113,6 +120,15 @@
         "synthetic": false
       },
       {
+        "table": "coaching_situations",
+        "id": "SIT008",
+        "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
+      },
+      {
         "table": "coaching_insights",
         "id": "C020",
         "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
@@ -129,16 +145,25 @@
         "rule_ref": null,
         "edition": null,
         "synthetic": false
+      },
+      {
+        "table": "coaching_insights",
+        "id": "C024",
+        "source_url": "https://cdn1.sportngin.com/attachments/document/0113/6133/Base_running_Situations_to_Practice.pdf",
+        "verified": true,
+        "rule_ref": null,
+        "edition": null,
+        "synthetic": false
       }
     ],
     "missing_facts": [],
-    "trace_id": "b4713fab-3d21-4b98-80c5-156de6ea1fd2",
+    "trace_id": "1743e2d0-0d10-41d9-9fd2-349f7520c107",
     "computation": null,
     "draft_data": false,
-    "intent": "general",
-    "focus": "pre pitch check",
+    "intent": "development",
+    "focus": "Pre-pitch plan: halfway on flies, go on grounders",
     "life_lesson": {
-      "text": "Preparation turns pressure into routine. People who think ahead stay calm when things get busy.",
+      "text": "Thinking ahead turns pressure into routine, on the field and in life. When players make a plan before the pitch, they stay calm and react with confidence instead of guessing in the moment.",
       "lessons": [
         {
           "id": "L012",
@@ -159,6 +184,13 @@
         "offense": "Take a few steps off the base and read the ball. With fewer than two outs, if it's caught you must get back and touch first before you can go anywhere, and the defense can throw behind you for a double play. If it drops, run hard: you're forced to second the moment it lands. On a very deep fly, you can tag up and try for second after the catch, but only if the throw can't beat you.",
         "defense": "Catch it, then look at the runner. If they're off the base, throw behind them to first for the double play. If they tagged and broke for second, hit the cutoff.",
         "common_mistakes": "The runner sprints on contact and gets doubled off; the runner stays glued to first on a ball that drops and is forced out at second; the runner forgets to go back and touch first before trying to advance."
+      },
+      {
+        "id": "SIT008",
+        "name": "Ground ball with a runner on first",
+        "offense": "Run hard to second on contact. When the batter hits a fair ground ball, the batter needs first base, so you're forced to leave it. There's no waiting to see if it gets through, and there's no going back.",
+        "defense": "Take the sure out. Older teams turn two, second base then first. Younger teams get the force at second or the out at first. Once the batter is out at first, the runner isn't forced any more, so a tag is needed to get them.",
+        "common_mistakes": "The runner waits to see if the ball gets through and is forced out easily; the runner goes back to first and ends up on the same base as the batter; the runner stops halfway thinking the ball was caught."
       }
     ],
     "review": {
@@ -170,7 +202,10 @@
       "recalled": [],
       "used": [],
       "saved": [
-        "mem-1"
+        "mem-1",
+        "mem-2",
+        "mem-3",
+        "mem-4"
       ]
     }
   }
