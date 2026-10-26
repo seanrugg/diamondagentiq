@@ -221,6 +221,14 @@ table.sources th { font-weight: 600; color: var(--pencil); border-top: 0; }
 .meter { height: 10px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
 .meter span { display: block; height: 100%; background: var(--accent); }
 .small { font-size: 17px; color: var(--pencil); }
+.evidence { border: 1px solid var(--accent); border-radius: 12px; padding: 18px 20px; background: var(--card); box-shadow: 0 0 28px var(--glow); }
+.evidence h3 { margin-bottom: 12px; }
+.ev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.ev { border-top: 4px solid var(--accent); padding-top: 10px; display: grid; gap: 6px; align-content: start; }
+.ev h4 { margin: 0; font: 700 20px/1.1 var(--display); letter-spacing: 0.02em; }
+.ev .big { font: 700 40px/1 var(--display); color: var(--accent); }
+.ev ul { margin: 0; padding-left: 18px; }
+.ev .ids { font-family: ui-monospace, Menlo, monospace; font-size: 15px; color: var(--pencil); overflow-wrap: anywhere; }
 .error-box { border: 2px solid var(--stitch); border-radius: 6px; padding: 12px 14px; color: var(--stitch); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .lineup-toggle { font: 700 20px/1.2 var(--display); cursor: pointer; padding: 12px 0; list-style: none; margin-top: 20px; }
@@ -397,12 +405,15 @@ const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const shortModel = (m) => !m ? "" : /lightning/i.test(m) ? "Nemotron Lightning 30B" : /ultra-550b/i.test(m) ? "Nemotron Ultra 550B" : /super/i.test(m) ? "Nemotron Super 120B" : /^meterless\//.test(m) ? `Nightshift ${m.slice(10)}` : m;
 let forcedToday = null;
+let sampleMode = false;
+let runSteps = [];
 
 async function loadStatus() {
   try {
     const h = await (await fetch("/healthz")).json();
     const judge = h.models?.judge && h.models.judge !== h.models.lightning ? `, judged by <b>${esc(shortModel(h.models.judge))}</b>` : "";
     const models = h.models?.super ? `<span><b>${esc(shortModel(h.models.super))}</b> and <b>${esc(shortModel(h.models.lightning))}</b>${judge} via Meterless Nightshift</span>` : `<span>Local model <b>${esc(h.models?.local)}</b></span>`;
+    sampleMode = !!h.sample_mode;
     if (h.sample_mode) {
       $("#status").innerHTML = `<span><b>Sample mode</b>: no model or Zetaris connected. Answers come from an offline stand-in working on the bundled rules and coaching data.</span><span><b>${h.memory?.memories ?? 0}</b> team memories in H-MEM</span>`;
       $("#use-sample").hidden = true;
@@ -522,6 +533,7 @@ function rowFor(s) {
 }
 
 function addStep(s) {
+  runSteps.push(s);
   const r = rowFor(s);
   if (!r) return;
   $("#empty").hidden = true;
@@ -537,6 +549,44 @@ function addStep(s) {
     ? `<span class="what">${r.what}</span>`
     : `<span class="who">${r.who}${r.role ? `<em>${r.role}</em>` : ""}</span><span class="what">${r.what}</span><span class="meta">${r.meta ?? ""}</span>`;
   $("#steps").append(li);
+}
+
+/**
+ * Proof of work: what the sponsor technology did in this run, counted from the
+ * trace steps the page already received (nothing extra is fetched except the
+ * team's memory total).
+ */
+async function appendEvidence() {
+  const el = $("#answer");
+  if (!el || el.hidden) return;
+  const steps = runSteps.slice();
+  const sql = steps.filter((s) => s.agent === "dataTools" && /^run_sql/.test(s.action));
+  const tables = new Map();
+  for (const s of sql) {
+    const t = (s.input.match(/FROM\s+diq_pg\.(\w+)/i) || [])[1] || "other";
+    const rows = Number((s.output.match(/^(\d+) rows/) || [])[1] || 0);
+    tables.set(t, (tables.get(t) || 0) + rows);
+  }
+  const calls = steps.filter((s) => s.receipt);
+  const models = new Map();
+  for (const s of calls) { const m = shortModel(s.receipt.routed_model || s.model); models.set(m, (models.get(m) || 0) + 1); }
+  const count = (txt) => (String(txt).match(/mem-\d+/g) || []).length;
+  const recalled = steps.filter((s) => s.agent === "memoryAgent" && s.action === "recall").reduce((n, s) => n + count(s.output), 0);
+  const saved = steps.filter((s) => s.agent === "memoryAgent" && s.action === "remember").reduce((n, s) => n + count(s.output), 0);
+  const trust = steps.filter((s) => s.agent === "memoryAgent" && s.action === "feedback").length;
+  let total = null;
+  try { total = (await (await fetch("/healthz")).json()).memory?.memories ?? null; } catch { /* leave it out */ }
+  const li = (items) => items.length ? `<ul>${items.join("")}</ul>` : "";
+  const zetaris = `<div class="ev"><h4>Zetaris</h4><p class="big">${sql.length}</p><p>SQL ${sql.length === 1 ? "query" : "queries"} ${sampleMode ? "on the bundled copy of the tables (sample mode)" : "sent through Zetaris to <code>diq_pg</code>"}</p>${li([...tables].map(([t, r]) => `<li>${esc(t.replace(/_/g, " "))}: ${r} ${r === 1 ? "row" : "rows"}</li>`))}</div>`;
+  const nightshift = sampleMode
+    ? `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">0</p><p>Sample mode: an offline stand-in answered, so no model calls or receipts.</p></div>`
+    : `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">${calls.length}</p><p>model ${calls.length === 1 ? "call" : "calls"}, each with a Nightshift receipt</p>${li([...models].map(([m, n]) => `<li>${esc(m)} × ${n}</li>`))}<p class="ids" title="Receipt ids: search these in Nightshift">${calls.map((s) => esc(s.receipt.receipt_id)).join(" · ")}</p></div>`;
+  const hmem = `<div class="ev"><h4>Meterless H-MEM</h4><p class="big">${saved}</p><p>${saved === 1 ? "memory" : "memories"} saved for this team</p><ul><li>${recalled} recalled before answering</li><li>${trust} trust ${trust === 1 ? "update" : "updates"} from the Critic's verdict</li>${total !== null ? `<li>${total} memories stored in all</li>` : ""}</ul></div>`;
+  const sec = document.createElement("section");
+  sec.className = "evidence";
+  sec.setAttribute("aria-label", "Sponsor technology in this run");
+  sec.innerHTML = `<h3>Behind this answer</h3><div class="ev-grid">${zetaris}${nightshift}${hmem}</div><p class="small">Every step is also written to a JSONL trace in <code>logs/</code>.</p>`;
+  el.append(sec);
 }
 
 const list = (items) => items && items.length ? `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : `<p class="small">Nothing extra here.</p>`;
@@ -743,6 +793,7 @@ $("#use-sample").addEventListener("click", async () => {
 
 let timer = null;
 async function streamRun(url, body, button, idleLabel, onFinal) {
+  runSteps = [];
   $("#steps").innerHTML = ""; $("#empty").hidden = false; $("#empty").textContent = "Starting the team…";
   $("#answer").hidden = true; $("#lineup-wrap").open = true; button.disabled = true; button.textContent = "The team is working…";
   const started = Date.now();
@@ -767,7 +818,7 @@ async function streamRun(url, body, button, idleLabel, onFinal) {
         if (!line.trim()) continue;
         const msg = JSON.parse(line);
         if (msg.type === "step") addStep(msg);
-        else if (msg.type === "answer" || msg.type === "review") onFinal(msg.answer ?? msg.review);
+        else if (msg.type === "answer" || msg.type === "review") { onFinal(msg.answer ?? msg.review); appendEvidence(); }
         else if (msg.type === "error") throw new Error(`The team stopped at ${msg.error.stage}: ${msg.error.message}`);
       }
     }
