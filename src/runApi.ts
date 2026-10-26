@@ -21,6 +21,7 @@ const AGENTS: { name: string; role: string; tier: ModelTier | "code" }[] = [
   { name: "CallTypeAgent", role: "Umpire's judgment, written rule, or both", tier: "lightning" },
   { name: "CoachingAgent", role: "Writes the answer, teachable moment, life lesson and improvement plan", tier: "super" },
   { name: "CriticAgent", role: "Reviews every draft (with code checks) and sends it back when it falls short", tier: "judge" },
+  { name: "TranslatorAgent", role: "Puts the reviewed answer into Spanish, Japanese or Korean; code checks every number and date survives", tier: "super" },
   { name: "ScorebookAgent", role: "Transcribes a box score; code checks the totals and asks for a re-read", tier: "super" },
   { name: "GameReviewAgent", role: "Post-game: what decided the game and the practice priorities", tier: "super" },
 ];

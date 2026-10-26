@@ -41,9 +41,14 @@ export const SituationRequestSchema = z.object({
   event_name: z.string().optional(),
   /** Which team's memory to use (H-MEM). Synthetic labels only in the repo. */
   team: z.string().max(60).optional(),
+  /** Answer language. The team reasons and is checked in English; TranslatorAgent rewrites the passed answer. */
+  language: z.enum(["en", "es", "ja", "ko"]).optional(),
 });
 
 export const SituationAnswerSchema = z.object({
+  /** Language the user-facing text is in, and whether translation was asked for but fell back to English. */
+  language: z.string().optional(),
+  translation: z.object({ requested: z.string(), ok: z.boolean(), note: z.string().optional() }).optional(),
   what_happened: WhatHappenedSchema,
   call_type: CallTypeSchema,
   call_type_rationale: z.string().min(1),

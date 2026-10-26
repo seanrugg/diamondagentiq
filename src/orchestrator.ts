@@ -34,6 +34,7 @@ import {
   type SituationRequest,
 } from "./schemas/situation.js";
 import { getRunId, trace } from "./trace.js";
+import { translatorAgent } from "./agents/translatorAgent.js";
 
 export const MAX_CRITIC_RETRIES = 2;
 
@@ -309,6 +310,22 @@ async function runStages(
     answer.memory = { recalled, used, saved };
     handoff("criticAgent", "memoryAgent", `used ${used.length}; saved ${saved.length}`);
   }
+  const lang = request.language ?? "en";
+  if (lang !== "en") {
+    track.stage = "translatorAgent";
+    {
+      // In sample mode the offline stand-in declines (it can't translate), and the answer stays in English.
+      const translated = await translatorAgent(answer, lang, request.role).catch((error: unknown) => ({ ok: false as const, reason: error instanceof Error ? error.message : String(error) }));
+      if (translated.ok) {
+        Object.assign(answer, translated.answer, { language: lang, translation: { requested: lang, ok: true } });
+        handoff("translatorAgent", "user", `answer in ${lang}`);
+      } else {
+        answer.translation = { requested: lang, ok: false, note: translated.reason.slice(0, 200) };
+        trace({ agent_name: "orchestrator", action: "translation_failed", input_summary: lang, output_summary: `kept English: ${translated.reason.slice(0, 300)}`, status: "error" });
+      }
+    }
+  }
+  if (!answer.language) answer.language = "en";
   trace({
     agent_name: "orchestrator",
     action: "answer",

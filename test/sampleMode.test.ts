@@ -32,4 +32,21 @@ describe("SAMPLE_MODE", () => {
     expect(review.pitcher_rest.map((p) => p.eligible_again)).toEqual(["2026-10-22", "2026-10-19"]);
     vi.unstubAllEnvs();
   }, 60_000);
+
+  it("asked for Spanish, answers in English and says why (the offline stand-in can't translate)", async () => {
+    for (const k of KEYS) vi.stubEnv(k, "");
+    vi.stubEnv("SAMPLE_MODE", "true");
+    vi.resetModules();
+    const { runOnce } = await import("../src/runApi.js");
+    const input = JSON.parse(readFileSync(new URL("../input_examples/01-pitch-rest-house-rule.json", import.meta.url), "utf8"));
+    const target = input.input ?? input;
+    target.language = "es";
+    const r = await runOnce(input);
+    expect(r.status).toBe("success");
+    const out = r.output as { language: string; translation: { requested: string; ok: boolean; note: string }; computation: { earliest_eligible_date: string } };
+    expect(out.language).toBe("en");
+    expect(out.translation).toMatchObject({ requested: "es", ok: false, note: "sample mode answers in English" });
+    expect(out.computation.earliest_eligible_date).toBe("2026-10-22");
+    vi.unstubAllEnvs();
+  }, 60_000);
 });

@@ -404,6 +404,9 @@ export function sampleReply(messages: Msg[], agent: string | undefined): SampleR
     case "memoryAgent": return mining(messages);
     case "scorebookAgent": return scorebook(messages);
     case "gameReviewAgent": return gameReview(messages);
+    case "translatorAgent":
+      // Not a language model: it can't translate, so the answer stays in English and says so.
+      throw new Error("sample mode answers in English");
     default:
       return { content: /JSON/.test(system) ? "{}" : "ready", toolCalls: [] };
   }

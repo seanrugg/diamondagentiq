@@ -139,6 +139,7 @@ flowchart LR
   CR -- sent back --> CO
   CR -- passed --> A[Answer]
   A --> M2[MemoryAgent: mine, remember,<br/>trust feedback]
+  M2 --> TR[TranslatorAgent<br/>Spanish, Japanese, Korean<br/>+ code checks]
 ```
 
 | Agent | Tier requested (Nightshift) | Job |
@@ -150,6 +151,7 @@ flowchart LR
 | CallTypeAgent | fast (code decides pure rule cases) | Umpire's judgment, written rule, both, or coaching (no call involved) |
 | CoachingAgent | deep | Writes the answer, channel (who to talk to and how), teachable moment, life lesson and improvement plan |
 | CriticAgent | judge (falls back to fast) | Fails drafts that rule on judgment calls, blame anyone, give unsafe or age-inappropriate advice, or put winning above health. Code checks run first: computed date stated, draft data disclosed, no rule number that isn't cited, a life lesson present. Max 2 redrafts |
+| TranslatorAgent | deep | Only when the asker picks Spanish, Japanese or Korean. Runs after the Critic passes the English answer, so every grounding check happens once, in English. Translates the wording only (sources stay as cited); code checks every key came back and every number and date (rest days, eligible dates, rule numbers, ages) is unchanged, retries once with the problems, and otherwise keeps the English answer and says so |
 | Play-by-play parser | code | Counts a pasted play-by-play (runs by inning, called third strikes, first-pitch takes, two-strike counts, steals, wild pitches, rule moments) and checks it against the line score. No model |
 | ScorebookAgent | deep | Transcribes a box score; code checks that every total agrees and asks for one re-read with the exact disagreements |
 | GameReviewAgent | deep | Post-game: what decided it, strengths, 1–3 practice priorities from the drill and tip menus, the team-talk lesson; reviewed by the Critic |
@@ -176,6 +178,14 @@ The app teaches from a philosophy and content written by our team (`src/agents/p
 
 Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft, and answers that use one say so.
 
+## Accessibility and languages
+
+Youth baseball and softball are played in many languages, and a parent at the fence may not want to read a long answer on a phone.
+
+- **Language picker** (English, Español, 日本語, 한국어). The page's labels switch at once, the example questions are written in each language, and the choice is remembered on that device. The next answer comes back in that language through TranslatorAgent (above); the page says when an answer was translated, and falls back to English with a note if a translation fails its checks. Sample mode answers in English because the offline stand-in can't translate.
+- **Read aloud.** The main answer and each card have a read-aloud button that uses the browser's own speech engine (Web Speech API) in the answer's language. Nothing leaves the device and no key is needed. If the device has no voice for that language, the page says so.
+- **Built in from the start**: 17px text or larger, keyboard use throughout, the ARIA tab pattern, visible focus, light and dark themes, reduced motion respected, a phone layout, and each sentence shown once.
+
 ## Sponsor technology
 
 **Zetaris (data layer).** Every rule, house rule, pitch-rest tier, coaching lesson, situation, story, tip and drill lives in Postgres and is read only through Zetaris REST (`src/adapters/zetaris.ts`): login-token auth with refresh, one statement per call, a read-only allowlisted SQL tool for agents (`src/adapters/dataTools.ts`). RulesAgent writes its own SQL against Zetaris; the other agents' lookups are code-issued queries. `npm run zetaris:register` registers the datasource and refreshes table metadata.
@@ -199,7 +209,7 @@ Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft
 
 ## Tests and evaluation
 
-- `npm test`: 190 tests (agents with mocked models, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
+- `npm test`: 219 tests (agents with mocked models, translation checks, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
 - `npm run eval`: 11 real questions, each with a checklist (intent, call type, cited tables, phrases it must mention or avoid, computed values). Checklists, never stored answers.
 - `npm run test:hmem`: Meterless H-MEM reference conformance tests.
 
@@ -210,6 +220,7 @@ Every row has been reviewed by our umpire (25 Oct 2026). New rows start as draft
 - **Speed.** Hosted Nemotron calls take seconds each, and a full answer takes a few minutes. The page shows progress, and the server runs one question at a time because Nightshift dropped concurrent requests.
 - **Coverage.** Strongest for Little League and Pitch Smart pitch rules; some sanctions use innings limits we don't compute; Little League baseball's dropped-third-strike divisions are a listed gap. The batted-ball-hits-runner, fair/foul and base-running rule logic (tag-ups, forces, two runners on a base, overrunning first) is in our own words because the rulebook text for those rules isn't loaded yet (also listed in `gaps.csv`).
 - **Memory ranking.** H-MEM's reference scorer separates related and unrelated questions poorly, so recall offers a few of the team's memories at a low bar and the CoachingAgent lists the ones it actually used (`memory_used`); the answer shows both.
+- **Translations.** The interface wording in Spanish, Japanese and Korean was written by us and still needs review by native-speaking coaches and umpires; answers are machine-translated by Nemotron with code checks on numbers and dates, not reviewed per answer. The post-game review is in English for now. Read-aloud quality depends on the voices installed on the device.
 - **Sample mode** is a deterministic stand-in for the models: real agent logic, simpler wording. All nine committed example outputs are live runs on Nemotron through Nightshift, each with its trace.
 
 ## Tooling disclosure and pre-existing work

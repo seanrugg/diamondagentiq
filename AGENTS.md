@@ -59,10 +59,10 @@ src/
 vendor/hmem/           Meterless H-MEM reference — DO NOT EDIT
 ```
 
-Agents: ContextAgent, MemoryAgent (H-MEM), RulesAgent, DevelopmentAgent, CallTypeAgent, CoachingAgent, CriticAgent. Planned: GameReviewAgent.
+Agents: ContextAgent, MemoryAgent (H-MEM), RulesAgent, DevelopmentAgent, CallTypeAgent, CoachingAgent, CriticAgent, TranslatorAgent (runs only when the request asks for es/ja/ko, after the Critic passes the English answer; code checks numbers and dates survive), ScorebookAgent, GameReviewAgent.
 
 Model routing (pin by model ID, through Meterless Nightshift):
-- Context, Rules, Coaching, GameReview → `nvidia/nemotron-3.5-super-vl-120b-a12b`
+- Context, Rules, Coaching, GameReview, Translator → `nvidia/nemotron-3.5-super-vl-120b-a12b`
 - CallType, Critic, Development, Memory (mining) → `nvidia/nemotron-3.5-lightning-30b-a3b`
 
 ## Hard rules
