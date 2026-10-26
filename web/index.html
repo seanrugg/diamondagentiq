@@ -412,15 +412,13 @@ let runSteps = [];
 async function loadStatus() {
   try {
     const h = await (await fetch("/healthz")).json();
-    const judge = h.models?.judge && h.models.judge !== h.models.lightning ? `, judged by <b>${esc(shortModel(h.models.judge))}</b>` : "";
-    const models = h.models?.super ? `<span><b>${esc(shortModel(h.models.super))}</b> and <b>${esc(shortModel(h.models.lightning))}</b>${judge} via Meterless Nightshift</span>` : `<span>Local model <b>${esc(h.models?.local)}</b></span>`;
     sampleMode = !!h.sample_mode;
     if (h.sample_mode) {
       $("#status").innerHTML = `<span><b>Sample mode</b>: no model or Zetaris connected. Answers come from an offline stand-in working on the bundled rules and coaching data.</span><span><b>${h.memory?.memories ?? 0}</b> team memories in H-MEM</span>`;
       $("#use-sample").hidden = true;
       return;
     }
-    $("#status").innerHTML = `${models}<span>Rules and coaching data via <b>Zetaris</b></span><span><b>${h.memory?.memories ?? 0}</b> team memories in H-MEM</span>`;
+    $("#status").innerHTML = `<span>Rules and coaching data via <b>Zetaris</b></span><span><b>${h.memory?.memories ?? 0}</b> team memories in H-MEM</span>`;
   } catch {
     $("#status").innerHTML = "<span>Can't reach the server. Start it with npm start.</span>";
   }
