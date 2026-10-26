@@ -1,5 +1,7 @@
 # DiamondAgentIQ
 
+<p align="center"><img src="web/brand/banner.jpg" alt="DiamondAgentIQ banner: a glowing diamond between an umpire calling safe and one calling out, with the tagline Understand the call. Learn from the moment." width="860"></p>
+
 **A team of AI agents that helps parents, coaches, players and umpires understand what happened on a youth baseball or softball field, and turn it into a lesson.**
 
 Open Agent Hackathon 2026 · Track: **The Agent That Can Explain Why** · Team Billy Goats GGUF
