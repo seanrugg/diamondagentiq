@@ -113,9 +113,42 @@ export type TranslateResult =
   | { ok: true; answer: SituationAnswer; model: string }
   | { ok: false; reason: string };
 
+/** Split the texts into batches of about maxChars, keeping keys in order (at most maxBatches). */
+export function batchTexts(texts: Record<string, string>, maxChars = 2200, maxBatches = 3): Record<string, string>[] {
+  const entries = Object.entries(texts);
+  const total = entries.reduce((n, [, v]) => n + v.length, 0);
+  const target = Math.max(maxChars, Math.ceil(total / maxBatches));
+  const batches: Record<string, string>[] = [];
+  let cur: Record<string, string> = {};
+  let size = 0;
+  for (const [k, v] of entries) {
+    if (size > 0 && size + v.length > target) { batches.push(cur); cur = {}; size = 0; }
+    cur[k] = v; size += v.length;
+  }
+  if (size > 0) batches.push(cur);
+  return batches;
+}
+
 export async function translatorAgent(answer: SituationAnswer, language: LanguageCode, role: string): Promise<TranslateResult> {
+  const all: Record<string, string> = {};
+  let model = "";
+  const batches = batchTexts(answerTexts(answer));
+  for (const [i, source] of batches.entries()) {
+    const r = await translateBatch(source, language, role, `${i + 1}/${batches.length}`);
+    if (!r.ok) return { ok: false, reason: r.reason };
+    Object.assign(all, r.texts);
+    model = r.model;
+  }
+  return { ok: true, answer: applyTexts(answer, all), model };
+}
+
+async function translateBatch(
+  source: Record<string, string>,
+  language: LanguageCode,
+  role: string,
+  part: string,
+): Promise<{ ok: true; texts: Record<string, string>; model: string } | { ok: false; reason: string }> {
   const name = LANGUAGES[language];
-  const source = answerTexts(answer);
   const system = `You are the TranslatorAgent for DiamondAgentIQ, a learning tool for youth baseball and softball. Translate a finished, reviewed answer for a ${role} into ${name}.
 
 Rules:
@@ -140,11 +173,11 @@ Reply with ONLY this JSON object, with exactly the same keys: {"texts": {"<key>"
     trace({
       agent_name: "translatorAgent",
       action: "check_translation",
-      input_summary: `${name}, attempt ${attempt}/2, ${Object.keys(source).length} texts`,
+      input_summary: `${name}, part ${part}, attempt ${attempt}/2, ${Object.keys(source).length} texts`,
       output_summary: issues.length ? `issues: ${issues.slice(0, 6).join(" ")}` : "every key back; every number and date unchanged",
       status: issues.length ? "error" : "ok",
     });
-    if (issues.length === 0) return { ok: true, answer: applyTexts(answer, result.value.texts), model: result.model };
+    if (issues.length === 0) return { ok: true, texts: result.value.texts, model: result.model };
     reason = issues.slice(0, 3).join(" ");
     messages = [...messages, { role: "assistant", content: JSON.stringify(result.value) }, { role: "user", content: `Fix these and reply with the full corrected JSON object:\n${issues.slice(0, 12).map((i) => `- ${i}`).join("\n")}` }];
   }

@@ -209,7 +209,7 @@ Youth baseball and softball are played in many languages, and a parent at the fe
 
 ## Tests and evaluation
 
-- `npm test`: 219 tests (agents with mocked models, translation checks, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
+- `npm test`: 223 tests (agents with mocked models, translation checks, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
 - `npm run eval`: 11 real questions, each with a checklist (intent, call type, cited tables, phrases it must mention or avoid, computed values). Checklists, never stored answers.
 - `npm run test:hmem`: Meterless H-MEM reference conformance tests.
 

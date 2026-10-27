@@ -338,6 +338,8 @@ button.read:hover { box-shadow: 0 0 12px var(--glow); }
     </div>
 
     <button class="go" id="go" type="submit" data-i18n="go">Ask the team</button>
+    <p class="formnote lang-note" id="answer-lang" data-i18n="answer_in" data-hide-en hidden></p>
+    <p class="error-box" id="restart" role="alert" hidden></p>
     <p class="formnote" data-i18n="formnote">Answers are a learning tool. The umpire is the authority on the field.</p>
   </form>
 
@@ -444,7 +446,7 @@ const I18N = {
     translate_failed: "This answer couldn't be translated this time, so it's shown in English.",
     sample_en: "Sample mode answers in English: translation needs the live model.",
     err_none: "No answer this time.", err_hint: "Try again; if it keeps happening, check that Nightshift and Zetaris are running.",
-    err_stage: "The team stopped at {stage}: {msg}", lang_name: "English",
+    err_stage: "The team stopped at {stage}: {msg}", lang_name: "English", restart_needed: "The server is running older code, so answers will stay in English. Restart it (Ctrl+C, then npm start) and reload this page.", answer_in: "",
   },
   es: {
     lang_label: "Idioma", banner_alt: "DiamondAgentIQ: entiende la decisión, aprende del momento. Un diamante brillante entre una pregunta y la respuesta de un árbitro, con una pelota de béisbol y una de sóftbol.",
@@ -486,7 +488,7 @@ const I18N = {
     translate_failed: "Esta vez no se pudo traducir la respuesta, así que se muestra en inglés.",
     sample_en: "El modo de muestra responde en inglés: la traducción necesita el modelo en vivo.",
     err_none: "Esta vez no hubo respuesta.", err_hint: "Inténtalo de nuevo; si sigue pasando, revisa que Nightshift y Zetaris estén funcionando.",
-    err_stage: "El equipo se detuvo en {stage}: {msg}", lang_name: "español",
+    err_stage: "El equipo se detuvo en {stage}: {msg}", lang_name: "español", restart_needed: "El servidor está ejecutando código anterior, así que las respuestas seguirán en inglés. Reinícialo (Ctrl+C y luego npm start) y vuelve a cargar esta página.", answer_in: "La respuesta llegará en español.",
   },
   ja: {
     lang_label: "言語", banner_alt: "DiamondAgentIQ: 判定を理解し、その瞬間から学ぶ。質問と審判の答えの間に輝くダイヤモンド、野球ボールとソフトボール。",
@@ -528,7 +530,7 @@ const I18N = {
     translate_failed: "今回は翻訳できなかったため、英語で表示しています。",
     sample_en: "サンプルモードは英語で答えます。翻訳にはライブのモデルが必要です。",
     err_none: "今回は答えが出ませんでした。", err_hint: "もう一度試してください。続く場合はNightshiftとZetarisが動いているか確認してください。",
-    err_stage: "チームが{stage}で止まりました: {msg}", lang_name: "日本語",
+    err_stage: "チームが{stage}で止まりました: {msg}", lang_name: "日本語", restart_needed: "サーバーが古いコードで動いているため、答えは英語のままです。サーバーを再起動し（Ctrl+C のあと npm start）、このページを再読み込みしてください。", answer_in: "答えは日本語で届きます。",
   },
   ko: {
     lang_label: "언어", banner_alt: "DiamondAgentIQ: 판정을 이해하고, 그 순간에서 배우세요. 질문과 심판의 답 사이에서 빛나는 다이아몬드, 야구공과 소프트볼.",
@@ -570,7 +572,7 @@ const I18N = {
     translate_failed: "이번에는 번역하지 못해 영어로 보여 드립니다.",
     sample_en: "샘플 모드는 영어로 답합니다. 번역에는 실시간 모델이 필요합니다.",
     err_none: "이번에는 답이 나오지 않았습니다.", err_hint: "다시 시도하세요. 계속되면 Nightshift와 Zetaris가 실행 중인지 확인하세요.",
-    err_stage: "팀이 {stage} 단계에서 멈췄습니다: {msg}", lang_name: "한국어",
+    err_stage: "팀이 {stage} 단계에서 멈췄습니다: {msg}", lang_name: "한국어", restart_needed: "서버가 이전 코드로 실행 중이라 답이 영어로 나옵니다. 서버를 다시 시작하고(Ctrl+C 후 npm start) 이 페이지를 새로 고치세요.", answer_in: "답은 한국어로 옵니다.",
   },
 };
 
@@ -699,12 +701,16 @@ const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const shortModel = (m) => !m ? "" : /lightning/i.test(m) ? "Nemotron Lightning 30B" : /ultra-550b/i.test(m) ? "Nemotron Ultra 550B" : /super/i.test(m) ? "Nemotron Super 120B" : /^meterless\//.test(m) ? `Nightshift ${m.slice(10)}` : m;
 let forcedToday = null;
 let sampleMode = false;
+let serverLanguages = null; // what the running server can answer in (from /healthz)
+let currentExample = null; // the example chip whose text is in the question box, if untouched
 let runSteps = [];
 
 async function loadStatus() {
   try {
     const h = await (await fetch("/healthz")).json();
     sampleMode = !!h.sample_mode;
+    serverLanguages = Array.isArray(h.languages) ? h.languages : [];
+    checkServerLanguage();
     if (h.sample_mode) {
       $("#status").innerHTML = `<span>${T("status_sample")}</span><span><b>${h.memory?.memories ?? 0}</b> ${T("memories")}</span>`;
       $("#use-sample").hidden = true;
@@ -716,6 +722,13 @@ async function loadStatus() {
   }
 }
 
+/* A server started before the language update drops the language field: say so plainly. */
+function checkServerLanguage() {
+  const stale = LANG !== "en" && serverLanguages !== null && !serverLanguages.includes(LANG);
+  const box = $("#restart");
+  if (box) { box.hidden = !stale; box.textContent = stale ? T("restart_needed") : ""; }
+}
+
 function fill(key) {
   const ex = EXAMPLES[key];
   const f = $("#ask");
@@ -723,10 +736,11 @@ function fill(key) {
   f.event_name.value = ex.event_name || ""; f.team.value = ex.team || ""; // The offline stand-in in sample mode matches English words, so it keeps the English example.
   f.question.value = (!sampleMode && EXAMPLE_TEXT[LANG]?.[key]) || ex.question;
   forcedToday = ex.today || null;
+  currentExample = key;
   f.question.focus();
 }
 document.querySelectorAll("[data-example]").forEach((b) => b.addEventListener("click", () => fill(b.dataset.example)));
-$("#ask").question.addEventListener("input", () => { forcedToday = null; });
+$("#ask").question.addEventListener("input", () => { forcedToday = null; currentExample = null; });
 
 /* Turn one trace step into a lineup row (or nothing, for plumbing). */
 function rowFor(s) {
@@ -1267,6 +1281,8 @@ $("#lang").addEventListener("change", (e) => {
   try { localStorage.setItem("diq-lang", LANG); } catch { /* remembered for this visit only */ }
   applyLanguage();
   loadStatus();
+  // An example picked before switching comes back in the new language.
+  if (currentExample) { const f = $("#ask"); f.question.value = (!sampleMode && EXAMPLE_TEXT[LANG]?.[currentExample]) || EXAMPLES[currentExample].question; }
   if (lastAnswer) renderAnswer(lastAnswer);
 });
 applyLanguage();

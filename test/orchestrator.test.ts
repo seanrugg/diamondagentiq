@@ -302,6 +302,45 @@ describe("runSituation", () => {
     expect(other.ok && other.answer.memory?.recalled).toEqual([]);
   });
 
+  it("asked for Spanish: the Critic passes the English draft, then TranslatorAgent rewrites it", async () => {
+    mockedGenerator
+      .mockResolvedValueOnce(reply(goodDraft)) // CoachingAgent (English)
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] })) // CriticAgent
+      .mockImplementationOnce(async (messages: Array<{ content: string }>) => {
+        // TranslatorAgent: echo every key back in "Spanish", numbers and dates intact
+        const { texts } = JSON.parse(messages.at(-1)?.content ?? "{}") as { texts: Record<string, string> };
+        return reply({ texts: Object.fromEntries(Object.entries(texts).map(([k, v]) => [k, `ES: ${v}`])) });
+      });
+    const result = await runSituation({ ...request, language: "es" }, "2026-10-18");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.answer.language).toBe("es");
+    expect(result.answer.translation).toEqual({ requested: "es", ok: true });
+    expect(result.answer.what_happened.summary).toMatch(/^ES: /);
+    expect(result.answer.sources.map((s) => s.id)).toEqual(["F003", "hr-1"]);
+    expect(mockedGenerator.mock.calls[2]?.[1]).toMatchObject({ tier: "super", agent: "translatorAgent" });
+    const coachingPrompt = (mockedGenerator.mock.calls[0]?.[0] as Array<{ content: string }>)[0]?.content ?? "";
+    expect(coachingPrompt).toMatch(/Write in English/);
+  });
+
+  it("asked for Korean but the translation drops a date: keeps English and says so", async () => {
+    const dropDates = async (messages: Array<{ content: string }>) => {
+      const { texts } = JSON.parse(messages.find((m) => m.content.startsWith("{"))?.content ?? "{}") as { texts: Record<string, string> };
+      return reply({ texts: Object.fromEntries(Object.entries(texts).map(([k]) => [k, "번역"])) });
+    };
+    mockedGenerator
+      .mockResolvedValueOnce(reply(goodDraft))
+      .mockResolvedValueOnce(reply({ pass: true, issues: [] }))
+      .mockImplementationOnce(dropDates)
+      .mockImplementationOnce(dropDates);
+    const result = await runSituation({ ...request, language: "ko" }, "2026-10-18");
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.answer.language).toBe("en");
+    expect(result.answer.translation?.ok).toBe(false);
+    expect(result.answer.what_happened.summary).toBe(goodDraft.what_happened);
+  });
+
   it("returns a structured error naming the stage that failed", async () => {
     mockedRules.mockResolvedValueOnce({ ok: false, error: { message: "boom", attempts: 2 } });
     const result = await runSituation(request, "2026-10-18");

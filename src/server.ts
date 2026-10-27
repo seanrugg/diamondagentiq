@@ -29,6 +29,7 @@ import { normalizeRunInput, runOnce } from "./runApi.js";
 import { runGameReview } from "./gameReview.js";
 import { GameReviewRequestSchema } from "./schemas/boxScore.js";
 import { SituationRequestSchema } from "./schemas/situation.js";
+import { LANGUAGES } from "./agents/translatorAgent.js";
 import { withRun, type TraceRecord } from "./trace.js";
 
 const MAX_BODY_BYTES = 20_000;
@@ -163,6 +164,7 @@ export const server = createServer((req, res) => {
         ok: true,
         busy,
         sample_mode: config.SAMPLE_MODE,
+        languages: Object.keys(LANGUAGES),
         provider: config.LLM_PROVIDER,
         models: config.LLM_PROVIDER === "meterless" ? { super: meterlessModelForTier("super"), lightning: meterlessModelForTier("lightning"), judge: meterlessModelForTier("judge"), app_streams: config.METERLESS_APP_STREAMS } : { local: config.OLLAMA_MODEL },
         memory: { memories: memory.store.all().length, ledger: memory.ledger.stats() },

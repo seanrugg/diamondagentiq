@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * npm run ask -- --role coach --sport baseball --sanction little_league --age 12 \
- *   [--event "Fall Classic 12U"] [--today 2026-10-18] [--team "Demo Hawks"] [--no-memory] [--save] "<question>"
+ *   [--event "Fall Classic 12U"] [--today 2026-10-18] [--team "Demo Hawks"] [--language es|ja|ko] [--no-memory] [--save] "<question>"
  *
  * Runs the whole agent team live and prints the answer. --save also writes the
  * input and output to output_examples/ (written by runs, never read by the app).
@@ -45,7 +45,7 @@ async function main(): Promise<void> {
   const { args, positional } = parseArgs(process.argv.slice(2));
   const question = positional.join(" ").trim();
   if (!question) {
-    console.error('Usage: npm run ask -- --role <role> --sport <sport> --sanction <sanction> --age <age> [--event "<name>"] [--today YYYY-MM-DD] [--team "<name>"] [--no-memory] [--save] "<question>"');
+    console.error('Usage: npm run ask -- --role <role> --sport <sport> --sanction <sanction> --age <age> [--event "<name>"] [--today YYYY-MM-DD] [--team "<name>"] [--language es|ja|ko] [--no-memory] [--save] "<question>"');
     process.exitCode = 1;
     return;
   }
@@ -59,6 +59,7 @@ async function main(): Promise<void> {
     edition: args.edition,
     event_name: args.event ?? args.event_name,
     team: args.team,
+    language: args.language,
   });
   const memory = args["no-memory"] === "true" ? null : openMemory({ dir: config.DIQ_MEMORY_DIR });
 

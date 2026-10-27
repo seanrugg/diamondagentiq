@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { generator } from "../src/adapters/llm.js";
-import { answerTexts, applyTexts, translationIssues, translatorAgent } from "../src/agents/translatorAgent.js";
+import { answerTexts, applyTexts, batchTexts, translationIssues, translatorAgent } from "../src/agents/translatorAgent.js";
 import type { SituationAnswer } from "../src/schemas/situation.js";
 
 vi.mock("../src/adapters/llm.js", () => ({ generator: vi.fn() }));
@@ -63,6 +63,25 @@ describe("TranslatorAgent", () => {
     const r = await translatorAgent(answer, "es", "coach");
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.answer.channel.how).toBe("ES Talk after the game.");
+  });
+
+  it("splits a long answer into at most 3 batches, keeping every key once", () => {
+    const texts = Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`k${i}`, "x".repeat(300)]));
+    const batches = batchTexts(texts);
+    expect(batches.length).toBe(3);
+    expect(batches.flatMap((b) => Object.keys(b))).toEqual(Object.keys(texts));
+    expect(batchTexts({ a: "short" }).length).toBe(1);
+  });
+
+  it("translates a long answer batch by batch and merges the parts", async () => {
+    const long: SituationAnswer = { ...answer, improvement_plan: { individual: Array.from({ length: 6 }, (_, i) => `Drill ${i}: ${"swing ".repeat(150)}`), team: [], at_home: [] } };
+    const parts = batchTexts(answerTexts(long));
+    expect(parts.length).toBeGreaterThan(1);
+    for (const p of parts) mockedGenerator.mockResolvedValueOnce(reply({ texts: Object.fromEntries(Object.entries(p).map(([k, v]) => [k, `ES ${v}`])) }));
+    const r = await translatorAgent(long, "es", "player");
+    expect(mockedGenerator).toHaveBeenCalledTimes(parts.length);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.answer.improvement_plan.individual.every((s) => s.startsWith("ES Drill"))).toBe(true);
   });
 
   it("retries once with the issues, then gives up and keeps English", async () => {
