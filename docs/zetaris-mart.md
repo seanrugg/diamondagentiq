@@ -36,3 +36,33 @@ default, and the app falls back to `diq_pg` if the mart can't be read.
   (`prepareSql` with a mart scope).
 - The model's `run_sql` tool is unchanged and stays on `diq_pg`.
 - The "Behind this answer" panel names the mart when a run read from it.
+
+## Least privilege: a read-only agent user
+
+The agents only read, so they don't need the administrator login. This
+follows Zetaris's own guidance: administrators build, and a separate
+non-administrator user reads. A Zetaris administrator does these steps in
+the UI and sets the password themselves:
+
+1. **Management → Roles**: create the role `diq_agent_read`.
+2. **Management → Users**: create the agent's user, for example
+   `diq-agent@example.com`, set its password, and assign it to
+   `diq_agent_read`. It must not be an administrator.
+3. **Management → Permissions**: expand `diq_agent_read` and tick **View**
+   on Data Catalog and Virtual Data Mart. Leave every **Execute** box
+   unticked, then **Save**.
+4. **Access Control** (object-level data access, denied by default):
+   - Open the `diamondagentiq_knowledge` mart → **Access Control** → assign
+     `diq_agent_read` → **SELECT** → **Apply**.
+   - Do the same for the `diq_pg` data source, ticking SELECT for all tables.
+     Some answers still read `diq_pg` directly: drills, house rules, pitch
+     rest tiers, and the model's `run_sql` tool.
+5. In the app's `.env`, set `ZETARIS_USERNAME` and `ZETARIS_PASSWORD` to the
+   agent user. Keep the administrator login out of the app's `.env`.
+6. Setup scripts (`zetaris:register`, `zetaris:views`) still need the
+   administrator. Variables exported in the shell override `.env`, so run
+   them from a terminal where you exported the admin login, then close that
+   terminal.
+7. Check: `npm run check:zetaris` and `npm run check:data` should pass as
+   the agent user. In the SQL Workspace, signed in as the agent user, a
+   `DROP` or `CREATE` should be refused.
