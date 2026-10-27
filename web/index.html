@@ -766,7 +766,8 @@ function rowFor(s) {
       return null;
     case "dataTools:run_sql_rows":
     case "dataTools:run_sql": {
-      const table = (s.input.match(/FROM\s+diq_pg\.(\w+)/i) || [])[1] || "a table";
+      const ref = s.input.match(/FROM\s+(\w+)\.(\w+)/i);
+      const table = ref ? (ref[1].toLowerCase() === "diq_pg" ? ref[2] : `${ref[1]} mart: ${ref[2]}`) : "a table";
       const rows = (out.match(/^(\d+) rows/) || [])[1];
       return { cls: "note zetaris", who: "", what: `${esc(table.replace(/_/g, " "))}${rows ? ` (${rows} rows)` : s.status === "error" ? ` (${esc(out.slice(0, 80))})` : ""}` };
     }
@@ -879,8 +880,11 @@ async function appendEvidence() {
   const steps = runSteps.slice();
   const sql = steps.filter((s) => s.agent === "dataTools" && /^run_sql/.test(s.action));
   const tables = new Map();
+  const marts = new Set();
   for (const s of sql) {
-    const t = (s.input.match(/FROM\s+diq_pg\.(\w+)/i) || [])[1] || "other";
+    const ref = s.input.match(/FROM\s+(\w+)\.(\w+)/i);
+    const t = ref ? ref[2] : "other";
+    if (ref && ref[1].toLowerCase() !== "diq_pg") marts.add(ref[1]);
     const rows = Number((s.output.match(/^(\d+) rows/) || [])[1] || 0);
     tables.set(t, (tables.get(t) || 0) + rows);
   }
@@ -900,7 +904,7 @@ async function appendEvidence() {
   let total = null;
   try { total = (await (await fetch("/healthz")).json()).memory?.memories ?? null; } catch { /* leave it out */ }
   const li = (items) => items.length ? `<ul>${items.join("")}</ul>` : "";
-  const zetaris = `<div class="ev"><h4>Zetaris</h4><p class="big">${sql.length}</p><p>SQL ${sql.length === 1 ? "query" : "queries"} ${sampleMode ? "on the bundled copy of the tables (sample mode)" : "sent through Zetaris to <code>diq_pg</code>"}</p>${li([...tables].map(([t, r]) => `<li>${esc(t.replace(/_/g, " "))}: ${r} ${r === 1 ? "row" : "rows"}</li>`))}</div>`;
+  const zetaris = `<div class="ev"><h4>Zetaris</h4><p class="big">${sql.length}</p><p>SQL ${sql.length === 1 ? "query" : "queries"} ${sampleMode ? "on the bundled copy of the tables (sample mode)" : `sent through Zetaris to <code>diq_pg</code>${marts.size ? ` and the <code>${esc([...marts].join(", "))}</code> data mart` : ""}`}</p>${li([...tables].map(([t, r]) => `<li>${esc(t.replace(/_/g, " "))}: ${r} ${r === 1 ? "row" : "rows"}</li>`))}</div>`;
   const nightshift = sampleMode
     ? `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">0</p><p>Sample mode: an offline stand-in answered, so no model calls or receipts.</p></div>`
     : `<div class="ev"><h4>Meterless Nightshift</h4><p class="big">${calls.length}</p><p>model ${calls.length === 1 ? "call" : "calls"}, each with a Nightshift receipt</p>${li([...models].map(([m, n]) => `<li>${esc(m)} × ${n}</li>`))}${li([

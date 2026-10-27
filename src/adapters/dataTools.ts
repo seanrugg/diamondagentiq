@@ -32,6 +32,11 @@ export const ALLOWED_TABLES = [
 
 export type AllowedTable = (typeof ALLOWED_TABLES)[number];
 
+/** Which schema and tables a statement may reference. */
+export type SqlScope = { schema: string; tables: readonly string[] };
+
+export const DIQ_PG_SCOPE: SqlScope = { schema: "diq_pg", tables: ALLOWED_TABLES };
+
 const DEFAULT_LIMIT = 200;
 const MAX_LIMIT = 200;
 
@@ -97,24 +102,24 @@ function extractTableRefs(sql: string): Array<{ schema?: string; table: string }
   return refs;
 }
 
-function isAllowedTable(table: string): boolean {
-  return ALLOWED_TABLES.some((t) => t === table.toLowerCase());
+function isAllowedTable(table: string, scope: SqlScope): boolean {
+  return scope.tables.some((t) => t === table.toLowerCase());
 }
 
-function validateTables(sql: string): void {
+function validateTables(sql: string, scope: SqlScope): void {
   for (const ref of extractTableRefs(sql)) {
     if (ref.schema !== undefined) {
-      if (ref.schema.toLowerCase() !== "diq_pg") {
+      if (ref.schema.toLowerCase() !== scope.schema.toLowerCase()) {
         throw new Error(
-          `Only the diq_pg schema is allowed; referenced schema "${ref.schema}"`,
+          `Only the ${scope.schema} schema is allowed; referenced schema "${ref.schema}"`,
         );
       }
-      if (!isAllowedTable(ref.table)) {
+      if (!isAllowedTable(ref.table, scope)) {
         throw new Error(
           `Table "${ref.table}" is not in the allowed table list`,
         );
       }
-    } else if (!isAllowedTable(ref.table)) {
+    } else if (!isAllowedTable(ref.table, scope)) {
       throw new Error(
         `Table "${ref.table}" is not in the allowed table list`,
       );
@@ -243,14 +248,14 @@ const schemaQualifiedPattern = /\b([a-zA-Z_][\w]*)\.([a-zA-Z_][\w]*)/gi;
  * statement whose schema is not diq_pg, not just references after FROM/JOIN.
  * Table aliases (alias.column) are not treated as schema-qualified.
  */
-function rejectNonDiqPgSchemas(sql: string): void {
+function rejectNonDiqPgSchemas(sql: string, scope: SqlScope): void {
   const stripped = stripStringLiterals(sql);
   const aliases = extractTableAliases(sql);
   for (const match of stripped.matchAll(schemaQualifiedPattern)) {
     const schema = match[1].toLowerCase();
-    if (schema !== "diq_pg" && !aliases.has(schema)) {
+    if (schema !== scope.schema.toLowerCase() && !aliases.has(schema)) {
       throw new Error(
-        `Only the diq_pg schema is allowed; referenced schema "${match[1]}"`,
+        `Only the ${scope.schema} schema is allowed; referenced schema "${match[1]}"`,
       );
     }
   }
@@ -273,7 +278,7 @@ function enforceLimit(sql: string): string {
  * policy violation (non-SELECT, disallowed table/schema, multiple statements,
  * empty statement). Returns the final SQL with LIMIT enforced.
  */
-export function prepareSql(sql: string): string {
+export function prepareSql(sql: string, scope: SqlScope = DIQ_PG_SCOPE): string {
   const statement = normalizeSql(sql); // throws on empty / multiple statements
 
   const firstToken = statement.trim().split(/\s+/)[0];
@@ -286,8 +291,8 @@ export function prepareSql(sql: string): string {
   }
 
   rejectCommaSeparatedSources(statement);
-  validateTables(statement);
-  rejectNonDiqPgSchemas(statement);
+  validateTables(statement, scope);
+  rejectNonDiqPgSchemas(statement, scope);
 
   return enforceLimit(statement);
 }
@@ -340,8 +345,8 @@ export async function runAgentSql(sql: string): Promise<unknown> {
  * response carries no names, because positional values could be misread
  * (e.g. rest_days taken for pitches_max).
  */
-export async function runAgentRows(sql: string): Promise<Row[]> {
-  const finalSql = prepareSql(sql);
+export async function runAgentRows(sql: string, scope: SqlScope = DIQ_PG_SCOPE): Promise<Row[]> {
+  const finalSql = prepareSql(sql, scope);
   const derived = selectColumnNames(finalSql);
   const result = await runSqlDetailed(finalSql);
   const columns = result.columns ?? derived;

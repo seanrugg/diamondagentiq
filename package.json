@@ -26,7 +26,8 @@
     "start": "tsx --env-file-if-exists=.env src/scripts/start.ts",
     "start:sample": "SAMPLE_MODE=true tsx src/scripts/start.ts",
     "test": "vitest run",
-    "test:hmem": "npm test --prefix vendor/hmem"
+    "test:hmem": "npm test --prefix vendor/hmem",
+    "zetaris:views": "tsx --env-file=.env src/scripts/zetaris-views.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.2.17",
