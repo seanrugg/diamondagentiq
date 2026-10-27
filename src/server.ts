@@ -30,6 +30,8 @@ import { runGameReview } from "./gameReview.js";
 import { GameReviewRequestSchema } from "./schemas/boxScore.js";
 import { SituationRequestSchema } from "./schemas/situation.js";
 import { LANGUAGES } from "./agents/translatorAgent.js";
+import { pitcherAvailability } from "./agents/pitcherAvailability.js";
+import { knowledgeMart } from "./data/knowledgeMart.js";
 import { withRun, type TraceRecord } from "./trace.js";
 
 const MAX_BODY_BYTES = 20_000;
@@ -190,6 +192,18 @@ export const server = createServer((req, res) => {
     if (route === "GET /brand/banner.jpg") {
       res.writeHead(200, { "content-type": "image/jpeg", "cache-control": "public, max-age=3600" });
       return res.end(readFileSync(new URL("../web/brand/banner.jpg", import.meta.url)));
+    }
+    if (route === "GET /pitchers") {
+      // "Who can pitch on <date>?": read-only, no model; see src/agents/pitcherAvailability.ts.
+      const date = (url.searchParams.get("date") ?? "Saturday").slice(0, 20);
+      const team = (url.searchParams.get("team") ?? "").slice(0, 80);
+      const steps: ReturnType<typeof publicStep>[] = [];
+      const mart = await knowledgeMart();
+      const result = await withRun(
+        () => pitcherAvailability({ date, team }, localToday(), { mart, sampleMode: config.SAMPLE_MODE }),
+        (r) => steps.push(publicStep(r)),
+      );
+      return send(res, result.ok ? 200 : 422, result.ok ? { availability: result.answer, steps, today: localToday() } : { error: result.message, steps });
     }
     if (route === "POST /review/stream") return handleReview(req, res);
     if (route === "POST /run") return handleRunEnvelope(req, res);

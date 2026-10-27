@@ -334,6 +334,7 @@ button.read:hover { box-shadow: 0 0 12px var(--glow); }
         <button type="button" data-example="swing" data-i18n="ex_swing">Player: help with my swing</button>
         <button type="button" data-example="foul" data-i18n="ex_foul">Player: how is a foul ball fair?</button>
         <button type="button" data-example="ump" data-i18n="ex_ump">Umpire: batted ball hits the runner, bases loaded</button>
+        <button type="button" id="ex-pitchers">Coach: who can pitch Saturday?</button>
       </div>
     </div>
 
@@ -740,6 +741,40 @@ function fill(key) {
   f.question.focus();
 }
 document.querySelectorAll("[data-example]").forEach((b) => b.addEventListener("click", () => fill(b.dataset.example)));
+
+/* "Who can pitch Saturday?": the coach's pitch log (a CSV in the Zetaris file store) joined
+   to the league's rest rules in Zetaris; eligibility is computed in code (GET /pitchers). */
+async function showPitchers() {
+  const el = $("#answer");
+  const button = $("#ex-pitchers");
+  button.disabled = true;
+  try {
+    const r = await fetch("/pitchers?date=Saturday");
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
+    const a = body.availability;
+    const sql = (body.steps || []).filter((s) => s.agent === "dataTools" && /^run_sql/.test(s.action));
+    const yes = a.pitchers.filter((p) => p.available === true).length;
+    const fmt = (d) => d ? new Date(`${d}T12:00:00Z`).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }) : "";
+    const rows = a.pitchers.map((p) => `<tr><td>${esc(p.pitcher)}</td><td>${esc(p.age)}</td><td>${esc(fmt(p.last_outing))}</td><td>${esc(p.pitches)}</td><td>${p.rest_days ?? "?"}</td><td>${esc(fmt(p.earliest_eligible))}</td><td class="${p.available ? "reviewed" : "draft"}">${p.available === null ? "Check rules" : p.available ? "Available" : "Resting"}</td></tr>${p.note ? `<tr><td colspan="7" class="small">${esc(p.note)}</td></tr>` : ""}`).join("");
+    const queries = sql.map((s) => { const m = s.input.match(/FROM\s+(\w+)\.(\w+)/i); const n = (s.output.match(/^(\d+) rows/) || [])[1]; return `<li><code>${esc(m ? `${m[1]}.${m[2]}` : "query")}</code>${n ? `: ${n} rows` : ""}${s.status === "error" ? " (failed, fell back)" : ""}</li>`; }).join("");
+    el.innerHTML = `<div class="verdict"><div class="stamp">RULE<small>pitch count</small></div><div>
+      <p class="what-happened">${yes} of ${a.pitchers.length} pitchers can pitch on ${esc(fmt(a.game_date))}.</p>
+      <p class="why-call">From the coach's pitch log and the ${esc(a.sanction.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))} rest rules. Rest days and dates are computed in code, not by a model.${a.synthetic ? " All pitchers are synthetic." : ""}</p></div></div>
+      <details class="card" open><summary><span class="card-title">Pitchers for ${esc(fmt(a.game_date))}</span></summary><div><table class="sources"><thead><tr><th>Pitcher</th><th>Age</th><th>Last outing</th><th>Pitches</th><th>Rest days</th><th>Eligible from</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="small">Rest rules: <a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.sanction.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))}</a>${a.edition ? `, ${esc(a.edition)}` : ""} (${a.verified ? "reviewed" : "draft data"}). House or tournament rules can be stricter; the umpire and tournament director have the final say.</p></div></details>
+      <details class="card" open><summary><span class="card-title">Behind this answer</span></summary><div class="evidence"><div class="ev"><h4>Zetaris</h4><p class="big">${sql.length}</p><p>${sampleMode ? "Sample mode: the bundled copy of the pitch log and rules." : `Read from <code>${esc(a.read_from)}</code>.`}</p><ul>${queries}</ul></div></div></details>`;
+    el.hidden = false;
+    $("#lineup-wrap").open = false;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    el.innerHTML = `<p class="error-box">${esc(error.message || error)}</p>`;
+    el.hidden = false;
+  } finally {
+    button.disabled = false;
+  }
+}
+$("#ex-pitchers").addEventListener("click", showPitchers);
 $("#ask").question.addEventListener("input", () => { forcedToday = null; currentExample = null; });
 
 /* Turn one trace step into a lineup row (or nothing, for plumbing). */

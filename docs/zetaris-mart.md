@@ -66,3 +66,21 @@ the UI and sets the password themselves:
 7. Check: `npm run check:zetaris` and `npm run check:data` should pass as
    the agent user. In the SQL Workspace, signed in as the agent user, a
    `DROP` or `CREATE` should be refused.
+
+## Who can pitch Saturday? (a file joined to Postgres)
+
+- **The file.** A coach's pitch log, `data/demo/pitch_log_synthetic.csv`
+  (synthetic pitchers), is uploaded to **NDP File System → file-store**.
+- **The table.** It's registered as `DIQ_FILES.pitch_log`: under
+  **File Source & API → DIQ_FILES → Create Table**, choose File store, CSV,
+  storage provider **NDP File System**, select the file, and set
+  `inferSchema` to `true`.
+- **The view.** `diq.pitcher_availability` joins the file to
+  `diq_pg.pitch_rest_rules` by sanction, sport, age and pitch count. The view
+  is also published in the `diamondagentiq_knowledge` mart.
+- **The app.** The **Coach: who can pitch Saturday?** button calls
+  `GET /pitchers?date=Saturday` (`src/agents/pitcherAvailability.ts`). It
+  reads the mart, then the `diq` view, then the file table, in that order.
+  Code recomputes each pitcher's rest days from the tiers, notes any
+  disagreement with the view, and computes the earliest eligible date. No
+  model is involved. Sample mode reads the bundled CSV.
