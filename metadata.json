@@ -10,13 +10,23 @@
     "sample_mode": "npm run start:sample  or  docker run -e SAMPLE_MODE=true",
     "examples": "npm run demo  (input_examples/ -> output_examples/)"
   },
-  "agents": ["ContextAgent", "MemoryAgent", "RulesAgent", "DevelopmentAgent", "CallTypeAgent", "CoachingAgent", "CriticAgent", "ScorebookAgent", "GameReviewAgent"],
+  "agents": [
+    "ContextAgent",
+    "MemoryAgent",
+    "RulesAgent",
+    "DevelopmentAgent",
+    "CallTypeAgent",
+    "CoachingAgent",
+    "CriticAgent",
+    "ScorebookAgent",
+    "GameReviewAgent"
+  ],
   "sponsor_technology": {
     "zetaris": "All rules, house rules, pitch-rest tiers, coaching lessons, situations, stories, tips and drills are read through Zetaris REST; RulesAgent writes its own read-only SQL.",
-    "meterless": "Nightshift is the primary AI provider (per-agent app streams, compute receipts in every trace); the H-MEM engine gives each team memory with Critic-driven trust feedback.",
+    "meterless": "Nightshift is the primary AI provider (per-agent app streams, compute receipts in every trace); H-MEM is our Meterless Engine, giving each team memory with Critic-driven trust feedback (conformance suite: npm run test:hmem).",
     "nvidia": "Nemotron 3.5 Super VL 120B, Nemotron 3.5 Lightning 30B and Nemotron 3 Ultra 550B through Nightshift; Claude Code on local Nemotron 3.5 Super (Ollama) during development.",
-    "cursor": "Project scaffold and editing."
+    "cursor": "Optional; used for the foundation: scaffold, Zetaris login-token auth, H-MEM vendoring and the Postgres data layer (docs/cursor-build-notes.md)."
   },
-  "data": "Own-words rule summaries with source links (draft until verified); team-written coaching content; synthetic tournament rules, drills and box score. No real minors' data.",
+  "data": "Own-words rule summaries with source links, reviewed by our umpire; team-written coaching content; synthetic tournament rules, drills, games and box scores. No real minors' data.",
   "license_notes": "Vendored Meterless H-MEM reference (Apache-2.0), PGlite (Apache-2.0)."
 }

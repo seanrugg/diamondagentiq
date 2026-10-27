@@ -68,7 +68,7 @@ Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST
    npm ci
    ```
 
-   Key settings (no secrets shown): `LLM_PROVIDER=meterless`, `METERLESS_MODEL_SUPER=meterless/text.deep`, `METERLESS_MODEL_LIGHTNING=meterless/text.fast`, `METERLESS_MODEL_JUDGE` (optional; empty uses the fast tier), `METERLESS_DIRECT_MODE=tools`, `METERLESS_APP_STREAMS=per-agent`. Inside Docker, point `METERLESS_BASE_URL` and the Zetaris URLs at `host.docker.internal`.
+   Key settings (no secrets shown): `LLM_PROVIDER=meterless`, `METERLESS_MODEL_SUPER=nvidia/nemotron-3.5-super-vl-120b-a12b` (the writing steps pin Nemotron Super), `METERLESS_MODEL_LIGHTNING=meterless/text.fast`, `METERLESS_MODEL_JUDGE=meterless/text.fusion` (optional; empty uses the fast tier), `METERLESS_DIRECT_MODE=tools`, `METERLESS_APP_STREAMS=per-agent`. Inside Docker, point `METERLESS_BASE_URL` and the Zetaris URLs at `host.docker.internal`.
 
 3. **Data**
 
@@ -192,7 +192,7 @@ Youth baseball and softball are played in many languages, and a parent at the fe
 
 **Meterless (power, memory, observation).**
 - *Nightshift* is the primary AI provider: every model call goes through one `generator()` to the Nightshift Runtime with the `meterless-app` / `meterless-scope` headers, and the `meterless.compute_receipt.v1` receipt is copied into each trace line. With `METERLESS_APP_STREAMS=per-agent`, each agent appears in Nightshift as its own app stream (`diamondagentiq-rules`, `diamondagentiq-critic`, …), so Nightshift's Jobs, Monitor and Replay views show the team at work.
-- *H-MEM* (the Meterless memory engine, vendored at a pinned commit in `vendor/hmem`, Apache-2.0) gives the team memory across questions: per-team recall with H-MEM's hybrid ranking, model-assisted mining through its `minerFn` hook, and feedback deltas from the Critic's verdict, all written to its append-only trust ledger.
+- *H-MEM* (our Meterless Engine: the Meterless memory engine, vendored at a pinned commit in `vendor/hmem`, Apache-2.0) gives the team memory across questions: per-team recall with H-MEM's hybrid ranking, model-assisted mining through its `minerFn` hook, and feedback deltas from the Critic's verdict, all written to its append-only trust ledger. It runs in every answer (recall before, save and trust feedback after; see the Memory steps in any trace), and its own conformance suite passes (`npm run test:hmem`).
 
 **NVIDIA.** Every model call is answered by a Nemotron model through Nightshift: **Nemotron 3.5 Super VL 120B**, **Nemotron 3.5 Lightning 30B** and **Nemotron 3 Ultra 550B** race in Nightshift's Race row (with **Nemotron 3 Nano 30B** in Verify), and each trace line and timeline row names the model that answered, from the Nightshift receipt. Code was also generated with Claude Code running locally on Nemotron 3.5 Super via Ollama during the build.
 
