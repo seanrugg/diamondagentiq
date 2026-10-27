@@ -16,6 +16,7 @@
  */
 import { z } from "zod";
 import { runAgentRows } from "../adapters/dataTools.js";
+import { martOrBaseRows } from "../data/knowledgeMart.js";
 import type { Row } from "../adapters/rows.js";
 import type { RuleSource, RulesResult } from "../schemas/rules.js";
 import type { SituationRequest } from "../schemas/situation.js";
@@ -199,8 +200,12 @@ function ageClause(alias: string, age: number): string {
 }
 
 export async function fetchInsights(sport: "baseball" | "softball", age: number): Promise<Insight[]> {
-  const rows = await runAgentRows(
-    `SELECT c.insight_code, c.topic, c.audience, c.situation, c.insight, c.why, c.try_this, c.source_id, c.verified, s.url, s.title FROM diq_pg.coaching_insights c JOIN diq_pg.rule_sources s ON c.source_id = s.source_id WHERE c.sport IN ('both', '${sport}') AND ${ageClause("c", age)}`,
+  const where = `WHERE c.sport IN ('both', '${sport}') AND ${ageClause("c", age)}`;
+  const rows = await martOrBaseRows(
+    "coaching_tips",
+    (mart) =>
+      `SELECT c.insight_code, c.topic, c.audience, c.situation, c.insight, c.why, c.try_this, c.source_id, c.verified, c.source_url AS url, c.source_title AS title FROM ${mart}.coaching_tips c ${where}`,
+    `SELECT c.insight_code, c.topic, c.audience, c.situation, c.insight, c.why, c.try_this, c.source_id, c.verified, s.url, s.title FROM diq_pg.coaching_insights c JOIN diq_pg.rule_sources s ON c.source_id = s.source_id ${where}`,
   );
   return rows.map(toInsight).sort((a, b) => a.id.localeCompare(b.id));
 }
@@ -215,14 +220,20 @@ export async function fetchDrills(age: number): Promise<Drill[]> {
 const byId = <T extends { id: string }>(a: T, b: T) => a.id.localeCompare(b.id);
 
 export async function fetchLessons(): Promise<Lesson[]> {
-  const rows = await runAgentRows(
+  const rows = await martOrBaseRows(
+    "lesson_library",
+    (mart) =>
+      `SELECT l.lesson_code, l.title, l.principle, l.life_lesson, l.for_player, l.for_coach, l.for_parent, l.for_umpire, l.tags, l.verified, l.source_url AS url FROM ${mart}.lesson_library l`,
     `SELECT l.lesson_code, l.title, l.principle, l.life_lesson, l.for_player, l.for_coach, l.for_parent, l.for_umpire, l.tags, l.verified, s.url FROM diq_pg.coaching_lessons l JOIN diq_pg.rule_sources s ON l.source_id = s.source_id`,
   );
   return rows.map(toLesson).sort(byId);
 }
 
 export async function fetchSituations(): Promise<Situation[]> {
-  const rows = await runAgentRows(
+  const rows = await martOrBaseRows(
+    "situation_playbook",
+    (mart) =>
+      `SELECT t.situation_code, t.name, t.topic, t.offense, t.defense, t.common_mistakes, t.rule_fact_codes, t.lesson_codes, t.verified, t.source_url AS url FROM ${mart}.situation_playbook t`,
     `SELECT t.situation_code, t.name, t.topic, t.offense, t.defense, t.common_mistakes, t.rule_fact_codes, t.lesson_codes, t.verified, s.url FROM diq_pg.coaching_situations t JOIN diq_pg.rule_sources s ON t.source_id = s.source_id`,
   );
   return rows.map(toSituation).sort(byId);

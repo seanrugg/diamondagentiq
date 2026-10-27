@@ -27,6 +27,15 @@ const envSchema = z
       }
       return value.trim();
     }, z.string().url()),
+    /**
+     * Zetaris Virtual Data Mart the agents read cited rules and coaching content
+     * from (e.g. diamondagentiq_knowledge). Empty: read the diq_pg tables directly.
+     */
+    ZETARIS_KNOWLEDGE_MART: z
+      .string()
+      .optional()
+      .transform((value) => value?.split("#")[0]?.trim() || undefined)
+      .pipe(z.string().regex(/^[A-Za-z_]\w*$/, "Must be a plain Zetaris name").optional()),
     ZETARIS_USERNAME: optionalString,
     ZETARIS_PASSWORD: optionalString,
     ZETARIS_API_KEY: optionalString,

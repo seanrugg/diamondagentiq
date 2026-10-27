@@ -15,6 +15,7 @@
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { generator } from "../adapters/llm.js";
 import { runAgentRows, run_sql } from "../adapters/dataTools.js";
+import { martOrBaseRows } from "../data/knowledgeMart.js";
 import type { Row } from "../adapters/rows.js";
 import { resolveDate } from "../calculators/dates.js";
 import {
@@ -246,7 +247,10 @@ async function askModel(
 async function fetchFactSources(codes: string[]): Promise<RuleSource[]> {
   const safe = codes.filter((c) => /^F\d+$/.test(c));
   if (safe.length === 0) return [];
-  const rows = await runAgentRows(
+  const rows = await martOrBaseRows(
+    "cited_rules",
+    (mart) =>
+      `SELECT f.fact_code, f.rule_ref, f.verified, f.call_type, f.summary, f.source_url AS url, f.edition FROM ${mart}.cited_rules f WHERE f.fact_code IN (${quoteList(safe)})`,
     `SELECT f.fact_code, f.rule_ref, f.verified, f.call_type, f.summary, s.url, s.edition FROM diq_pg.rules_facts f JOIN diq_pg.rule_sources s ON f.source_id = s.source_id WHERE f.fact_code IN (${quoteList(safe)})`,
   );
   return rows.map((r) => ({
