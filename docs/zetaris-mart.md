@@ -39,6 +39,8 @@ default, and the app falls back to `diq_pg` if the mart can't be read.
 
 ## Least privilege: a read-only agent user
 
+Not yet tested; the demo runs as the local Zetaris administrator.
+
 The agents only read, so they don't need the administrator login. This
 follows Zetaris's own guidance: administrators build, and a separate
 non-administrator user reads. A Zetaris administrator does these steps in
