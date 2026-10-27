@@ -22,7 +22,7 @@
     "GameReviewAgent"
   ],
   "sponsor_technology": {
-    "zetaris": "All rules, house rules, pitch-rest tiers, coaching lessons, situations, stories, tips and drills are read through Zetaris REST; RulesAgent writes its own read-only SQL.",
+    "zetaris": "All rules, house rules, pitch-rest tiers, coaching lessons, situations, stories, tips and drills are read through Zetaris REST; RulesAgent writes its own read-only SQL. Schemastore views are published as the diamondagentiq_knowledge Virtual Data Mart, and a coach pitch-log CSV in the NDP file store is joined to the Postgres rest rules for who-can-pitch.",
     "meterless": "Nightshift is the primary AI provider (per-agent app streams, compute receipts in every trace); H-MEM is our Meterless Engine, giving each team memory with Critic-driven trust feedback (conformance suite: npm run test:hmem).",
     "nvidia": "Nemotron 3.5 Super VL 120B, Nemotron 3.5 Lightning 30B and Nemotron 3 Ultra 550B through Nightshift; Claude Code on local Nemotron 3.5 Super (Ollama) during development.",
     "cursor": "Optional; used for the foundation: scaffold, Zetaris login-token auth, H-MEM vendoring and the Postgres data layer (docs/cursor-build-notes.md)."

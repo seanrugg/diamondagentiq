@@ -76,6 +76,7 @@ Prerequisites: Node 22, Docker, the Zetaris local bundle running (UI :3000, REST
    npm run db:up              # Postgres 16 (host port 5433), joined to Zetaris' network
    npm run rules:load         # rules, sources, pitch-rest tiers, coaching lessons/situations/stories/tips
    npm run zetaris:register   # register the diq_pg datasource in Zetaris and refresh every table
+   npm run zetaris:views      # optional: diq views for the knowledge mart (see docs/zetaris-mart.md)
    npm run check:data         # counts and a join through Zetaris
    npm run check:routing      # which Nemotron model Nightshift serves for each route
    ```
@@ -188,7 +189,12 @@ Youth baseball and softball are played in many languages, and a parent at the fe
 
 ## Sponsor technology
 
-**Zetaris (data layer).** Every rule, house rule, pitch-rest tier, coaching lesson, situation, story, tip and drill lives in Postgres and is read only through Zetaris REST (`src/adapters/zetaris.ts`): login-token auth with refresh, one statement per call, a read-only allowlisted SQL tool for agents (`src/adapters/dataTools.ts`). RulesAgent writes its own SQL against Zetaris; the other agents' lookups are code-issued queries. `npm run zetaris:register` registers the datasource and refreshes table metadata.
+**Zetaris (data layer).** All data comes through Zetaris; no agent connects to a database directly.
+- *Federated source.* Every rule, house rule, pitch-rest tier, coaching lesson, situation, story, tip and drill lives in Postgres, registered in Zetaris as the `diq_pg` data source and read only through Zetaris REST (`src/adapters/zetaris.ts`): login-token auth with refresh, one statement per call, and a read-only allowlisted SQL tool for agents (`src/adapters/dataTools.ts`). RulesAgent writes its own SQL against Zetaris; the other agents' lookups are code-issued queries.
+- *Schemastore views and a Virtual Data Mart.* The `diq` container holds views that join each knowledge table to its sources (`cited_rules`, `situation_playbook`, `lesson_library`, `coaching_tips`, `pitcher_availability`). They're published together as the **`diamondagentiq_knowledge`** data mart. With `ZETARIS_KNOWLEDGE_MART` set, citations, lessons, situations and tips are read from the mart, held to its views by the same read-only SQL guard. On any mart error the app falls back to `diq_pg`, and the "Behind this answer" panel names the mart when it was used.
+- *A file joined to Postgres.* A coach's pitch log, uploaded to the Zetaris NDP File System and registered as `DIQ_FILES.pitch_log`, is joined to the Postgres rest tiers in `diq.pitcher_availability`. **Coach: who can pitch Saturday?** reads it through the mart. In a league, the league office would upload the pitch-count reports and every coach could ask. Code recomputes rest days and eligibility; the model does no math.
+- *Least privilege.* The agents only read, so they can run as a non-administrator Zetaris user granted SELECT on the mart and `diq_pg` (steps in [`docs/zetaris-mart.md`](docs/zetaris-mart.md)).
+- Setup: `npm run zetaris:register` registers the data source; `npm run zetaris:views` creates the views and times reads through the mart.
 
 **Meterless (power, memory, observation).**
 - *Nightshift* is the primary AI provider: every model call goes through one `generator()` to the Nightshift Runtime with the `meterless-app` / `meterless-scope` headers, and the `meterless.compute_receipt.v1` receipt is copied into each trace line. With `METERLESS_APP_STREAMS=per-agent`, each agent appears in Nightshift as its own app stream (`diamondagentiq-rules`, `diamondagentiq-critic`, …), so Nightshift's Jobs, Monitor and Replay views show the team at work.
@@ -198,7 +204,7 @@ Youth baseball and softball are played in many languages, and a parent at the fe
 
 **Cursor.** The organizers dropped the Cursor requirement on day one (no Cursor credits were provided), but we built the project's foundation in Cursor until our own credits ran out: the TypeScript scaffold and zod-validated config, the guarded SQL adapter and the LLM adapter, JSONL tracing, the vendored H-MEM with its conformance tests, Zetaris login-token auth with refresh and retry (7 unit tests), and the Postgres data layer behind Zetaris. No agents were built in Cursor. Details: [`docs/cursor-build-notes.md`](docs/cursor-build-notes.md).
 
-**What's unique.** Nightshift isn't only a model endpoint here: each agent is its own Nightshift app stream and every step's receipt is on our timeline, so anyone can see which Nemotron model answered each step. H-MEM's trust ledger is driven by our Critic, so memories that lead to good answers are trusted more next time. And Zetaris holds a learning curriculum, not just rules: the agents pull lessons and game situations through it the same way they pull rules.
+**What's unique.** Nightshift isn't only a model endpoint here: each agent is its own Nightshift app stream and every step's receipt is on our timeline, so anyone can see which Nemotron model answered each step. H-MEM's trust ledger is driven by our Critic, so memories that lead to good answers are trusted more next time. And Zetaris holds a learning curriculum, not just rules: lessons, game situations and rules are published as one governed data mart the agents read, next to a coach's pitch-log file joined to the rulebook.
 
 ## Data, licensing and privacy
 
@@ -209,7 +215,7 @@ Youth baseball and softball are played in many languages, and a parent at the fe
 
 ## Tests and evaluation
 
-- `npm test`: 223 tests (agents with mocked models, translation checks, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
+- `npm test`: 233 tests (agents with mocked models, translation checks, calculators, SQL guard, rules and coaching builds, H-MEM adapter, server, and an end-to-end SAMPLE_MODE run of every example).
 - `npm run eval`: 11 real questions, each with a checklist (intent, call type, cited tables, phrases it must mention or avoid, computed values). Checklists, never stored answers.
 - `npm run test:hmem`: Meterless H-MEM reference conformance tests.
 
@@ -234,12 +240,14 @@ src/
   adapters/      llm.ts (generator → Nightshift), zetaris.ts, dataTools.ts, hmem.ts,
                  sampleData.ts + sampleModel.ts (SAMPLE_MODE)
   agents/        context, memory, rules, development, callType, coaching, critic,
-                 scorebook, gameReview, philosophy
+                 scorebook, gameReview, philosophy, pitcherAvailability
+  data/          knowledgeMart.ts (mart reads with fallback), martViews.ts (Zetaris views)
   calculators/   pitchRest.ts, dates.ts, boxScore.ts, playByPlay.ts (all the math)
   orchestrator.ts, gameReview.ts, runApi.ts, server.ts
   scripts/       ask, demo, eval, memory, start, check:* , rules:build/load
 data/            schema.sql, seed.sql (synthetic), rules/*.csv, coaching/*.csv,
-                 samples/ (box score, 10-game synthetic season), migrations/
+                 samples/ (box score, 10-game synthetic season), migrations/,
+                 demo/ (synthetic coach pitch log for the Zetaris file store)
 docs/coaching/   readable lessons, situations, stories, tips (generated)
 input_examples/  9 requests (every role, both review inputs);
 output_examples/ written by npm run demo, with traces/
